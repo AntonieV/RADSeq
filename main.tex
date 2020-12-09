@@ -1,0 +1,42 @@
+% main.tex
+\include{header}
+\begin{document}
+\selectlanguage{german}
+\include{kapitel/titelseite}
+\blankpage
+\pagenumbering{roman}
+\tableofcontents
+\cleardoublepage
+\pagenumbering{arabic}
+% Kapitel
+\include{kapitel/einleitung}
+\include{kapitel/kapitel2}
+\include{kapitel/kapitel3}
+\include{kapitel/kapitel4}
+\include{kapitel/kapitel5}
+%\include{kapitel/kapitel6}
+%\include{kapitel/kapitel7}
+% Anhang
+\appendix
+\include{kapitel/anhang}
+% Abbildungsverzeichnis
+\listoffigures
+\addcontentsline{toc}{chapter}{Abbildungsverzeichnis}
+\cleardoublepage
+% Algorithmenverzeichnis
+\listofalgorithms
+\addcontentsline{toc}{chapter}{Algorithmenverzeichnis}
+\cleardoublepage
+% Literaturverzeichnis
+% \bibliographystyle{gerplain}
+\bibliographystyle{gerunsrt} % Literaturverzeichnis wird in der Reihenfolge der Zitate im Text aufgebaut
+\bibliography{literatur/diplom}
+\addcontentsline{toc}{chapter}{\bibname}
+% Erklaerung
+\thispagestyle{myheadings}
+\markboth{}{ERKLÄRUNG}
+\addcontentsline{toc}{chapter}{Erklärung}
+\include{kapitel/erklaerung}
+\cleardoublepage
+\end{document}
+

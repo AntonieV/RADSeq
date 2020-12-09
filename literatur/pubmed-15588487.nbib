@@ -1,0 +1,72 @@
+PMID- 15588487
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20050329
+LR  - 20191109
+IS  - 1473-9542 (Print)
+IS  - 1479-7364 (Electronic)
+IS  - 1473-9542 (Linking)
+VI  - 1
+IP  - 4
+DP  - 2004 May
+TI  - The genomic distribution of population substructure in four populations using 8,525 
+      autosomal SNPs.
+PG  - 274-86
+AB  - Understanding the nature of evolutionary relationships among persons and populations 
+      is important for the efficient application of genome science to biomedical research. 
+      We have analysed 8,525 autosomal single nucleotide polymorphisms (SNPs) in 84 
+      individuals from four populations: African-American, European-American, Chinese and 
+      Japanese. Individual relationships were reconstructed using the allele sharing 
+      distance and the neighbour-joining tree making method. Trees show clear clustering 
+      according to population, with the root branching from the African-American clade. 
+      The African-American cluster is much less star-like than European-American and East 
+      Asian clusters, primarily because of admixture. Furthermore, on the East Asian 
+      branch, all ten Chinese individuals cluster together and all ten Japanese 
+      individuals cluster together. Using positional information, we demonstrate strong 
+      correlations between inter-marker distance and both locus-specific FST (the 
+      proportion of total variation due to differentiation) levels and branch lengths. 
+      Chromosomal maps of the distribution of locus-specific branch lengths were 
+      constructed by combining these data with other published SNP markers (total of 
+      33,704 SNPs). These maps clearly illustrate a non-uniform distribution of human 
+      genetic substructure, an instructional and useful paradigm for education and 
+      research.
+FAU - Shriver, Mark D
+AU  - Shriver MD
+AD  - Penn State University, University Park, Pennsylvania, USA. mds17@psu.edu
+FAU - Kennedy, Giulia C
+AU  - Kennedy GC
+FAU - Parra, Esteban J
+AU  - Parra EJ
+FAU - Lawson, Heather A
+AU  - Lawson HA
+FAU - Sonpar, Vibhor
+AU  - Sonpar V
+FAU - Huang, Jing
+AU  - Huang J
+FAU - Akey, Joshua M
+AU  - Akey JM
+FAU - Jones, Keith W
+AU  - Jones KW
+LA  - eng
+GR  - HG02154/HG/NHGRI NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, U.S. Gov't, P.H.S.
+TA  - Hum Genomics
+JT  - Human genomics
+JID - 101202210
+SB  - IM
+MH  - *Genetics, Population
+MH  - *Genome, Human
+MH  - Humans
+MH  - *Polymorphism, Single Nucleotide
+PMC - PMC3525267
+EDAT- 2004/12/14 09:00
+MHDA- 2005/03/30 09:00
+CRDT- 2004/12/14 09:00
+PHST- 2004/12/14 09:00 [pubmed]
+PHST- 2005/03/30 09:00 [medline]
+PHST- 2004/12/14 09:00 [entrez]
+AID - 1479-7364-1-4-274 [pii]
+AID - 10.1186/1479-7364-1-4-274 [doi]
+PST - ppublish
+SO  - Hum Genomics. 2004 May;1(4):274-86. doi: 10.1186/1479-7364-1-4-274.

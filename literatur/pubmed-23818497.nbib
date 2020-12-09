@@ -1,0 +1,71 @@
+PMID- 23818497
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20140131
+LR  - 20181113
+IS  - 1943-0264 (Electronic)
+IS  - 1943-0264 (Linking)
+VI  - 5
+IP  - 7
+DP  - 2013 Jul 1
+TI  - Principles and concepts of DNA replication in bacteria, archaea, and eukarya.
+LID - 10.1101/cshperspect.a010108 [doi]
+LID - a010108
+AB  - The accurate copying of genetic information in the double helix of DNA is essential 
+      for inheritance of traits that define the phenotype of cells and the organism. The 
+      core machineries that copy DNA are conserved in all three domains of life: bacteria, 
+      archaea, and eukaryotes. This article outlines the general nature of the DNA 
+      replication machinery, but also points out important and key differences. The most 
+      complex organisms, eukaryotes, have to coordinate the initiation of DNA replication 
+      from many origins in each genome and impose regulation that maintains genomic 
+      integrity, not only for the sake of each cell, but for the organism as a whole. In 
+      addition, DNA replication in eukaryotes needs to be coordinated with inheritance of 
+      chromatin, developmental patterning of tissues, and cell division to ensure that the 
+      genome replicates once per cell division cycle.
+FAU - O'Donnell, Michael
+AU  - O'Donnell M
+AD  - The Rockefeller University and Howard Hughes Medical Institute, New York, New York 
+      10065, USA.
+FAU - Langston, Lance
+AU  - Langston L
+FAU - Stillman, Bruce
+AU  - Stillman B
+LA  - eng
+GR  - R37 GM038839/GM/NIGMS NIH HHS/United States
+GR  - Howard Hughes Medical Institute/United States
+GR  - CA13016/CA/NCI NIH HHS/United States
+GR  - GM38839/GM/NIGMS NIH HHS/United States
+GR  - P30 CA045508/CA/NCI NIH HHS/United States
+GR  - P01 CA013106/CA/NCI NIH HHS/United States
+GR  - GM45436/GM/NIGMS NIH HHS/United States
+GR  - R01 GM045436/GM/NIGMS NIH HHS/United States
+GR  - R01 GM038839/GM/NIGMS NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, N.I.H., Extramural
+PT  - Research Support, Non-U.S. Gov't
+PT  - Review
+DEP - 20130701
+TA  - Cold Spring Harb Perspect Biol
+JT  - Cold Spring Harbor perspectives in biology
+JID - 101513680
+SB  - IM
+MH  - Archaea/*genetics
+MH  - Bacteria/*genetics
+MH  - DNA Damage
+MH  - DNA Replication/*physiology
+MH  - Eukaryota/*genetics
+MH  - *Models, Genetic
+PMC - PMC3685895
+MID - NIHMS593533
+EDAT- 2013/07/03 06:00
+MHDA- 2014/02/01 06:00
+CRDT- 2013/07/03 06:00
+PHST- 2013/07/03 06:00 [entrez]
+PHST- 2013/07/03 06:00 [pubmed]
+PHST- 2014/02/01 06:00 [medline]
+AID - 5/7/a010108 [pii]
+AID - a010108 [pii]
+AID - 10.1101/cshperspect.a010108 [doi]
+PST - epublish
+SO  - Cold Spring Harb Perspect Biol. 2013 Jul 1;5(7):a010108. doi: 
+      10.1101/cshperspect.a010108.

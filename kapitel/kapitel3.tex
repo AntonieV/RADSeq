@@ -1,0 +1,68 @@
+% kapitel3.tex
+\chapter{Algorithmus} \label{sec:alg}
+\section{Preprocessing} \label{sec:}
+\subsection{Algorithmus} \label{subsec:}
+\textbf{Input:} fastq-Datei aus der RAD-Seq-Analyse und Tabelle mit Zuordnung der Probennamen/-id's zu den Individuen und den Barcode-Sequencen und Spacern: \\
+%sample	individual	barcode_1	barcode_2	spacer_1	spacer_2
+%A	Individual_16	CCGTCC	ATCACG	AC	
+%B	Individual_20	GTTTCG	ATCACG		
+%C	Individual_23	ACTGAT	ATCACG	C	
+%D	Individual_24	ATTCCT	ATCACG	C	
+Trimming mit cutadapt (SE), Entfernen der Barcodesequenzen und Zuordnung der Sequenzen zu den einzelnen Individuen -> je 1 fastq file pro Individuum \\
+Quality-Control mit FastQC und MultiQC
+
+\section{Edit-Distanzen} \label{sec:edit}
+Bestimmung der Edit-Distanzen mit Minimap2 über NM-tag, Ausgabe im sam-Format \\
+wahlweise kann auch cs-tag im short oder long Format, dieses wird dann in die Kanteneigenschaften des Graphen übernommen \\
+
+\section{Erstellung des Graphen und Bestimmung der Zusammenhangskomponenten} \label{sec:}
+\subsection{Algorithmus} \label{subsec:}
+% Beschreibung
+Extraktion der Fastq-Daten je Individuum (später auch results für den Vergleich verschiedener Individuen) \\
+gerichteter Graph \\
+Knoten des Graphen entsprechen jeweils den Reads jedes Individuums aus den getrimmten Fastq-Dateien \\
+\textbf{Knoteneigenschaften:} O(n), wird für jeden Read durchgeführt \\
+    \url{https://graph-tool.skewed.de/static/doc/graph_tool.html?highlight=add_edge#graph_tool.Graph.add_edge} \\
+    -> aus fastq der einzelnen Individuen \\
+    ID: wird zusätzlich vergeben, Kombination aus Index als laufende Nummer und Probenname, String \\
+    Name: Sequenzidentifier, entspricht Zeile 1 des Reads im Fastq-Format, wird als String gespeichert \\
+    Sequenz: wird als String gespeichert \\
+    Quality: aus der Quality-Sequenz des Reads aus den Fastq-Daten wird für jede Base der p-Wert berechnet. Dazu erfolgt zunächst das platformabhängige Encoding des Q-Wertes mit Hilfe von SeqIO aus dem Bio Python Package. Aus den Q Werten kann nun für jede Base des Reads der p-Wert errechnet werden: $10^{-Q / 10}$ , wird als Vektor von Float-Werten gespeichert \\
+        \url{https://www.drive5.com/usearch/manual/quality_score.html}  \\
+        \url{https://en.wikipedia.org/wiki/Phred_quality_score} \\
+        
+\noindent\textbf{Kanteneigenschaften:} \\ 
+    -> aus Minimap2-Output im sam-Format, werden mit Hilfe von pysam ausgelesen\\
+    Kante Hinzufügen graph-tool in O(1), gerichtete Kante von source/query zu target/ref -> ermöglicht die Betrachtung der Nachbarn bzw. aller ausgehenden Kanten eines Knotens
+    Edit-Distanz: aus dem nm-tag wird zunächst genutzt, um nur Kanten in den Graphen aufzunehmen, die bereits einen optimierten Minimap2-Path darstellen. Hierfür besteht optional die Möglichkeit den Schwellwert für die maximale Edit-Distanz in der Snakemake-rule festzulegen.\\
+        
+    cs-tag und cigar-string: neben dem klassischen cigar-string des sam-files kann der cs-tag im short- oder long-Format in den Graphen aufgenommen werden und im NodeRAD-Output mit ausgegeben werden, um für weitere Analysen zur Verfügung zu stehen. Der cigar-string selbst wird nicht in seiner üblichen Formatierung gespeichert, sondern liegt intern in Tupeln codiert vor und dient der Berechnung der Likelihood jeder Kante.\\
+    
+    likelihood: Für jede Kante wird für jede Base der Read-Sequenz die Likelihood aus dem Cigar-String in Kombination mit den für die Knoten bestimmten p-Werten und der Mutationsrate berechnet:\\    
+    bei Match: (1 - mutrate) * float(1/3) * i + mutrate * (1 - i)\\    
+    bei Mismatch: (1 - mutrate) * float(1/3) * i + mutrate * (1 - i)\\    
+    Die Likelihood für eine Kante ergibt sich dann aus dem Produkt der Wahrscheinlichkeiten aller Basen eines Reads. Bei einem Mismatch können die Mutationsraten auch explizit für Substitutionen, Deletionen und Insertionen spezifiziert werden.
+    
+zusätzliche konfigurierbare Optionen: \\
+    Schwellwert für die maximal im Graphen zu berücksichtigende edit-Distanz kann festgelegt werden, default 23 \\
+    Mutationsrate kann für Substitutionen, Insertionen und Deletionen individuell festgelegt werden \\
+\textbf{Zwischenergebnisse als Output:} \\
+    Graph als xml-Datei und als visuelle Darstellung im pdf-Format \\
+    
+zusätzliche Statistiken/Logs:
+    In den Log-Files werden für jedes Individuum einige Statistiken zur Konstruktion des Graphen festgehalten. Neben der Anzahl der Knoten und Kanten des Graphen, wird auch die maximale edit distance aus den NM-tags der Reads angegeben. Diese kann entweder dem Schwellenwert oder seinem Default-Wert entsprechen oder auch je nach gewählten Minimap2-Option kleiner sein, als der Schwellenwert. \\
+    Zudem wird die Anzahl der Substitutionen/SNP's, Insertionen und Deletionen angegeben.
+    
+\textbf{Zusammenhangskomponenten extrahieren:} \\
+    Die Bestimmung der Zusammenhangskomponenten inkl. Indexierung erfolgt durch graph-tool selbst und kann in O(V+E) Zeit durchgeführt werden. Die Indexnummern (integer) werden dabei für jeden Knoten der Zusammenhangskomponente seinen Knoteneigenschaften hinzugefügt. Zusammenhangskomponenten die mehr als nur 1 Element besitzen, werden anschließend für die Berechnung des ILP einer Liste hinzugefügt. Im Log file wird die Anzahl der Knoten aller Komponenten als Histogramm festgehalten. Ebenso wird dort für alle Komponenten mit mehr als einem Element die Anzahl ihrer Knoten und Kanten und deren Eigenschaften aufgelistet.
+
+\section{Bestimmung der maximalen Likelihood der Allele} \label{sec:}
+\subsection{} \label{subsec:}
+
+
+\section{Bestimmung der maximalen Likelihood der Loci} \label{sec:}
+\subsection{} \label{subsec:}
+
+
+\section{Ausgabe der Loci im VCF-Format} \label{sec:}
+\subsection{} \label{subsec:}

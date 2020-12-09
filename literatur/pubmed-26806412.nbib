@@ -1,0 +1,69 @@
+PMID- 26806412
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20160628
+LR  - 20181113
+IS  - 1471-0064 (Electronic)
+IS  - 1471-0056 (Linking)
+VI  - 17
+IP  - 3
+DP  - 2016 Mar
+TI  - Single-cell genome sequencing: current state of the science.
+PG  - 175-88
+LID - 10.1038/nrg.2015.16 [doi]
+AB  - The field of single-cell genomics is advancing rapidly and is generating many new 
+      insights into complex biological systems, ranging from the diversity of microbial 
+      ecosystems to the genomics of human cancer. In this Review, we provide an overview 
+      of the current state of the field of single-cell genome sequencing. First, we focus 
+      on the technical challenges of making measurements that start from a single molecule 
+      of DNA, and then explore how some of these recent methodological advancements have 
+      enabled the discovery of unexpected new biology. Areas highlighted include the 
+      application of single-cell genomics to interrogate microbial dark matter and to 
+      evaluate the pathogenic roles of genetic mosaicism in multicellular organisms, with 
+      a focus on cancer. We then attempt to predict advances we expect to see in the next 
+      few years.
+FAU - Gawad, Charles
+AU  - Gawad C
+AD  - Departments of Oncology and Computational Biology, St. Jude Children's Research 
+      Hospital, Memphis, Tennessee 38105, USA.
+FAU - Koh, Winston
+AU  - Koh W
+AD  - Departments of Bioengineering and Applied Physics, Stanford University, Stanford, 
+      California 94304, USA.
+AD  - Howard Hughes Medical Institute, Stanford University, California 94304, USA.
+FAU - Quake, Stephen R
+AU  - Quake SR
+AD  - Departments of Bioengineering and Applied Physics, Stanford University, Stanford, 
+      California 94304, USA.
+AD  - Howard Hughes Medical Institute, Stanford University, California 94304, USA.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Review
+DEP - 20160125
+PL  - England
+TA  - Nat Rev Genet
+JT  - Nature reviews. Genetics
+JID - 100962779
+SB  - IM
+MH  - Bacteria/genetics
+MH  - Fungi/genetics
+MH  - Genome/*genetics
+MH  - *Genomics
+MH  - High-Throughput Nucleotide Sequencing
+MH  - Humans
+MH  - Mosaicism
+MH  - Neoplasms/*genetics
+MH  - Polymerase Chain Reaction/methods
+MH  - Sequence Analysis, DNA/*methods
+MH  - Single-Cell Analysis
+EDAT- 2016/01/26 06:00
+MHDA- 2016/06/29 06:00
+CRDT- 2016/01/26 06:00
+PHST- 2016/01/26 06:00 [entrez]
+PHST- 2016/01/26 06:00 [pubmed]
+PHST- 2016/06/29 06:00 [medline]
+AID - nrg.2015.16 [pii]
+AID - 10.1038/nrg.2015.16 [doi]
+PST - ppublish
+SO  - Nat Rev Genet. 2016 Mar;17(3):175-88. doi: 10.1038/nrg.2015.16. Epub 2016 Jan 25.

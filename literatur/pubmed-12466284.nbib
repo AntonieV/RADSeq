@@ -1,0 +1,72 @@
+PMID- 12466284
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20030124
+LR  - 20181223
+IS  - 1088-9051 (Print)
+IS  - 1088-9051 (Linking)
+VI  - 12
+IP  - 12
+DP  - 2002 Dec
+TI  - Interrogating a high-density SNP map for signatures of natural selection.
+PG  - 1805-14
+AB  - Identifying genomic regions that have been targets of natural selection remains one 
+      of the most important and challenging areas of research in genetics. To this end, we 
+      report an analysis of 26,530 single nucleotide polymorphisms (SNPs) with allele 
+      frequencies that were determined in three populations. Specifically, we calculated a 
+      measure of genetic differentiation, F(ST), for each locus and examined its 
+      distribution at the level of the genome, the chromosome, and individual genes. 
+      Through a variety of analyses, we have found statistically significant evidence 
+      supporting the hypothesis that selection has influenced extant patterns of human 
+      genetic variation. Importantly, by contrasting the F(ST) of individual SNPs to the 
+      empirical genome-wide distribution of F(ST), our results are not confounded by 
+      tenuous assumptions of population demographic history. Furthermore, we have 
+      identified 174 candidate genes with distribution of genetic variation that indicates 
+      that they have been targets of selection. Our work provides a first generation 
+      natural selection map of the human genome and provides compelling evidence that 
+      selection has shaped extant patterns of human genomic variation.
+FAU - Akey, Joshua M
+AU  - Akey JM
+AD  - Center for Genome Information, University of Cincinnati, Cincinnati, Ohio, USA.
+FAU - Zhang, Ge
+AU  - Zhang G
+FAU - Zhang, Kun
+AU  - Zhang K
+FAU - Jin, Li
+AU  - Jin L
+FAU - Shriver, Mark D
+AU  - Shriver MD
+LA  - eng
+GR  - R01 HG002154/HG/NHGRI NIH HHS/United States
+GR  - HG002154/HG/NHGRI NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, U.S. Gov't, P.H.S.
+TA  - Genome Res
+JT  - Genome research
+JID - 9518021
+RN  - 0 (Genetic Markers)
+SB  - IM
+MH  - Databases, Genetic
+MH  - Databases, Protein
+MH  - Evolution, Molecular
+MH  - Genes/genetics
+MH  - Genetic Markers/genetics
+MH  - Genome, Human
+MH  - Humans
+MH  - Internet
+MH  - Models, Genetic
+MH  - Physical Chromosome Mapping/*methods
+MH  - Polymorphism, Single Nucleotide/*genetics
+MH  - Research Design
+MH  - *Selection, Genetic
+PMC - PMC187574
+EDAT- 2002/12/06 04:00
+MHDA- 2003/01/25 04:00
+CRDT- 2002/12/06 04:00
+PHST- 2002/12/06 04:00 [pubmed]
+PHST- 2003/01/25 04:00 [medline]
+PHST- 2002/12/06 04:00 [entrez]
+AID - GR-6312 [pii]
+AID - 10.1101/gr.631202 [doi]
+PST - ppublish
+SO  - Genome Res. 2002 Dec;12(12):1805-14. doi: 10.1101/gr.631202.

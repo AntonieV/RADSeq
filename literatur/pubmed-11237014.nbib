@@ -1,0 +1,278 @@
+PMID- 11237014
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20010322
+LR  - 20100312
+IS  - 0028-0836 (Print)
+IS  - 0028-0836 (Linking)
+VI  - 409
+IP  - 6822
+DP  - 2001 Feb 15
+TI  - A physical map of the human genome.
+PG  - 934-41
+AB  - The human genome is by far the largest genome to be sequenced, and its size and 
+      complexity present many challenges for sequence assembly. The International Human 
+      Genome Sequencing Consortium constructed a map of the whole genome to enable the 
+      selection of clones for sequencing and for the accurate assembly of the genome 
+      sequence. Here we report the construction of the whole-genome bacterial artificial 
+      chromosome (BAC) map and its integration with previous landmark maps and information 
+      from mapping efforts focused on specific chromosomal regions. We also describe the 
+      integration of sequence data with the map.
+FAU - McPherson, J D
+AU  - McPherson JD
+AD  - Washington University School of Medicine, Genome Sequencing Center, Department of 
+      Genetics, St. Louis, Missouri 63108, USA. jmcphers@watson.wustl.edu
+FAU - Marra, M
+AU  - Marra M
+FAU - Hillier, L
+AU  - Hillier L
+FAU - Waterston, R H
+AU  - Waterston RH
+FAU - Chinwalla, A
+AU  - Chinwalla A
+FAU - Wallis, J
+AU  - Wallis J
+FAU - Sekhon, M
+AU  - Sekhon M
+FAU - Wylie, K
+AU  - Wylie K
+FAU - Mardis, E R
+AU  - Mardis ER
+FAU - Wilson, R K
+AU  - Wilson RK
+FAU - Fulton, R
+AU  - Fulton R
+FAU - Kucaba, T A
+AU  - Kucaba TA
+FAU - Wagner-McPherson, C
+AU  - Wagner-McPherson C
+FAU - Barbazuk, W B
+AU  - Barbazuk WB
+FAU - Gregory, S G
+AU  - Gregory SG
+FAU - Humphray, S J
+AU  - Humphray SJ
+FAU - French, L
+AU  - French L
+FAU - Evans, R S
+AU  - Evans RS
+FAU - Bethel, G
+AU  - Bethel G
+FAU - Whittaker, A
+AU  - Whittaker A
+FAU - Holden, J L
+AU  - Holden JL
+FAU - McCann, O T
+AU  - McCann OT
+FAU - Dunham, A
+AU  - Dunham A
+FAU - Soderlund, C
+AU  - Soderlund C
+FAU - Scott, C E
+AU  - Scott CE
+FAU - Bentley, D R
+AU  - Bentley DR
+FAU - Schuler, G
+AU  - Schuler G
+FAU - Chen, H C
+AU  - Chen HC
+FAU - Jang, W
+AU  - Jang W
+FAU - Green, E D
+AU  - Green ED
+FAU - Idol, J R
+AU  - Idol JR
+FAU - Maduro, V V
+AU  - Maduro VV
+FAU - Montgomery, K T
+AU  - Montgomery KT
+FAU - Lee, E
+AU  - Lee E
+FAU - Miller, A
+AU  - Miller A
+FAU - Emerling, S
+AU  - Emerling S
+FAU - Kucherlapati
+AU  - Kucherlapati
+FAU - Gibbs, R
+AU  - Gibbs R
+FAU - Scherer, S
+AU  - Scherer S
+FAU - Gorrell, J H
+AU  - Gorrell JH
+FAU - Sodergren, E
+AU  - Sodergren E
+FAU - Clerc-Blankenburg, K
+AU  - Clerc-Blankenburg K
+FAU - Tabor, P
+AU  - Tabor P
+FAU - Naylor, S
+AU  - Naylor S
+FAU - Garcia, D
+AU  - Garcia D
+FAU - de Jong, P J
+AU  - de Jong PJ
+FAU - Catanese, J J
+AU  - Catanese JJ
+FAU - Nowak, N
+AU  - Nowak N
+FAU - Osoegawa, K
+AU  - Osoegawa K
+FAU - Qin, S
+AU  - Qin S
+FAU - Rowen, L
+AU  - Rowen L
+FAU - Madan, A
+AU  - Madan A
+FAU - Dors, M
+AU  - Dors M
+FAU - Hood, L
+AU  - Hood L
+FAU - Trask, B
+AU  - Trask B
+FAU - Friedman, C
+AU  - Friedman C
+FAU - Massa, H
+AU  - Massa H
+FAU - Cheung, V G
+AU  - Cheung VG
+FAU - Kirsch, I R
+AU  - Kirsch IR
+FAU - Reid, T
+AU  - Reid T
+FAU - Yonescu, R
+AU  - Yonescu R
+FAU - Weissenbach, J
+AU  - Weissenbach J
+FAU - Bruls, T
+AU  - Bruls T
+FAU - Heilig, R
+AU  - Heilig R
+FAU - Branscomb, E
+AU  - Branscomb E
+FAU - Olsen, A
+AU  - Olsen A
+FAU - Doggett, N
+AU  - Doggett N
+FAU - Cheng, J F
+AU  - Cheng JF
+FAU - Hawkins, T
+AU  - Hawkins T
+FAU - Myers, R M
+AU  - Myers RM
+FAU - Shang, J
+AU  - Shang J
+FAU - Ramirez, L
+AU  - Ramirez L
+FAU - Schmutz, J
+AU  - Schmutz J
+FAU - Velasquez, O
+AU  - Velasquez O
+FAU - Dixon, K
+AU  - Dixon K
+FAU - Stone, N E
+AU  - Stone NE
+FAU - Cox, D R
+AU  - Cox DR
+FAU - Haussler, D
+AU  - Haussler D
+FAU - Kent, W J
+AU  - Kent WJ
+FAU - Furey, T
+AU  - Furey T
+FAU - Rogic, S
+AU  - Rogic S
+FAU - Kennedy, S
+AU  - Kennedy S
+FAU - Jones, S
+AU  - Jones S
+FAU - Rosenthal, A
+AU  - Rosenthal A
+FAU - Wen, G
+AU  - Wen G
+FAU - Schilhabel, M
+AU  - Schilhabel M
+FAU - Gloeckner, G
+AU  - Gloeckner G
+FAU - Nyakatura, G
+AU  - Nyakatura G
+FAU - Siebert, R
+AU  - Siebert R
+FAU - Schlegelberger, B
+AU  - Schlegelberger B
+FAU - Korenberg, J
+AU  - Korenberg J
+FAU - Chen, X N
+AU  - Chen XN
+FAU - Fujiyama, A
+AU  - Fujiyama A
+FAU - Hattori, M
+AU  - Hattori M
+FAU - Toyoda, A
+AU  - Toyoda A
+FAU - Yada, T
+AU  - Yada T
+FAU - Park, H S
+AU  - Park HS
+FAU - Sakaki, Y
+AU  - Sakaki Y
+FAU - Shimizu, N
+AU  - Shimizu N
+FAU - Asakawa, S
+AU  - Asakawa S
+FAU - Kawasaki, K
+AU  - Kawasaki K
+FAU - Sasaki, T
+AU  - Sasaki T
+FAU - Shintani, A
+AU  - Shintani A
+FAU - Shimizu, A
+AU  - Shimizu A
+FAU - Shibuya, K
+AU  - Shibuya K
+FAU - Kudoh, J
+AU  - Kudoh J
+FAU - Minoshima, S
+AU  - Minoshima S
+FAU - Ramser, J
+AU  - Ramser J
+FAU - Seranski, P
+AU  - Seranski P
+FAU - Hoff, C
+AU  - Hoff C
+FAU - Poustka, A
+AU  - Poustka A
+FAU - Reinhardt, R
+AU  - Reinhardt R
+FAU - Lehrach, H
+AU  - Lehrach H
+CN  - International Human Genome Mapping Consortium
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Research Support, U.S. Gov't, Non-P.H.S.
+PT  - Research Support, U.S. Gov't, P.H.S.
+PL  - England
+TA  - Nature
+JT  - Nature
+JID - 0410462
+SB  - IM
+CIN - Nature. 2001 Feb 15;409(6822):816-8. PMID: 11236993
+MH  - Chromosomes, Artificial, Bacterial
+MH  - Cloning, Molecular
+MH  - *Contig Mapping
+MH  - DNA Fingerprinting
+MH  - Gene Duplication
+MH  - *Genome, Human
+MH  - Humans
+MH  - In Situ Hybridization, Fluorescence
+MH  - Repetitive Sequences, Nucleic Acid
+EDAT- 2001/03/10 10:00
+MHDA- 2001/03/27 10:01
+CRDT- 2001/03/10 10:00
+PHST- 2001/03/10 10:00 [pubmed]
+PHST- 2001/03/27 10:01 [medline]
+PHST- 2001/03/10 10:00 [entrez]
+AID - 10.1038/35057157 [doi]
+PST - ppublish
+SO  - Nature. 2001 Feb 15;409(6822):934-41. doi: 10.1038/35057157.

@@ -1,0 +1,51 @@
+PMID- 15588481
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20050118
+LR  - 20191109
+IS  - 1473-9542 (Print)
+IS  - 1479-7364 (Electronic)
+IS  - 1473-9542 (Linking)
+VI  - 1
+IP  - 3
+DP  - 2004 Mar
+TI  - Population genetic analysis of ascertained SNP data.
+PG  - 218-24
+AB  - The large single nucleotide polymorphism (SNP) typing projects have provided an 
+      invaluable data resource for human population geneticists. Almost all of the 
+      available SNP loci, however, have been identified through a SNP discovery protocol 
+      that will influence the allelic distributions in the sampled loci. Standard methods 
+      for population genetic analysis based on the available SNP data will, therefore, be 
+      biased. This paper discusses the effect of this ascertainment bias on allelic 
+      distributions and on methods for quantifying linkage disequilibrium and estimating 
+      demographic parameters. Several recently developed methods for correcting for the 
+      ascertainment bias will also be discussed.
+FAU - Nielsen, Rasmus
+AU  - Nielsen R
+AD  - Department of Biological Statistics and Computational Biology, Cornell University, 
+      439 Warren Hall, Ithaca, NY 14853-7801, USA. rn28@cornell.edu
+LA  - eng
+PT  - Journal Article
+PT  - Review
+TA  - Hum Genomics
+JT  - Human genomics
+JID - 101202210
+SB  - IM
+MH  - Bias
+MH  - Demography
+MH  - Gene Frequency
+MH  - *Genetics, Population
+MH  - Humans
+MH  - Linkage Disequilibrium
+MH  - Polymorphism, Single Nucleotide/*genetics
+PMC - PMC3525085
+EDAT- 2004/12/14 09:00
+MHDA- 2005/01/19 09:00
+CRDT- 2004/12/14 09:00
+PHST- 2004/12/14 09:00 [pubmed]
+PHST- 2005/01/19 09:00 [medline]
+PHST- 2004/12/14 09:00 [entrez]
+AID - 1479-7364-1-3-218 [pii]
+AID - 10.1186/1479-7364-1-3-218 [doi]
+PST - ppublish
+SO  - Hum Genomics. 2004 Mar;1(3):218-24. doi: 10.1186/1479-7364-1-3-218.

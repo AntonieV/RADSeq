@@ -1,0 +1,157 @@
+PMID- 9582121
+OWN - NLM
+STAT- MEDLINE
+DCOM- 19980604
+LR  - 20190619
+IS  - 0036-8075 (Print)
+IS  - 0036-8075 (Linking)
+VI  - 280
+IP  - 5366
+DP  - 1998 May 15
+TI  - Large-scale identification, mapping, and genotyping of single-nucleotide 
+      polymorphisms in the human genome.
+PG  - 1077-82
+AB  - Single-nucleotide polymorphisms (SNPs) are the most frequent type of variation in 
+      the human genome, and they provide powerful tools for a variety of medical genetic 
+      studies. In a large-scale survey for SNPs, 2.3 megabases of human genomic DNA was 
+      examined by a combination of gel-based sequencing and high-density 
+      variation-detection DNA chips. A total of 3241 candidate SNPs were identified. A 
+      genetic map was constructed showing the location of 2227 of these SNPs. Prototype 
+      genotyping chips were developed that allow simultaneous genotyping of 500 SNPs. The 
+      results provide a characterization of human diversity at the nucleotide level and 
+      demonstrate the feasibility of large-scale identification of human SNPs.
+FAU - Wang, D G
+AU  - Wang DG
+AD  - Whitehead Institute for Biomedical Research, Nine Cambridge Center, Cambridge, MA 
+      02142, USA.
+FAU - Fan, J B
+AU  - Fan JB
+FAU - Siao, C J
+AU  - Siao CJ
+FAU - Berno, A
+AU  - Berno A
+FAU - Young, P
+AU  - Young P
+FAU - Sapolsky, R
+AU  - Sapolsky R
+FAU - Ghandour, G
+AU  - Ghandour G
+FAU - Perkins, N
+AU  - Perkins N
+FAU - Winchester, E
+AU  - Winchester E
+FAU - Spencer, J
+AU  - Spencer J
+FAU - Kruglyak, L
+AU  - Kruglyak L
+FAU - Stein, L
+AU  - Stein L
+FAU - Hsie, L
+AU  - Hsie L
+FAU - Topaloglou, T
+AU  - Topaloglou T
+FAU - Hubbell, E
+AU  - Hubbell E
+FAU - Robinson, E
+AU  - Robinson E
+FAU - Mittmann, M
+AU  - Mittmann M
+FAU - Morris, M S
+AU  - Morris MS
+FAU - Shen, N
+AU  - Shen N
+FAU - Kilburn, D
+AU  - Kilburn D
+FAU - Rioux, J
+AU  - Rioux J
+FAU - Nusbaum, C
+AU  - Nusbaum C
+FAU - Rozen, S
+AU  - Rozen S
+FAU - Hudson, T J
+AU  - Hudson TJ
+FAU - Lipshutz, R
+AU  - Lipshutz R
+FAU - Chee, M
+AU  - Chee M
+FAU - Lander, E S
+AU  - Lander ES
+LA  - eng
+SI  - GENBANK/G42906
+SI  - GENBANK/G42907
+SI  - GENBANK/G42908
+SI  - GENBANK/G42909
+SI  - GENBANK/G42910
+SI  - GENBANK/G42911
+SI  - GENBANK/G42912
+SI  - GENBANK/G42913
+SI  - GENBANK/G42914
+SI  - GENBANK/G42915
+SI  - GENBANK/G42916
+SI  - GENBANK/G42917
+SI  - GENBANK/G42918
+SI  - GENBANK/G42919
+SI  - GENBANK/G42920
+SI  - GENBANK/G42921
+SI  - GENBANK/G42922
+SI  - GENBANK/G42923
+SI  - GENBANK/G42924
+SI  - GENBANK/G42925
+SI  - GENBANK/G42926
+SI  - GENBANK/G42927
+SI  - GENBANK/G42928
+SI  - GENBANK/G42929
+SI  - GENBANK/G42930
+SI  - GENBANK/G42931
+SI  - GENBANK/G42932
+SI  - GENBANK/G42933
+SI  - GENBANK/G42934
+SI  - GENBANK/G42935
+GR  - HG00098/HG/NHGRI NIH HHS/United States
+GR  - HG01323/HG/NHGRI NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Research Support, U.S. Gov't, Non-P.H.S.
+PT  - Research Support, U.S. Gov't, P.H.S.
+PL  - United States
+TA  - Science
+JT  - Science (New York, N.Y.)
+JID - 0404511
+RN  - 0 (DNA, Complementary)
+RN  - 0 (Deoxyribonucleotides)
+RN  - 0 (Dinucleoside Phosphates)
+RN  - 0 (Genetic Markers)
+RN  - 2382-65-2 (cytidylyl-3'-5'-guanosine)
+SB  - IM
+MH  - Algorithms
+MH  - Alleles
+MH  - Chromosome Mapping/*methods
+MH  - DNA, Complementary
+MH  - Databases, Factual
+MH  - Deoxyribonucleotides/*genetics
+MH  - Dinucleoside Phosphates
+MH  - Gene Expression
+MH  - Genetic Markers
+MH  - *Genetic Techniques
+MH  - Genetic Variation
+MH  - *Genome, Human
+MH  - *Genotype
+MH  - Heterozygote
+MH  - Homozygote
+MH  - Humans
+MH  - Molecular Sequence Data
+MH  - Nucleic Acid Hybridization
+MH  - Polymerase Chain Reaction
+MH  - *Polymorphism, Genetic
+MH  - Reproducibility of Results
+MH  - Sequence Analysis, DNA
+MH  - Sequence Tagged Sites
+EDAT- 1998/06/06 00:00
+MHDA- 1998/06/06 00:01
+CRDT- 1998/06/06 00:00
+PHST- 1998/06/06 00:00 [pubmed]
+PHST- 1998/06/06 00:01 [medline]
+PHST- 1998/06/06 00:00 [entrez]
+AID - 10.1126/science.280.5366.1077 [doi]
+PST - ppublish
+SO  - Science. 1998 May 15;280(5366):1077-82. doi: 10.1126/science.280.5366.1077.

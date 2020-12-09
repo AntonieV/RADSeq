@@ -1,0 +1,66 @@
+PMID- 20452942
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20100831
+LR  - 20181113
+IS  - 1943-0264 (Electronic)
+IS  - 1943-0264 (Linking)
+VI  - 2
+IP  - 4
+DP  - 2010 Apr
+TI  - Organization of DNA replication.
+PG  - a000737
+LID - 10.1101/cshperspect.a000737 [doi]
+LID - a000737
+AB  - The discovery of the DNA double helix structure half a century ago immediately 
+      suggested a mechanism for its duplication by semi-conservative copying of the 
+      nucleotide sequence into two DNA daughter strands. Shortly after, a second 
+      fundamental step toward the elucidation of the mechanism of DNA replication was 
+      taken with the isolation of the first enzyme able to polymerize DNA from a template. 
+      In the subsequent years, the basic mechanism of DNA replication and its enzymatic 
+      machinery components were elucidated, mostly through genetic approaches and in vitro 
+      biochemistry. Most recently, the spatial and temporal organization of the DNA 
+      replication process in vivo within the context of chromatin and inside the intact 
+      cell are finally beginning to be elucidated. On the one hand, recent advances in 
+      genome-wide high throughput techniques are providing a new wave of information on 
+      the progression of genome replication at high spatial resolution. On the other hand, 
+      novel super-resolution microscopy techniques are just starting to give us the first 
+      glimpses of how DNA replication is organized within the context of single intact 
+      cells with high spatial resolution. The integration of these data with time lapse 
+      microscopy analysis will give us the ability to film and dissect the replication of 
+      the genome in situ and in real time.
+FAU - Chagin, Vadim O
+AU  - Chagin VO
+AD  - Department of Biology, Technische Universität Darmstadt, Germany.
+FAU - Stear, Jeffrey H
+AU  - Stear JH
+FAU - Cardoso, M Cristina
+AU  - Cardoso MC
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Review
+TA  - Cold Spring Harb Perspect Biol
+JT  - Cold Spring Harbor perspectives in biology
+JID - 101513680
+SB  - IM
+MH  - Animals
+MH  - Cell Cycle/genetics
+MH  - DNA Replication/*physiology
+MH  - Epigenesis, Genetic
+MH  - *Genome
+MH  - Humans
+MH  - Microscopy, Confocal
+PMC - PMC2845211
+EDAT- 2010/05/11 06:00
+MHDA- 2010/09/02 06:00
+CRDT- 2010/05/11 06:00
+PHST- 2010/05/11 06:00 [entrez]
+PHST- 2010/05/11 06:00 [pubmed]
+PHST- 2010/09/02 06:00 [medline]
+AID - 2/4/a000737 [pii]
+AID - a000737 [pii]
+AID - 10.1101/cshperspect.a000737 [doi]
+PST - ppublish
+SO  - Cold Spring Harb Perspect Biol. 2010 Apr;2(4):a000737. doi: 
+      10.1101/cshperspect.a000737.

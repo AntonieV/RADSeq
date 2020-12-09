@@ -1,0 +1,70 @@
+PMID- 27542827
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20170516
+LR  - 20181113
+IS  - 1549-5477 (Electronic)
+IS  - 0890-9369 (Print)
+IS  - 0890-9369 (Linking)
+VI  - 30
+IP  - 15
+DP  - 2016 Aug 1
+TI  - DNA replication origins-where do we begin?
+PG  - 1683-97
+LID - 10.1101/gad.285114.116 [doi]
+AB  - For more than three decades, investigators have sought to identify the precise 
+      locations where DNA replication initiates in mammalian genomes. The development of 
+      molecular and biochemical approaches to identify start sites of DNA replication 
+      (origins) based on the presence of defining and characteristic replication 
+      intermediates at specific loci led to the identification of only a handful of 
+      mammalian replication origins. The limited number of identified origins prevented a 
+      comprehensive and exhaustive search for conserved genomic features that were capable 
+      of specifying origins of DNA replication. More recently, the adaptation of 
+      origin-mapping assays to genome-wide approaches has led to the identification of 
+      tens of thousands of replication origins throughout mammalian genomes, providing an 
+      unprecedented opportunity to identify both genetic and epigenetic features that 
+      define and regulate their distribution and utilization. Here we summarize recent 
+      advances in our understanding of how primary sequence, chromatin environment, and 
+      nuclear architecture contribute to the dynamic selection and activation of 
+      replication origins across diverse cell types and developmental stages.
+CI  - © 2016 Prioleau and MacAlpine; Published by Cold Spring Harbor Laboratory Press.
+FAU - Prioleau, Marie-Noëlle
+AU  - Prioleau MN
+AD  - Institut Jacques Monod, UMR7592, Centre National de la Recherche Scientifique, 
+      Universite Paris Diderot, Equipe Labellisee Association pour la Recherche sur le 
+      Cancer, Paris 75013, France;
+FAU - MacAlpine, David M
+AU  - MacAlpine DM
+AD  - Department of Pharmacology and Cancer Biology, Duke University Medical Center, 
+      Durham, North Carolina 27710. USA.
+LA  - eng
+GR  - R01 GM104097/GM/NIGMS NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, N.I.H., Extramural
+PT  - Research Support, Non-U.S. Gov't
+PT  - Review
+TA  - Genes Dev
+JT  - Genes & development
+JID - 8711660
+SB  - IM
+MH  - Animals
+MH  - DNA Replication/*genetics
+MH  - Mammals
+MH  - Replication Origin/*genetics
+PMC - PMC5002974
+OTO - NOTNLM
+OT  - *DNA replication
+OT  - *chromatin
+OT  - *epigenetics
+OT  - *nuclear architecture
+OT  - *origins of DNA replication
+EDAT- 2016/08/21 06:00
+MHDA- 2017/05/17 06:00
+CRDT- 2016/08/21 06:00
+PHST- 2016/08/21 06:00 [entrez]
+PHST- 2016/08/21 06:00 [pubmed]
+PHST- 2017/05/17 06:00 [medline]
+AID - 30/15/1683 [pii]
+AID - 10.1101/gad.285114.116 [doi]
+PST - ppublish
+SO  - Genes Dev. 2016 Aug 1;30(15):1683-97. doi: 10.1101/gad.285114.116.
