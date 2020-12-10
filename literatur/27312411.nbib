@@ -1,0 +1,69 @@
+PMID- 27312411
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20170815
+LR  - 20181202
+IS  - 1367-4811 (Electronic)
+IS  - 1367-4803 (Print)
+IS  - 1367-4803 (Linking)
+VI  - 32
+IP  - 19
+DP  - 2016 Oct 1
+TI  - MultiQC: summarize analysis results for multiple tools and samples in a single 
+      report.
+PG  - 3047-8
+LID - 10.1093/bioinformatics/btw354 [doi]
+AB  - MOTIVATION: Fast and accurate quality control is essential for studies involving 
+      next-generation sequencing data. Whilst numerous tools exist to quantify QC metrics, 
+      there is no common approach to flexibly integrate these across tools and large 
+      sample sets. Assessing analysis results across an entire project can be time 
+      consuming and error prone; batch effects and outlier samples can easily be missed in 
+      the early stages of analysis. RESULTS: We present MultiQC, a tool to create a single 
+      report visualising output from multiple tools across many samples, enabling global 
+      trends and biases to be quickly identified. MultiQC can plot data from many common 
+      bioinformatics tools and is built to allow easy extension and customization. 
+      AVAILABILITY AND IMPLEMENTATION: MultiQC is available with an GNU GPLv3 license on 
+      GitHub, the Python Package Index and Bioconda. Documentation and example reports are 
+      available at http://multiqc.info CONTACT: phil.ewels@scilifelab.se.
+CI  - © The Author 2016. Published by Oxford University Press.
+FAU - Ewels, Philip
+AU  - Ewels P
+AD  - Department of Biochemistry and Biophysics, Science for Life Laboratory, Stockholm 
+      University, Stockholm 106 91, Sweden.
+FAU - Magnusson, Måns
+AU  - Magnusson M
+AD  - Department of Molecular Medicine and Surgery, Science for Life Laboratory, Center 
+      for Molecular Medicine, Karolinska Institutet, Stockholm, Sweden.
+FAU - Lundin, Sverker
+AU  - Lundin S
+AD  - Science for Life Laboratory, School of Biotechnology, Division of Gene Technology, 
+      Royal Institute of Technology, Stockholm, Sweden.
+FAU - Käller, Max
+AU  - Käller M
+AD  - Science for Life Laboratory, School of Biotechnology, Division of Gene Technology, 
+      Royal Institute of Technology, Stockholm, Sweden.
+LA  - eng
+PT  - Journal Article
+DEP - 20160616
+TA  - Bioinformatics
+JT  - Bioinformatics (Oxford, England)
+JID - 9808944
+SB  - IM
+MH  - Computational Biology
+MH  - *High-Throughput Nucleotide Sequencing
+MH  - *Quality Control
+MH  - Software
+PMC - PMC5039924
+EDAT- 2016/06/18 06:00
+MHDA- 2017/08/16 06:00
+CRDT- 2016/06/18 06:00
+PHST- 2016/04/30 00:00 [received]
+PHST- 2016/05/29 00:00 [accepted]
+PHST- 2016/06/18 06:00 [entrez]
+PHST- 2016/06/18 06:00 [pubmed]
+PHST- 2017/08/16 06:00 [medline]
+AID - btw354 [pii]
+AID - 10.1093/bioinformatics/btw354 [doi]
+PST - ppublish
+SO  - Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 
+      2016 Jun 16.

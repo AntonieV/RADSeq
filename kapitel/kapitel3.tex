@@ -1,23 +1,32 @@
 % kapitel3.tex
 \chapter{Algorithmus} \label{sec:alg}
-\section{Preprocessing} \label{sec:}
-\subsection{Algorithmus} \label{subsec:}
-\textbf{Input:} fastq-Datei aus der RAD-Seq-Analyse und Tabelle mit Zuordnung der Probennamen/-id's zu den Individuen und den Barcode-Sequencen und Spacern: \\
-%sample	individual	barcode_1	barcode_2	spacer_1	spacer_2
-%A	Individual_16	CCGTCC	ATCACG	AC	
-%B	Individual_20	GTTTCG	ATCACG		
-%C	Individual_23	ACTGAT	ATCACG	C	
-%D	Individual_24	ATTCCT	ATCACG	C	
-Trimming mit cutadapt (SE), Entfernen der Barcodesequenzen und Zuordnung der Sequenzen zu den einzelnen Individuen -> je 1 fastq file pro Individuum \\
-Quality-Control mit FastQC und MultiQC
+Für das hier implementierte RAD-Sequencing-Tool, NodeRAD, wurde zur Workflowintegration das Workflow Management System Snakemake verwendet ~\cite{koester_2012_1, koester_2012_2}. Die einzelnen Analyseschritte werden dabei über Regeln abgebildet. Für jede Regel können neben dem zu verwendenden Script oder Shell-Kommando sowie den Pfadangaben für In- und Output auch zusätzliche Optionen festgelegt werden. Dazu gehören beispielsweise Angaben zu Parametern bzw. Argumenten für die verwendeten Tools, Pfadangaben für Log-Dateien oder die Anzahl der zu verwendenden Threads.
+
+Als Input benötigt der Workflow eine Datei im FASTQ-Format, welche die single-end Reads der verschiedenen Individuen mit ihren Identifikationsbezeichnungen, der Basensequenz und Angaben zur  Basenqualität enthält. Des Weiteren wird eine Tabelle im tsv-Format benötigt, in der die Zuordnung der Probennamen zu den Individuen und ihren Barcode-Sequenzen definiert ist. Nach dem Preprocessing, der Qualitätskontrolle der Reads und dem Sequence-Alignment erfolgt die RAD-Seq-Analyse durch NodeRAD. Hierbei werden die Wahrscheinlichkeiten der Allelsequenzen und der möglichen Loci bestimmt. Die Loci mit der höchsten Wahrscheinlichkeit werden schließlich mit den Sequenzen ihrer Allele und den möglichen Varianten entsprechend dem ermittelten Genotyp in einer Datei im Variant Call Format (VCF) ausgegeben.
+
+\section{Preprocessing} \label{sec:preproc}
+
+Im Preprocessing werden durch das Tool Cutadapt ~\cite{martin_2011} die Reads jedes Individuums anhand ihrer Barcodesequenzen identifiziert und extrahiert. Hiernach werden die Barcodesequenzen entfernt (trimming) und die Reads jedes Individuums in separaten Dateien im FASTQ Format abgelegt. \\
+Im Anschluss an das Trimming erfolgt eine Qualitätskontrolle durch das Tool FastQC  ~\cite{andrews_2012}. Dabei werden einige allgemeine Statistiken zu den Rohdaten der Reads generiert, wie beispielsweise zur Basenqualität, zum GC-Gehalt, dem Anteil an Duplikaten oder überrepräsentierten Sequenzen. Durch das Tool MultiQC ~\cite{ewels_2016} wird aus diesen Statistiken und den Log-Dateien von Cutadapt ein html-Report mit diversen Plots zur Veranschaulichung erstellt.
 
 \section{Edit-Distanzen} \label{sec:edit}
-Bestimmung der Edit-Distanzen mit Minimap2 über NM-tag, Ausgabe im sam-Format \\
-wahlweise kann auch cs-tag im short oder long Format, dieses wird dann in die Kanteneigenschaften des Graphen übernommen \\
+Für die spätere Konstruktion eines Graphen basierend auf den Edit-Distanzen zwischen den Readsequenzen wird für jedes Individuum zunächst ein Sequenzalignment mit Hilfe des Tools Minimap2 ~\cite{li_2018} erstellt. Hierbei werden alle Readsquenzen paarweise verglichen und in Abhängigkeit von ihren Übereinstimmungen (Matches) und Unterschieden (Mismatches) einander zugeordnet. Das Ergebnis des Mappings wird im sam-Format ausgegeben und enthält Angaben zur betrachteten Sequenz (Query), die gegen einen anderen Read (Reference) verglichen wurde. Neben den ID's der Query- und Reference-Sequenzen, werden dort unter anderem auch der CIGAR-String, Informationen zur Basenqualität der Query-Sequenz, sowie optional verschiedene Tags angegeben. Ein für die späteren Berechnungen wichtiges Maß sind die Edit-Distanzen, die durch den NM-Tag repräsentiert werden. Die Edit-Distanz gibt hierbei die minimale Anzahl von Editieroperationen an, um die Query-Sequenz in die Referenzsequenz zu transformieren. Als Editieroperationen sind hierbei ersetzen, einfügen und löschen von Basen möglich. Auf DNA-Ebene entspricht dies den Punktmutationen im Sinne von Substitutionen, Insertionen und Deletionen (vgl. Kap. \ref{subsec:mutation}). Der CIGAR-String ist eine kondensierte Darstellung der Unterschiede zwischen Query- und Reference-Sequenz. In ihm werden Matches und Mismatches wie Insertionen, Substitutionen und Deletion jeweils mit der Anzahl der betroffenen Basen angegeben. Sowohl der CIGAR-String als auch der NM-Tag definieren wichtige Kanteneigenschaften des späteren Graphen. \\
 
-\section{Erstellung des Graphen und Bestimmung der Zusammenhangskomponenten} \label{sec:}
-\subsection{Algorithmus} \label{subsec:}
-% Beschreibung
+\section{Konstruktion des Graphen und Bestimmung der Zusammenhangskomponenten} \label{sec:graph}
+
+Das hier implementierte Tool, NodeRAD, benötigt als Input zu jedem Individuum die getrimmten single-end Read-Daten sowie das Sequenzalignment. Zunächst wird daraus für jedes Individuum ein separater Graph $ G $ mit $ G = (V,E) $ erstellt. Seine Knoten, $ V $, werden durch die einzelnen Reads repräsentiert. Entsprechend ergeben sich die Knoteneigenschaften aus den Daten der Reads, diese werden den FASTQ-Dateien nach Ausführung von Cutadapt (siehe \ref{sec:preproc}) entnommen. Die Kanten, $ E $, zwischen den Knoten ergeben sich aus dem Vergleich ihrer Sequenzen im Rahmen des Sequenzalignments mittels Minimap2 (siehe \ref{sec:edit}).
+
+Zusätzlich entnimmt NodeRAD der Konfigurationsdatei des Workflows einige Konstanten und Grenzwerte für die späteren Berechnungen. Dazu gehören die Mutationsraten und Heterozygotiewahrscheinlichkeiten für Substitutionen, Insertionen und Deletionen, die Ploidie des Chromosomensatzes der untersuchten Spezies und Grenzwerte. Als konfigurierbare Grenzwerte gibt es für NodeRAD einen Schwellenwert für die maximal zulässige Editierdistanz, bei dem zwei Knoten noch durch eine Kante verbunden werden sowie Schwellenwerte zum Filtern selten vorkommender Sequenzen ab einer bestimmten Clustergröße, die als Hintergrundrauschen nicht in der Berechnung Berücksichtigung finden sollen. 
+
+
+===========================================
+
+
+
+
+Zur Konstruktion des Graphen wird graph-tool verwendet,
+
+
 Extraktion der Fastq-Daten je Individuum (später auch results für den Vergleich verschiedener Individuen) \\
 gerichteter Graph \\
 Knoten des Graphen entsprechen jeweils den Reads jedes Individuums aus den getrimmten Fastq-Dateien \\

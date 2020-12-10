@@ -123,4 +123,41 @@
   {\em Single-cell genome sequencing: current state of the science.}
 \newblock Nature reviews. Genetics, 17:175--88, Mar 2016.
 
+\bibitem{koester_2012_1}
+{\sc Köster, Johannes} \btxandlong{}\ {\sc Sven Rahmann}: {\em {Snakemake—a
+  scalable bioinformatics workflow engine}}.
+\newblock Bioinformatics, 28(19):2520--2522, 08 2012.
+
+\bibitem{koester_2012_2}
+{\sc K{\"o}ster, Johannes} \btxandlong{}\ {\sc Sven Rahmann}: {\em {Building
+  and Documenting Workflows with Python-Based Snakemake}}.
+\newblock \Btxinlong{}\ {\sc B{\"o}cker, Sebastian}, {\sc Franziska Hufsky},
+  {\sc Kerstin Scheubert}, {\sc Jana Schleicher}, \btxandlong{}\ {\sc Stefan
+  Schuster}\ (\btxeditorslong{}): {\em German Conference on Bioinformatics
+  2012}, \btxvolumelong{}~26 \btxofserieslong{}\ {\em OpenAccess Series in
+  Informatics (OASIcs)}, \btxpageslong{}\ 49--56, Dagstuhl, Germany, 2012.
+  Schloss Dagstuhl--Leibniz-Zentrum fuer Informatik.
+
+\bibitem{martin_2011}
+{\sc Martin, Marcel}: {\em Cutadapt removes adapter sequences from
+  high-throughput sequencing reads}.
+\newblock EMBnet.journal, 17(1):10--12, 2011.
+
+\bibitem{andrews_2012}
+{\sc Andrews, Simon}, {\sc Felix Krueger}, {\sc Anne {Segonds-Pichon}}, {\sc
+  Laura Biggins}, {\sc Christel Krueger}, \btxandlong{}\ {\sc Steven Wingett}:
+  {\em {{FastQC}}}.
+\newblock Babraham Institute, \btxmonjanlong{} 2012.
+\newblock http://www.bioinformatics.babraham.ac.uk/projects/fastqc/.
+
+\bibitem{ewels_2016}
+{\sc Ewels, Philip}, {\sc Måns Magnusson}, {\sc Sverker Lundin},
+  \btxandlong{}\ {\sc Max Käller}: {\em Multiqc: summarize analysis results
+  for multiple tools and samples in a single report.}
+\newblock Bioinformatics (Oxford, England), 32:3047--8, Oct 2016.
+
+\bibitem{li_2018}
+{\sc Li, Heng}: {\em {Minimap2: pairwise alignment for nucleotide sequences}}.
+\newblock Bioinformatics, 34(18):3094--3100, 05 2018.
+
 \end{thebibliography}
