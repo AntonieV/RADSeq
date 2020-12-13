@@ -19,7 +19,10 @@
   1961.
 
 \bibitem{dunham_2012}
-{\em An integrated encyclopedia of dna elements in the human genome.}
+{\sc Dunham, Ian}, {\sc Anshul Kundaje}, {\sc Shelley~F Aldred}, {\sc Patrick~J
+  Collins}, {\sc Carrie~A Davis}, {\sc Francis Doyle}, {\sc Charles~B Epstein},
+  \btxandlong{}\ {\sc Seth Frietze}: {\em An integrated encyclopedia of dna
+  elements in the human genome.}
 \newblock Nature, 489:57--74, Sep 2012.
 
 \bibitem{tsagakis_2020}
@@ -159,5 +162,47 @@
 \bibitem{li_2018}
 {\sc Li, Heng}: {\em {Minimap2: pairwise alignment for nucleotide sequences}}.
 \newblock Bioinformatics, 34(18):3094--3100, 05 2018.
+
+\bibitem{li_2009}
+{\sc Li, Heng}, {\sc Bob Handsaker}, {\sc Alec Wysoker}, {\sc Tim Fennell},
+  {\sc Jue Ruan}, {\sc Nils Homer}, {\sc Gabor Marth}, {\sc Goncalo Abecasis},
+  \btxandlong{}\ {\sc Richard Durbin}: {\em The sequence alignment/map format
+  and samtools.}
+\newblock Bioinformatics (Oxford, England), 25:2078--9, Aug 2009.
+
+\bibitem{peixoto_2014}
+{\sc Peixoto, Tiago~P.}: {\em The graph-tool python library}.
+\newblock figshare, 2014.
+
+\bibitem{cock_2009_1}
+{\sc Cock, Peter J.~A.}, {\sc Tiago Antao}, {\sc Jeffrey~T. Chang}, {\sc
+  Brad~A. Chapman}, {\sc Cymon~J. Cox}, {\sc Andrew Dalke}, {\sc Iddo
+  Friedberg}, {\sc Thomas Hamelryck}, {\sc Frank Kauff}, {\sc Bartek
+  Wilczynski}, \btxandlong{}\ {\sc Michiel J.~L. de~Hoon}: {\em {Biopython:
+  freely available Python tools for computational molecular biology and
+  bioinformatics}}.
+\newblock Bioinformatics, 25(11):1422--1423, 03 2009.
+
+\bibitem{cock_2009_2}
+{\sc Cock, Peter J.~A.}, {\sc Christopher~J. Fields}, {\sc Naohisa Goto}, {\sc
+  Michael~L. Heuer}, \btxandlong{}\ {\sc Peter~M. Rice}: {\em {The Sanger FASTQ
+  file format for sequences with quality scores, and the Solexa/Illumina FASTQ
+  variants}}.
+\newblock Nucleic Acids Research, 38(6):1767--1771, 12 2009.
+
+\bibitem{ewing_1998}
+{\sc Ewing, B.} \btxandlong{}\ {\sc P.~Green}: {\em Base-calling of automated
+  sequencer traces using phred. ii. error probabilities.}
+\newblock Genome research, 8:186--94, Mar 1998.
+
+\bibitem{docs_graph_tool}
+{\sc Peixoto, Tiago de~Paula}: {\em graph-tool 2.35 documentation: graph\_tool
+  - efficient graph analysis and manipulation}.
+\newblock https://graph-tool.skewed.de/static/doc/graph\_tool.html.
+
+\bibitem{pysam}
+{\sc Heger, Andreas} \btxandlong{}\ {\sc Kevin Jacobs}: {\em {{FastQC}}}.
+\newblock source: https://github.com/pysam-developers/pysam, documentation:
+  https://pysam.readthedocs.io/en/latest/index.html.
 
 \end{thebibliography}

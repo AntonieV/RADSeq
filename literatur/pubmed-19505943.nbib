@@ -1,0 +1,82 @@
+PMID- 19505943
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20100114
+LR  - 20181113
+IS  - 1367-4811 (Electronic)
+IS  - 1367-4803 (Print)
+IS  - 1367-4803 (Linking)
+VI  - 25
+IP  - 16
+DP  - 2009 Aug 15
+TI  - The Sequence Alignment/Map format and SAMtools.
+PG  - 2078-9
+LID - 10.1093/bioinformatics/btp352 [doi]
+AB  - SUMMARY: The Sequence Alignment/Map (SAM) format is a generic alignment format for 
+      storing read alignments against reference sequences, supporting short and long reads 
+      (up to 128 Mbp) produced by different sequencing platforms. It is flexible in style, 
+      compact in size, efficient in random access and is the format in which alignments 
+      from the 1000 Genomes Project are released. SAMtools implements various utilities 
+      for post-processing alignments in the SAM format, such as indexing, variant caller 
+      and alignment viewer, and thus provides universal tools for processing read 
+      alignments. AVAILABILITY: http://samtools.sourceforge.net.
+FAU - Li, Heng
+AU  - Li H
+AD  - Wellcome Trust Sanger Institute, Wellcome Trust Genome Campus, Cambridge, CB10 1SA, 
+      UK, Broad Institute of MIT and Harvard, Cambridge, MA 02141, USA.
+FAU - Handsaker, Bob
+AU  - Handsaker B
+FAU - Wysoker, Alec
+AU  - Wysoker A
+FAU - Fennell, Tim
+AU  - Fennell T
+FAU - Ruan, Jue
+AU  - Ruan J
+FAU - Homer, Nils
+AU  - Homer N
+FAU - Marth, Gabor
+AU  - Marth G
+FAU - Abecasis, Goncalo
+AU  - Abecasis G
+FAU - Durbin, Richard
+AU  - Durbin R
+CN  - 1000 Genome Project Data Processing Subgroup
+LA  - eng
+GR  - U54HG002750/HG/NHGRI NIH HHS/United States
+GR  - R01 HG004719-01/HG/NHGRI NIH HHS/United States
+GR  - R01 HG004719/HG/NHGRI NIH HHS/United States
+GR  - R01 HG004719-04/HG/NHGRI NIH HHS/United States
+GR  - U54 HG002750/HG/NHGRI NIH HHS/United States
+GR  - 077192/Z/05/Z/Wellcome Trust/United Kingdom
+GR  - R01 HG004719-02/HG/NHGRI NIH HHS/United States
+GR  - R01 HG004719-02S1/HG/NHGRI NIH HHS/United States
+GR  - R01 HG004719-03/HG/NHGRI NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, N.I.H., Extramural
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20090608
+TA  - Bioinformatics
+JT  - Bioinformatics (Oxford, England)
+JID - 9808944
+SB  - IM
+MH  - Algorithms
+MH  - Base Sequence
+MH  - Computational Biology/*methods
+MH  - Genome
+MH  - Genomics
+MH  - Molecular Sequence Data
+MH  - Sequence Alignment/*methods
+MH  - Sequence Analysis, DNA/*methods
+MH  - *Software
+PMC - PMC2723002
+EDAT- 2009/06/10 09:00
+MHDA- 2010/01/15 06:00
+CRDT- 2009/06/10 09:00
+PHST- 2009/06/10 09:00 [entrez]
+PHST- 2009/06/10 09:00 [pubmed]
+PHST- 2010/01/15 06:00 [medline]
+AID - btp352 [pii]
+AID - 10.1093/bioinformatics/btp352 [doi]
+PST - ppublish
+SO  - Bioinformatics. 2009 Aug 15;25(16):2078-9. doi: 10.1093/bioinformatics/btp352. Epub 
+      2009 Jun 8.

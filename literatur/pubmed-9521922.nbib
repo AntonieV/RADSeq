@@ -1,0 +1,56 @@
+PMID- 9521922
+OWN - NLM
+STAT- MEDLINE
+DCOM- 19980511
+LR  - 20061115
+IS  - 1088-9051 (Print)
+IS  - 1088-9051 (Linking)
+VI  - 8
+IP  - 3
+DP  - 1998 Mar
+TI  - Base-calling of automated sequencer traces using phred. II. Error probabilities.
+PG  - 186-94
+AB  - Elimination of the data processing bottleneck in high-throughput sequencing will 
+      require both improved accuracy of data processing software and reliable measures of 
+      that accuracy. We have developed and implemented in our base-calling program phred 
+      the ability to estimate a probability of error for each base-call, as a function of 
+      certain parameters computed from the trace data. These error probabilities are shown 
+      here to be valid (correspond to actual error rates) and to have high power to 
+      discriminate correct base-calls from incorrect ones, for read data collected under 
+      several different chemistries and electrophoretic conditions. They play a critical 
+      role in our assembly program phrap and our finishing program consed.
+FAU - Ewing, B
+AU  - Ewing B
+AD  - Department of Molecular Biotechnology, University of Washington, Seattle, Washington 
+      98195-7730, USA.
+FAU - Green, P
+AU  - Green P
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, U.S. Gov't, P.H.S.
+PL  - United States
+TA  - Genome Res
+JT  - Genome research
+JID - 9518021
+SB  - IM
+MH  - Base Sequence
+MH  - Chimera
+MH  - Cloning, Molecular/methods
+MH  - Data Interpretation, Statistical
+MH  - Discriminant Analysis
+MH  - Genetic Vectors
+MH  - Human Genome Project
+MH  - Humans
+MH  - Probability
+MH  - Quality Control
+MH  - Reproducibility of Results
+MH  - Sequence Analysis, DNA/*methods/standards/*statistics & numerical data
+MH  - *Software
+EDAT- 1998/05/16 00:00
+MHDA- 1998/05/16 00:01
+CRDT- 1998/05/16 00:00
+PHST- 1998/05/16 00:00 [pubmed]
+PHST- 1998/05/16 00:01 [medline]
+PHST- 1998/05/16 00:00 [entrez]
+PST - ppublish
+SO  - Genome Res. 1998 Mar;8(3):186-94.

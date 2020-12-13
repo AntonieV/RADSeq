@@ -10,68 +10,95 @@ Im Preprocessing werden durch das Tool Cutadapt ~\cite{martin_2011} die Reads je
 Im Anschluss an das Trimming erfolgt eine Qualitätskontrolle durch das Tool FastQC  ~\cite{andrews_2012}. Dabei werden einige allgemeine Statistiken zu den Rohdaten der Reads generiert, wie beispielsweise zur Basenqualität, zum GC-Gehalt, dem Anteil an Duplikaten oder überrepräsentierten Sequenzen. Durch das Tool MultiQC ~\cite{ewels_2016} wird aus diesen Statistiken und den Log-Dateien von Cutadapt ein html-Report mit diversen Plots zur Veranschaulichung erstellt.
 
 \section{Edit-Distanzen} \label{sec:edit}
-Für die spätere Konstruktion eines Graphen basierend auf den Edit-Distanzen zwischen den Readsequenzen wird für jedes Individuum zunächst ein Sequenzalignment mit Hilfe des Tools Minimap2 ~\cite{li_2018} erstellt. Hierbei werden alle Readsquenzen paarweise verglichen und in Abhängigkeit von ihren Übereinstimmungen (Matches) und Unterschieden (Mismatches) einander zugeordnet. Das Ergebnis des Mappings wird im sam-Format ausgegeben und enthält Angaben zur betrachteten Sequenz (Query), die gegen einen anderen Read (Reference) verglichen wurde. Neben den ID's der Query- und Reference-Sequenzen, werden dort unter anderem auch der CIGAR-String, Informationen zur Basenqualität der Query-Sequenz, sowie optional verschiedene Tags angegeben. Ein für die späteren Berechnungen wichtiges Maß sind die Edit-Distanzen, die durch den NM-Tag repräsentiert werden. Die Edit-Distanz gibt hierbei die minimale Anzahl von Editieroperationen an, um die Query-Sequenz in die Referenzsequenz zu transformieren. Als Editieroperationen sind hierbei ersetzen, einfügen und löschen von Basen möglich. Auf DNA-Ebene entspricht dies den Punktmutationen im Sinne von Substitutionen, Insertionen und Deletionen (vgl. Kap. \ref{subsec:mutation}). Der CIGAR-String ist eine kondensierte Darstellung der Unterschiede zwischen Query- und Reference-Sequenz. In ihm werden Matches und Mismatches wie Insertionen, Substitutionen und Deletion jeweils mit der Anzahl der betroffenen Basen angegeben. Sowohl der CIGAR-String als auch der NM-Tag definieren wichtige Kanteneigenschaften des späteren Graphen. \\
+Für die spätere Konstruktion eines Graphen basierend auf den Edit-Distanzen zwischen den Readsequenzen wird für jedes Individuum zunächst ein Sequenzalignment mit Hilfe des Tools Minimap2 ~\cite{li_2018} erstellt. Hierbei werden alle Readsquenzen paarweise verglichen und in Abhängigkeit von ihren Übereinstimmungen (Matches) und Unterschieden (Mismatches) einander zugeordnet. Das Ergebnis des Mappings wird im sam-Format ~\cite{li_2009} ausgegeben und enthält Angaben zur betrachteten Sequenz (Query), die gegen einen anderen Read (Reference) verglichen wurde. Neben den ID's der Query- und Reference-Sequenzen, werden dort unter anderem auch der CIGAR-String, Informationen zur Basenqualität der Query-Sequenz, sowie optional verschiedene Tags angegeben. Ein für die späteren Berechnungen wichtiges Maß sind die Edit-Distanzen, die durch den NM-Tag repräsentiert werden. Die Edit-Distanz gibt hierbei die minimale Anzahl von Editieroperationen an, um die Query-Sequenz in die Referenzsequenz zu transformieren. Als Editieroperationen sind hierbei ersetzen, einfügen und löschen von Basen möglich. Auf DNA-Ebene entspricht dies den Punktmutationen im Sinne von Substitutionen, Insertionen und Deletionen (vgl. Kap. \ref{subsec:mutation}). Der CIGAR-String ist eine kondensierte Darstellung der Unterschiede zwischen Query- und Reference-Sequenz. In ihm werden Matches und Mismatches wie Insertionen, Substitutionen und Deletion jeweils mit der Anzahl der betroffenen Basen angegeben. Sowohl der CIGAR-String als auch der NM-Tag definieren wichtige Kanteneigenschaften des späteren Graphen. \\
 
-\section{Konstruktion des Graphen und Bestimmung der Zusammenhangskomponenten} \label{sec:graph}
+\section{Konstruktion des Graphen} \label{sec:graph}
+\subsection{Die Knoten des Graphen}
+Das hier in Python implementierte Tool, NodeRAD, benötigt als Input zu jedem Individuum die getrimmten single-end Read-Daten sowie das Sequenzalignment. Zunächst wird daraus für jedes Individuum ein eigener, gerichteter Graph $ G $ mit $ G = (V,E) $ erstellt. Seine Knoten, $ V $, werden durch die einzelnen Reads repräsentiert. Entsprechend ergeben sich die Knoteneigenschaften aus den Daten der Reads, diese werden den FASTQ-Dateien nach Ausführung von Cutadapt (siehe \ref{sec:preproc}) entnommen. Die Kanten, $ E $, zwischen den Knoten ergeben sich aus dem Vergleich ihrer Sequenzen im Rahmen des Sequenzalignments mittels Minimap2 (siehe \ref{sec:edit}).\\
 
-Das hier implementierte Tool, NodeRAD, benötigt als Input zu jedem Individuum die getrimmten single-end Read-Daten sowie das Sequenzalignment. Zunächst wird daraus für jedes Individuum ein separater Graph $ G $ mit $ G = (V,E) $ erstellt. Seine Knoten, $ V $, werden durch die einzelnen Reads repräsentiert. Entsprechend ergeben sich die Knoteneigenschaften aus den Daten der Reads, diese werden den FASTQ-Dateien nach Ausführung von Cutadapt (siehe \ref{sec:preproc}) entnommen. Die Kanten, $ E $, zwischen den Knoten ergeben sich aus dem Vergleich ihrer Sequenzen im Rahmen des Sequenzalignments mittels Minimap2 (siehe \ref{sec:edit}).
+Zusätzlich entnimmt NodeRAD der Konfigurationsdatei des Workflows einige Konstanten und Grenzwerte für die späteren Berechnungen. Dazu gehören die Mutationsraten und Heterozygotiewahrscheinlichkeiten für Substitutionen, Insertionen und Deletionen, die Ploidie des Chromosomensatzes der untersuchten Spezies und Grenzwerte. Die Konstanten werden als Grapheigenschaften im Graph-Object abgelegt. Als konfigurierbare Grenzwerte gibt es für NodeRAD einen Schwellenwert für die maximal zulässige Editierdistanz, bei dem zwei Knoten noch durch eine Kante verbunden werden sowie Schwellenwerte zum Filtern selten vorkommender Sequenzen ab einer bestimmten Clustergröße, die als Hintergrundrauschen nicht in der Berechnung Berücksichtigung finden sollen. \\
 
-Zusätzlich entnimmt NodeRAD der Konfigurationsdatei des Workflows einige Konstanten und Grenzwerte für die späteren Berechnungen. Dazu gehören die Mutationsraten und Heterozygotiewahrscheinlichkeiten für Substitutionen, Insertionen und Deletionen, die Ploidie des Chromosomensatzes der untersuchten Spezies und Grenzwerte. Als konfigurierbare Grenzwerte gibt es für NodeRAD einen Schwellenwert für die maximal zulässige Editierdistanz, bei dem zwei Knoten noch durch eine Kante verbunden werden sowie Schwellenwerte zum Filtern selten vorkommender Sequenzen ab einer bestimmten Clustergröße, die als Hintergrundrauschen nicht in der Berechnung Berücksichtigung finden sollen. 
+Zur Konstruktion des Graphen wird die Python-Library graph-tool ~\cite{peixoto_2014} genutzt. Die Knoten werden aus den FASTQ-Daten der getrimmten Reads mittels SeqIO aus der Library Biopython ~\cite{cock_2009_1} ausgelesen und im Graphen mit den Knoteneigenschaften ihrer Basensequenz, einer internen ID sowie Angaben zur Basenqualität abgelegt. Die Codierung des Qualitystrings der Reads variiert je nach verwendeter Platform. Daher wird er durch SeqIO ausgelesen und für jede Base in ein einheitliches Maß, den Phred Quality Score $ Q $, decodiert ~\cite{cock_2009_2}. Zusätzlich wird aus den Phred Quality Scores die geschätzte Fehlerwahrscheinlichkeit $ P $ für jede Base nach Formel \eqref{eqn:3-1} bestimmt ~\cite{ewing_1998}.  
+
+\begin{equation} \label{eqn:3-1}
+    \tag{3-1}
+    P = 10^{\frac{-Q}{10}}
+\end{equation}
+
+Für jeden Knoten werden die Vektoren mit den Phred Qualitiy Scores und den geschätzen Fehlerwahrscheinlichkeiten der Basen des Reads als Knoteneigenschaften gespeichert. \\
+
+Die Laufzeit für das Hinzufügen eines Knotens beträgt nach der Dokumentation von graph-tool  $ O(V) $, da es sich hierbei um eine Einfügeoperation in die bereits bestehende Knotenmenge handelt und ein neuer Iterator über alle Knoten erzeugt und zurückgegeben wird ~\cite{docs_graph_tool}. Die Zuweisung der Knoteneigenschaften erfolgt in $ O(1) $. Über alle Reads, also über die resultierende Anzahl der Knoten $ V $ ergibt sich daraus eine Gesamtlaufzeit von $ O(V^2) $.\\
+
+\subsection{Die Kanten des Graphen}
+Die Kanten des Graphen definieren sich durch das mittels Minimap2 erzeugten Sequenzalignments (vgl. Kap. \ref{sec:edit}). Jedes Alignment zwischen zwei Reads entspricht im Graphen einer gerichteten Kante $e = (source,\; target)$, die den Vergleich der Query- zur Referenzsequenz repräsentiert. Sie verbindet somit zwei der zuvor aus der FASTQ-Daten erzeugten Knoten. Das Auslesen des sam-Formats des Alignmentfiles erfolgt mit Hilfe der Python-Library pysam ~\cite{pysam}. Dabei wird die Edit-Distanz aus dem NM-Tag zunächst genutzt, um nur Kanten in den Graphen aufzunehmen, die bereits einen optimierten Minimap2-Path darstellen. Liegen diese unterhalb des durch die Konfigurationsdatei festgelegten Grenzwertes, so wird die Kante dem Graphen hinzugefügt. Dabei werden als Kanteneigenschaften die Edit-Distanz, die CIGAR-Tupel sowie die aus der Basenqualität und Mutationsrate bestimmte Likelihood hinzugefügt. Zusätzlich kann zur Kontrolle oder für eine spätere Verwendung auch der CIGAR-String selbst als Kanteneigenschaft gespeichert werden, falls bei Minimap2 die Option zur Erzeugung des cs-Tags aktiviert wurde. Die CIGAR-Tupel werden durch pysam aus dem CIGAR-String geparsed, hierbei handelt es sich um eine Liste von Tupeln, die jeweils aus Integer-Wertepaaren bestehen. Der erste Wert jedes Tupels gibt die spezifische Operation des Matches oder Mismatches. So entspricht beispielsweise ein Wert von $ 7 $ oder $ 0 $ einem Match und ein Wert von $ 2 $ einer Deletion. Der zweite Werte jedes Tupels gibt die Anzahl der Basen an, die von der entsprechenden Operation betroffen sind. \\
+
+Diese CIGAR-Tupel werden für die Berechnung der Likelihood zwischen zwei Knoten benötigt, dies erfolgt in der Methode get\_alignment\_likelihood() im Modul likelihood\_operations. Dabei wird aus den p-Werten der Basenqualität für jede Base der Query-Sequenz die Wahrscheinlichkeit errechnet, dass es sich im Falle eines Matches um die korrekte Base handelt  \eqref{eqn:3-2} bzw. im Falle eines Mismatches, dass es sich um einen Sequenzierfehler \eqref{eqn:3-3} oder um eine Mutation handelt \eqref{eqn:3-4}. \\
+
+Jede Base $ b $ an Position $ i $ einer Readsequenz $ s $ der Länge $ k $ lässt sich definieren als $ b \in \{\,b_{i}\in \{A,C,G,T\}^k\;,\; b_{i} \in s \;|\; i = 1, \dotsb, k \,\}$. Seien $ b_{i\,_{query}} $ und $ b_{i\,_{ref}} $ die Basen der Query- und der Referenzsequenzen an Position $ i $ einer Sequenz und $  p_{i\,_{query}} $ die geschätzte Fehlerrate, die sich aus dem Phred Quality Score $ Q $ nach  \eqref{eqn:3-1} ergibt. Seien zudem $ m_{sub} $, $ m_{ins} $ und $ m_{del} $ die über die Konfigurationsdatei festgelegten Mutationsraten für Substitutionen, Insertionen und Deletionen. Dann errechnet sich die Likelihood $ L $ im Falle eine Matches unter Berücksichtigung der geschätzten Fehlerrate durch:
+\begin{equation} \label{eqn:3-2}
+\tag{3-2}
+L_{i\,_{match}} =Pr(b_{i\,_{ref}}\;|\; b_{i\,_{query}}) = 1 - p_{i\,_{query}}
+\end{equation}
+
+Bei einem Mismatch dagegen müssen die Wahrscheinlichkeiten von Mutationen und Sequenzierfehlern berücksichtigt werden. Im Falle einer Mutation muss in die Wahrscheinlichkeit eines Matches auch die Mutationsrate des aufgetretenen Mismatches $ m_{rate} \in \{m_{sub} $, $ m_{ins} $, $ m_{del}\} $ einbezogen werden:
+\begin{equation} \label{eqn:3-3}
+\tag{3-3}
+L_{i\,_{mut}} = Pr(b_{i\,_{ref}}\;|\; b_{i\,_{query}}) = m_{rate}\; \cdotp \;(1 - p_{i\,_{query}})
+\end{equation}
+
+Die Wahrscheinlichkeit eines Sequenzierfehlers, also dass anstelle der sequenzierten Base tatsächlich eine der drei anderen Basen vorliegt, entspricht $ 1/3 $ der geschätzten Fehlerrate des Phred Quality Scores:
+\begin{equation} \label{eqn:3-4}
+\tag{3-4}
+L_{i\,_{seqerr}} = Pr(b_{i\,_{ref}}\;|\; b_{i\,_{query}}) = \frac{1}{3} \; \cdotp \; p_{i\,_{query}}
+\end{equation}
+
+Aus \eqref{eqn:3-3} und \eqref{eqn:3-4} errechnet sich also die Likelihood bei einem Mismatch durch:
+\begin{equation} \label{eqn:3-5}
+\tag{3-5}
+L_{i\,_{mismatch}} = Pr(b_{i\,_{ref}}\;|\; b_{i\,_{query}}) = (1-m_{rate}) \; \cdotp \; L_{seqerr} \; \cdotp \; L_{mut}
+\end{equation}
+
+===================draft========================
+
+Seien $ \epsilon $ die Sequenzierfehlerrate, $ q_{query} $ die Basenqualität,
+\begin{equation} \label{eqn:3-6}
+\tag{3-6}
+pairHMM_{\epsilon, q_{query}} \;(s_{ref}[\;i\;], s_{query}[\;i\;]) = 1 - q_{query}(\epsilon)[\;i\;]
+\end{equation}
 
 
-===========================================
+Ebenso kann die Methode, falls das Argument reverse = True gilt, aus den CIGAR-Tupeln und der Basenqualität die likelihood einer im Alignment nicht existenten Kante bestimmen, falls die entgegengerichtete Kante und somit die dazugehörigen CIGAR-Tupel existieren. Für die Berechnung der Likelihood der nicht existenten rückläufigen Kanten werden dabei die Insertions- und Deletionsoperation ausgetauscht, so dass Insertionen als Deletionen betrachtet werden und umgekehrt.
 
 
+Edit-Distanz: int, aus dem nm-tag wird zunächst genutzt, um nur Kanten in den Graphen aufzunehmen, die bereits einen optimierten Minimap2-Path darstellen. Hierfür besteht optional die Möglichkeit den Schwellwert für die maximale Edit-Distanz in der Snakemake-rule festzulegen.\\
 
+Kante hinzufürgen graph-tool O(1)
 
-Zur Konstruktion des Graphen wird graph-tool verwendet,
-
-
-Extraktion der Fastq-Daten je Individuum (später auch results für den Vergleich verschiedener Individuen) \\
-gerichteter Graph \\
-Knoten des Graphen entsprechen jeweils den Reads jedes Individuums aus den getrimmten Fastq-Dateien \\
-\textbf{Knoteneigenschaften:} O(n), wird für jeden Read durchgeführt \\
-    \url{https://graph-tool.skewed.de/static/doc/graph_tool.html?highlight=add_edge#graph_tool.Graph.add_edge} \\
-    -> aus fastq der einzelnen Individuen \\
-    ID: wird zusätzlich vergeben, Kombination aus Index als laufende Nummer und Probenname, String \\
-    Name: Sequenzidentifier, entspricht Zeile 1 des Reads im Fastq-Format, wird als String gespeichert \\
-    Sequenz: wird als String gespeichert \\
-    Quality: aus der Quality-Sequenz des Reads aus den Fastq-Daten wird für jede Base der p-Wert berechnet. Dazu erfolgt zunächst das platformabhängige Encoding des Q-Wertes mit Hilfe von SeqIO aus dem Bio Python Package. Aus den Q Werten kann nun für jede Base des Reads der p-Wert errechnet werden: $10^{-Q / 10}$ , wird als Vektor von Float-Werten gespeichert \\
-        \url{https://www.drive5.com/usearch/manual/quality_score.html}  \\
-        \url{https://en.wikipedia.org/wiki/Phred_quality_score} \\
-        
-\noindent\textbf{Kanteneigenschaften:} \\ 
-    -> aus Minimap2-Output im sam-Format, werden mit Hilfe von pysam ausgelesen\\
-    Kante Hinzufügen graph-tool in O(1), gerichtete Kante von source/query zu target/ref -> ermöglicht die Betrachtung der Nachbarn bzw. aller ausgehenden Kanten eines Knotens
-    Edit-Distanz: aus dem nm-tag wird zunächst genutzt, um nur Kanten in den Graphen aufzunehmen, die bereits einen optimierten Minimap2-Path darstellen. Hierfür besteht optional die Möglichkeit den Schwellwert für die maximale Edit-Distanz in der Snakemake-rule festzulegen.\\
-        
-    cs-tag und cigar-string: neben dem klassischen cigar-string des sam-files kann der cs-tag im short- oder long-Format in den Graphen aufgenommen werden und im NodeRAD-Output mit ausgegeben werden, um für weitere Analysen zur Verfügung zu stehen. Der cigar-string selbst wird nicht in seiner üblichen Formatierung gespeichert, sondern liegt intern in Tupeln codiert vor und dient der Berechnung der Likelihood jeder Kante.\\
     
-    likelihood: Für jede Kante wird für jede Base der Read-Sequenz die Likelihood aus dem Cigar-String in Kombination mit den für die Knoten bestimmten p-Werten und der Mutationsrate berechnet:\\    
-    bei Match: (1 - mutrate) * float(1/3) * i + mutrate * (1 - i)\\    
-    bei Mismatch: (1 - mutrate) * float(1/3) * i + mutrate * (1 - i)\\    
-    Die Likelihood für eine Kante ergibt sich dann aus dem Produkt der Wahrscheinlichkeiten aller Basen eines Reads. Bei einem Mismatch können die Mutationsraten auch explizit für Substitutionen, Deletionen und Insertionen spezifiziert werden.
-    
-zusätzliche konfigurierbare Optionen: \\
-    Schwellwert für die maximal im Graphen zu berücksichtigende edit-Distanz kann festgelegt werden, default 23 \\
-    Mutationsrate kann für Substitutionen, Insertionen und Deletionen individuell festgelegt werden \\
+
 \textbf{Zwischenergebnisse als Output:} \\
-    Graph als xml-Datei und als visuelle Darstellung im pdf-Format \\
+    Graph als xml-Datei auch andere Formate und als visuelle Darstellung im pdf-Format \\
     
 zusätzliche Statistiken/Logs:
     In den Log-Files werden für jedes Individuum einige Statistiken zur Konstruktion des Graphen festgehalten. Neben der Anzahl der Knoten und Kanten des Graphen, wird auch die maximale edit distance aus den NM-tags der Reads angegeben. Diese kann entweder dem Schwellenwert oder seinem Default-Wert entsprechen oder auch je nach gewählten Minimap2-Option kleiner sein, als der Schwellenwert. \\
     Zudem wird die Anzahl der Substitutionen/SNP's, Insertionen und Deletionen angegeben.
     
+\section{Bestimmung der Zusammenhangskomponenten} \label{sec:comp}
 \textbf{Zusammenhangskomponenten extrahieren:} \\
-    Die Bestimmung der Zusammenhangskomponenten inkl. Indexierung erfolgt durch graph-tool selbst und kann in O(V+E) Zeit durchgeführt werden. Die Indexnummern (integer) werden dabei für jeden Knoten der Zusammenhangskomponente seinen Knoteneigenschaften hinzugefügt. Zusammenhangskomponenten die mehr als nur 1 Element besitzen, werden anschließend für die Berechnung des ILP einer Liste hinzugefügt. Im Log file wird die Anzahl der Knoten aller Komponenten als Histogramm festgehalten. Ebenso wird dort für alle Komponenten mit mehr als einem Element die Anzahl ihrer Knoten und Kanten und deren Eigenschaften aufgelistet.
+    Die Bestimmung der Zusammenhangskomponenten inkl. Indexierung erfolgt durch graph-tool selbst und kann in O(V+E) Zeit durchgeführt werden. Die Indexnummern (integer) werden dabei für jeden Knoten der Zusammenhangskomponente seinen Knoteneigenschaften hinzugefügt.\\
+     Im Log file wird die Anzahl der Knoten aller Komponenten als Histogramm festgehalten. Ebenso wird dort für alle Komponenten mit mehr als einem Element die Anzahl ihrer Knoten und Kanten und deren Eigenschaften aufgelistet.
 
-\section{Bestimmung der maximalen Likelihood der Allele} \label{sec:}
+optionaler Output der Zusammenhangskomponenten
+
+die in den Kapiteln \ref{sec:lh_allele}, \ref{sec:lh_loci} und \ref{sec:vcf} beschriebenen Schritte zur den Likelihood-Berechnungen werden für jede Zusammenhangskomponente ausgeführt
+
+\section{Bestimmung der maximalen Likelihood der Allele} \label{sec:lh_allele}
 \subsection{} \label{subsec:}
 
 
-\section{Bestimmung der maximalen Likelihood der Loci} \label{sec:}
+\section{Bestimmung der maximalen Likelihood der Loci} \label{sec:lh_loci}
 \subsection{} \label{subsec:}
 
 
-\section{Ausgabe der Loci im VCF-Format} \label{sec:}
+\section{Ausgabe der Loci im VCF-Format} \label{sec:vcf}
 \subsection{} \label{subsec:}

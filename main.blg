@@ -11,46 +11,44 @@ A level-1 auxiliary file: kapitel/anhang.aux
 The style file: gerunsrt.bst
 A level-1 auxiliary file: kapitel/erklaerung.aux
 Database file #1: literatur/diplom.bib
-Warning--empty author in dunham_2012
-You've used 25 entries,
+You've used 32 entries,
             2016 wiz_defined-function locations,
-            672 strings with 9715 characters,
-and the built_in function-call counts, 8140 in all, are:
-= -- 653
-> -- 470
+            708 strings with 11202 characters,
+and the built_in function-call counts, 10227 in all, are:
+= -- 812
+> -- 600
 < -- 2
-+ -- 166
-- -- 141
-* -- 914
-:= -- 1229
-add.period$ -- 52
-call.type$ -- 25
-change.case$ -- 25
++ -- 212
+- -- 180
+* -- 1138
+:= -- 1542
+add.period$ -- 66
+call.type$ -- 32
+change.case$ -- 32
 chr.to.int$ -- 0
-cite$ -- 26
-duplicate$ -- 374
-empty$ -- 726
-format.name$ -- 141
-if$ -- 1835
+cite$ -- 32
+duplicate$ -- 469
+empty$ -- 920
+format.name$ -- 180
+if$ -- 2307
 int.to.chr$ -- 0
-int.to.str$ -- 25
-missing$ -- 47
-newline$ -- 105
-num.names$ -- 26
-pop$ -- 34
+int.to.str$ -- 32
+missing$ -- 57
+newline$ -- 133
+num.names$ -- 34
+pop$ -- 56
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 176
+skip$ -- 221
 stack$ -- 0
-substring$ -- 433
-swap$ -- 177
+substring$ -- 523
+swap$ -- 225
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 1
-while$ -- 51
-width$ -- 27
-write$ -- 256
-(There was 1 warning)
+warning$ -- 0
+while$ -- 63
+width$ -- 34
+write$ -- 322
