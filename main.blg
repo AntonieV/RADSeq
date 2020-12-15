@@ -11,44 +11,44 @@ A level-1 auxiliary file: kapitel/anhang.aux
 The style file: gerunsrt.bst
 A level-1 auxiliary file: kapitel/erklaerung.aux
 Database file #1: literatur/diplom.bib
-You've used 32 entries,
+You've used 33 entries,
             2016 wiz_defined-function locations,
-            708 strings with 11202 characters,
-and the built_in function-call counts, 10227 in all, are:
-= -- 812
-> -- 600
+            713 strings with 11397 characters,
+and the built_in function-call counts, 10381 in all, are:
+= -- 826
+> -- 604
 < -- 2
-+ -- 212
-- -- 180
-* -- 1138
-:= -- 1542
-add.period$ -- 66
-call.type$ -- 32
-change.case$ -- 32
++ -- 214
+- -- 181
+* -- 1146
+:= -- 1562
+add.period$ -- 68
+call.type$ -- 33
+change.case$ -- 33
 chr.to.int$ -- 0
-cite$ -- 32
-duplicate$ -- 469
-empty$ -- 920
-format.name$ -- 180
-if$ -- 2307
+cite$ -- 33
+duplicate$ -- 476
+empty$ -- 941
+format.name$ -- 181
+if$ -- 2346
 int.to.chr$ -- 0
-int.to.str$ -- 32
+int.to.str$ -- 33
 missing$ -- 57
-newline$ -- 133
-num.names$ -- 34
-pop$ -- 56
+newline$ -- 137
+num.names$ -- 35
+pop$ -- 63
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 221
+skip$ -- 226
 stack$ -- 0
 substring$ -- 523
-swap$ -- 225
+swap$ -- 228
 text.length$ -- 2
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 0
-while$ -- 63
-width$ -- 34
-write$ -- 322
+while$ -- 64
+width$ -- 35
+write$ -- 331

@@ -826,7 +826,6 @@
   volume                 = {25},
   pages                  = {2078-9},
   month                  = {Aug},
-  __markedentry          = {[tarja:]},
   abstract               = {SUMMARY: The Sequence Alignment/Map (SAM) format is a generic alignment format for storing read alignments against reference sequences, supporting short and long reads (up to 128 Mbp) produced by different sequencing platforms. It is flexible in style, compact in size, efficient in random access and is the format in which alignments from the 1000 Genomes Project are released. SAMtools implements various utilities for post-processing alignments in the SAM format, such as indexing, variant caller and alignment viewer, and thus provides universal tools for processing read alignments. AVAILABILITY: http://samtools.sourceforge.net.},
   article-doi            = {10.1093/bioinformatics/btp352},
   article-pii            = {btp352},
@@ -856,8 +855,18 @@
   author        = {Andreas Heger and Kevin Jacobs},
   title         = {{{FastQC}}},
   note          = {source: https://github.com/pysam-developers/pysam, documentation: https://pysam.readthedocs.io/en/latest/index.html},
-  __markedentry = {[tarja:6]},
+  __markedentry = {[tarja:]},
   url           = {https://pysam.readthedocs.io/en/latest/index.html},
+}
+
+@Misc{graph_tool_coplexity_find_vertex,
+  author        = {Tiago de Paula Peixoto},
+  title         = {{{Mail conversation[graph-tool]: problem building weighted graph}}},
+  month         = sep,
+  year          = {2019},
+  note          = {source: https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html},
+  __markedentry = {[tarja:6]},
+  url           = {https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}
