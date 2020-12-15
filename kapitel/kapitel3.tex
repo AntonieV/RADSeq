@@ -13,7 +13,7 @@ Im Anschluss an das Trimming erfolgt eine Qualitätskontrolle durch das Tool Fas
 Für die spätere Konstruktion eines Graphen basierend auf den Edit-Distanzen zwischen den Readsequenzen wird für jedes Individuum zunächst ein Sequenzalignment mit Hilfe des Tools Minimap2 ~\cite{li_2018} erstellt. Hierbei werden alle Readsquenzen paarweise verglichen und in Abhängigkeit von ihren Übereinstimmungen (Matches) und Unterschieden (Mismatches) einander zugeordnet. Das Ergebnis des Mappings wird im sam-Format ~\cite{li_2009} ausgegeben und enthält Angaben zur betrachteten Sequenz (Query), die gegen einen anderen Read (Reference) verglichen wurde. Neben den ID's der Query- und Reference-Sequenzen, werden dort unter anderem auch der CIGAR-String, Informationen zur Basenqualität der Query-Sequenz, sowie optional verschiedene Tags angegeben. Ein für die späteren Berechnungen wichtiges Maß sind die Edit-Distanzen, die durch den NM-Tag repräsentiert werden. Die Edit-Distanz gibt hierbei die minimale Anzahl von Editieroperationen an, um die Query-Sequenz in die Referenzsequenz zu transformieren. Als Editieroperationen sind hierbei ersetzen, einfügen und löschen von Basen möglich. Auf DNA-Ebene entspricht dies den Punktmutationen im Sinne von Substitutionen, Insertionen und Deletionen (vgl. Kap. \ref{subsec:mutation}). Der CIGAR-String ist eine kondensierte Darstellung der Unterschiede zwischen Query- und Reference-Sequenz. In ihm werden Matches und Mismatches wie Insertionen, Substitutionen und Deletion jeweils mit der Anzahl der betroffenen Basen angegeben. Sowohl der CIGAR-String als auch der NM-Tag definieren wichtige Kanteneigenschaften des späteren Graphen. \\
 
 \section{Konstruktion des Graphen} \label{sec:graph}
-\subsection{Knoten des Graphen}
+\subsection{Knoten des Graphen} \label{subsec:nodes}
 Das hier in Python implementierte Tool, NodeRAD, benötigt als Input zu jedem Individuum die getrimmten single-end Read-Daten sowie das Sequenzalignment. Zunächst wird daraus für jedes Individuum ein eigener, gerichteter Graph $ G $ mit $ G = (V,E) $ erstellt. Seine Knoten, $ V $, werden durch die einzelnen Reads repräsentiert. Entsprechend ergeben sich die Knoteneigenschaften aus den Daten der Reads, diese werden den FASTQ-Dateien nach Ausführung von Cutadapt (siehe \ref{sec:preproc}) entnommen. Die Kanten, $ E $, zwischen den Knoten ergeben sich aus dem Vergleich ihrer Sequenzen im Rahmen des Sequenzalignments mittels Minimap2 (siehe \ref{sec:edit}).\\
 
 Zusätzlich entnimmt NodeRAD der Konfigurationsdatei des Workflows einige Konstanten und Grenzwerte für die späteren Berechnungen. Dazu gehören die Mutationsraten und Heterozygotiewahrscheinlichkeiten für Substitutionen, Insertionen und Deletionen, die Ploidie des Chromosomensatzes der untersuchten Spezies und Grenzwerte. Die Konstanten werden als Grapheigenschaften im Graphen abgelegt. Als konfigurierbare Grenzwerte gibt es für NodeRAD einen Schwellenwert für die maximal zulässige Editierdistanz, bei dem zwei Knoten noch durch eine Kante verbunden werden sowie Schwellenwerte zum Filtern selten vorkommender Sequenzen ab einer bestimmten Clustergröße, die als Hintergrundrauschen nicht in der Berechnung Berücksichtigung finden sollen. \\
@@ -29,7 +29,7 @@ Für jeden Knoten werden die Vektoren mit den Phred Qualitiy Scores und den gesc
 
 Die Laufzeit für das Hinzufügen eines Knotens beträgt nach der Dokumentation von graph-tool  $ O(V) $, da es sich hierbei um eine Einfügeoperation in die bereits bestehende Knotenmenge handelt und ein neuer Iterator über alle Knoten erzeugt und zurückgegeben wird ~\cite{docs_graph_tool}. Die Zuweisung der Knoteneigenschaften erfolgt in $ O(1) $. Über alle Reads, also über die resultierende Anzahl der Knoten $ V $ ergibt sich daraus eine Gesamtlaufzeit von $ O(V^2) $.\\
 
-\subsection{Kanten des Graphen}
+\subsection{Kanten des Graphen} \label{subsec:edges}
 Die Kanten des Graphen definieren sich durch das mittels Minimap2 erzeugten Sequenzalignments (vgl. Kap. \ref{sec:edit}). Jedes Alignment zwischen zwei Reads entspricht im Graphen einer gerichteten Kante $e = (source,\; target)$, die den Vergleich der Query- zur Referenzsequenz repräsentiert. Sie verbindet somit zwei der zuvor aus der FASTQ-Daten erzeugten Knoten. Das Auslesen des sam-Formats des Alignmentfiles erfolgt mit Hilfe der Python-Library pysam ~\cite{pysam}. Dabei wird die Edit-Distanz aus dem NM-Tag zunächst genutzt, um nur Kanten in den Graphen aufzunehmen, die bereits einen optimierten Minimap2-Path darstellen. Liegen diese unterhalb des durch die Konfigurationsdatei festgelegten Grenzwertes, so wird die Kante dem Graphen hinzugefügt. Dabei werden als Kanteneigenschaften die Edit-Distanz, die CIGAR-Tupel sowie die aus der Basenqualität und Mutationsrate bestimmte Likelihood hinzugefügt. Zusätzlich kann zur Kontrolle oder für eine spätere Verwendung auch der CIGAR-String selbst als Kanteneigenschaft gespeichert werden, falls bei Minimap2 die Option zur Erzeugung des cs-Tags aktiviert wurde. Die CIGAR-Tupel werden durch pysam aus dem CIGAR-String geparsed, hierbei handelt es sich um eine Liste von Tupeln, die jeweils aus Integer-Wertepaaren bestehen. Der erste Wert jedes Tupels gibt die spezifische Operation des Matches oder Mismatches. So entspricht beispielsweise ein Wert von $ 7 $ oder $ 0 $ einem Match und ein Wert von $ 2 $ einer Deletion. Der zweite Werte jedes Tupels gibt die Anzahl der Basen an, die von der entsprechenden Operation betroffen sind. \\
 
 Diese CIGAR-Tupel werden für die Berechnung der Likelihood zwischen zwei Knoten benötigt, dies erfolgt in der Methode \lstinline|get_alignment_likelihood()| (Algorithmus \ref{alg:lh_read}) aus dem Modul \lstinline|likelihood_operations|. Dabei wird aus den p-Werten der Basenqualität für jede Base der Query-Sequenz die Wahrscheinlichkeit errechnet, dass es sich im Falle eines Matches um die korrekte Base handelt  \eqref{eqn:3-2} bzw. im Falle eines Mismatches, dass es sich um einen Sequenzierfehler \eqref{eqn:3-3} oder um eine Mutation handelt \eqref{eqn:3-4}. \\
@@ -112,19 +112,57 @@ Hinsichtlich der Laufzeit benötigt das Hinzufügen einer Kante nach Angaben der
 
 Nach Abschluss der Graphkonstruktion werden für jedes Individuum noch einige Statistiken in die Log-Dateien geschrieben. Hier werden neben der Anzahl der Knoten und Kanten des Graphen auch die Anzahl der Substitutionen bzw. SNPs, Insertionen und Deletionen festgehalten, die beim Auslesen der CIGAR-Tupel registriert wurden. Zudem findet sich hier auch die maximal vorkommenden Edit-Distanz über alle Knoten, sofern sich diese unterhalb des festgelegten Schwellenwertes liegt. Ansonsten entspricht sie dem in der Konfigurationsdatei angegebenen Schwellenwert.\\
 
-Als optionaler Output können über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| auch die detaillierten Graphinformationen sowie eine Visualisierung des Graphen ausgegeben werden. Die Graphinformationen wie Knoten, Kanten und ihre Eigenschaften können dabei im GraphMl-, DOT-, GML- oder im binären gt-Format gespeichert werden. \\
+Als optionaler Output können über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| auch die detaillierten Graphinformationen sowie eine Visualisierung des Graphen ausgegeben werden. Die Graphinformationen wie Knoten, Kanten und ihre Eigenschaften können dabei im GraphMl-, DOT-, GML- oder im binären gt-Format gespeichert werden. Die graphische Darstellung wird als pdf-Datei ausgegeben, dabei entspricht die Kantenfärbung der berechneten Likelihood zwischen den Reads.. \\
 
-\section{Bestimmung der Zusammenhangskomponenten} \label{sec:comp}
-===================draft========================\\
-Die Bestimmung der Zusammenhangskomponenten inkl. Indexierung erfolgt durch graph-tool selbst und kann in O(V+E) Zeit durchgeführt werden. Die Indexnummern (integer) werden dabei für jeden Knoten der Zusammenhangskomponente seinen Knoteneigenschaften hinzugefügt.\\
-Im Log file wird die Anzahl der Knoten aller Komponenten als Histogramm festgehalten. Ebenso wird dort für alle Komponenten mit mehr als einem Element die Anzahl ihrer Knoten und Kanten und deren Eigenschaften aufgelistet.
+\subsection{Bestimmung der Zusammenhangskomponenten} \label{subsec:comp}
 
-optionaler Output der Zusammenhangskomponenten
+Die Bestimmung und Indexierung der Zusammenhangskomponenten erfolgt durch graph-tool selbst und kann in $ O(V + E) $ durchgeführt werden ~\cite{docs_graph_tool}. Die Indexnummer jeder Zusammenhangskomponente wird den in ihr enthaltenen Knoten als Knoteneigenschaft hinzugefügt. Zusammenhangskomponenten mit mehr als einem Knoten  werden als neuer eigenständiger Graph initialisiert und in einer Liste abgelegt. Hierfür wird aus dem Graphen für jede Komponente eine gefilterte Sicht erzeugt, die als neues Graph-Object gespeichert wird. Der Filtervorgang jeder Zusammenhangskomponente $ C $ muss für alle Knoten des Graphen durchgeführt werden, daher beträgt die Laufzeit hierfür $ O(C \, \cdotp V) $. Da alle weiteren Schritte des Algorithmus jeweils auf den einzelnen Komponenten durchgeführt werden, kann durch die Verwendung einer Liste von Graphen im Folgenden eine einfachen Iteration über die Komponenten in $ O(C) $ ausgeführt werden, ohne dass der Filtervorgang über alle Knoten jeder Komponente wiederholt werden muss. Zudem ermöglicht diese Datenstruktur eine effizientere Traversierung und Suche innerhalb der Zusammenhangskomponente, ohne dass für jede Komponente der gesamte Graph betrachtet werden muss. Der ursprüngliche Graph wird anschließend entfernt, um Arbeitsspeicher freizugeben. Auch dies erfolgt in konstanter Zeit. \\
 
-die in den Kapiteln \ref{sec:lh_allele}, \ref{sec:lh_loci} und \ref{sec:vcf} beschriebenen Schritte zur den Likelihood-Berechnungen werden für jede Zusammenhangskomponente ausgeführt
+In der Log-Datei wird die Anzahl der Knoten aller Zusammenhangskomponenten als Histogramm festgehalten. Ebenso wird dort für alle Komponenten mit mehr als einem Element die Anzahl ihrer Knoten, Kanten und Eigenschaften aufgelistet.
+
+Über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| können optional auch für die Zusammenhangskomponenten jeweils Visualisierungen und detaillierte Graphinformationen in den oben genannten Formaten (Kap. \ref{subsec:edges}) ausgegeben werden. Zudem kann optional auch der gesamte Graph mit den Komponentenidizes als Knoteneigenschaften gespeichert werden. In der visuellen Darstellung werden seine Knoten entsprechend der zugehörigen Zusammenhangskomponente eingefärbt, seine Kantenfärbung richtet sich weiterhin nach der aus \eqref{eqn:3-3} resultierenden Likelihood.
+
+\subsection{Laufzeitanalyse zur Konstruktion des Graphen}
+Wie an entsprechender Stelle bereits beschrieben, ist für die Erzeugung der Knoten eine Laufzeit von $ O(V^2) $ (Kap. \ref{subsec:nodes}) erforderlich, das Hinzufügen der Kanten kann in $ O(E\, \cdotp V) $ erfolgen (Kap. \ref{subsec:edges}). Somit wird für den vollständigen Aufbau des Graphen eine Laufzeit von $ O(V \, \cdotp (V+E)) $ benötigt. In Zusammenschau mit der für die Extraktion der Zusammenhangskomponenten erforderliche Laufzeit von $ O(C \, \cdotp V + (V + E)) $ (Kap. \ref{subsec:comp}) ergibt sich daraus nach  \eqref{eqn:3-7} eine Laufzeit von $ O(V \, \cdotp (V + C) + E \, \cdotp (V + 1)) $. 
+\begin{equation} \label{eqn:3-7}
+\tag{3-7}
+O(V \, \cdotp (V + E + C) + E) = O(V \, \cdotp (V + C) + E \, \cdotp (V + 1))
+\end{equation}
+
+Bei realen Daten gibt es in der Regel deutlich mehr Knoten als Cluster bzw. Zusammenhangskomponenten, so dass gilt $ C < V $. Würde im Worst Case jede Zusammenhangskomponente aus nur einem Knoten bestehen, also $ C = V $, so gilt $ O(V + C) = O(V + V) = O(V) $. Ebenso gilt $ O(V + 1) = O(V) $. Unter der Voraussetzung aus Kap. \ref{subsec:nodes}, dass für die Readlänge $ k $ gilt, dass $ k << V $, folgt nach  \eqref{eqn:3-8} eine Gesamtlaufzeit von $ O(V \, \cdotp (V + E)) $.
+\begin{equation} \label{eqn:3-8}
+\tag{3-8}
+O(V \, \cdotp (V + C) + E \, \cdotp (V + 1)) = O (V^2 + E \, \cdotp V) = O(V \, \cdotp (V + E))
+\end{equation}
+
+Sind bei kleinen Datensätzen nur wenige Reads vorhanden, so dass gilt $ k \leq V $, dann ergibt sich unter zusätzlicher Berücksichtigung von $ k $ im Worst Case mit $ k = V $ und mit $ C = V $ nach \eqref{eqn:3-9} ebenfalls eine Gesamtlaufzeit von $ O(V \, \cdotp (V + E)) $.
+\begin{equation} \label{eqn:3-9}
+\tag{3-9}
+\begin{aligned}
+&\ {} O(V^2) + O((V + k) \, \cdotp E) + O(V + E) + O(C \, \cdotp V) \\
+& \ = O(V^2 + E \, \cdotp V + k \, \cdotp E) + O(V + E + C \, \cdotp V)\\
+&\ = O(V^2 + C \, \cdotp V + V + E + E \, \cdotp V + k \, \cdotp E) \\
+&\ = O(V \, \cdotp (V + C + 1) + E \, \cdotp (1 + V + k))\\
+&\ = O(V \, \cdotp (V + C) + E \, \cdotp (V + k))\\
+&\ = O(V \, \cdotp (V + V) + E \, \cdotp (V + V))\\
+&\ = O( 2 \, \cdotp V \, \cdotp (V + E))\\
+&\ = O(V \, \cdotp (V + E))\\
+\end{aligned}
+\end{equation}
+
+Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige hundert Basenpaare zählt, tatsächlich die Anzahl der Reads übersteigt und somit $ k > V $, so kann die Gesamtlaufzeit unter direkter Berücksichtigung von $ k $ nach \eqref{eqn:3-10} mit $ O(V^2 + E \, \cdotp (V + k)) $ angegeben werden.
+\begin{equation} \label{eqn:3-10}
+\tag{3-10}
+\begin{aligned}
+&\ {} O(V^2) + O((V + k) \, \cdotp E) + O(V + E) + O(C \, \cdotp V) \\
+&\ = O(V \, \cdotp (V + C) + E \, \cdotp (V + k))\\
+&\ = O(V^2 + E \, \cdotp (V + k))\\
+\end{aligned}
+\end{equation}
 
 \section{Bestimmung der maximalen Likelihood der Allele} \label{sec:lh_allele}
 \subsection{} \label{subsec:}
+======================= draft =======================\\
 
 
 \section{Bestimmung der maximalen Likelihood der Loci} \label{sec:lh_loci}
