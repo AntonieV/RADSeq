@@ -6,7 +6,7 @@ Als Input benötigt der Workflow eine Datei im FASTQ-Format, welche die single-e
 
 \section{Preprocessing} \label{sec:preproc}
 
-Im Preprocessing werden durch das Tool Cutadapt ~\cite{martin_2011} die Reads jedes Individuums anhand ihrer Barcodesequenzen identifiziert und extrahiert. Hiernach werden die Barcodesequenzen entfernt (trimming) und die Reads jedes Individuums in separaten Dateien im FASTQ Format abgelegt. \\
+Im Preprocessing werden durch das Tool Cutadapt ~\cite{martin_2011} die Reads jedes Individuums anhand ihrer Barcodesequenzen identifiziert und extrahiert (Demultiplexing). Hiernach werden die Barcodesequenzen entfernt (Trimming) und die Reads jedes Individuums in separaten Dateien im FASTQ Format abgelegt. \\
 Im Anschluss an das Trimming erfolgt eine Qualitätskontrolle durch das Tool FastQC  ~\cite{andrews_2012}. Dabei werden einige allgemeine Statistiken zu den Rohdaten der Reads generiert, wie beispielsweise zur Basenqualität, zum GC-Gehalt, dem Anteil an Duplikaten oder überrepräsentierten Sequenzen. Durch das Tool MultiQC ~\cite{ewels_2016} wird aus diesen Statistiken und den Log-Dateien von Cutadapt ein html-Report mit diversen Plots zur Veranschaulichung erstellt.
 
 \section{Edit-Distanzen} \label{sec:edit}
@@ -150,7 +150,7 @@ Sind bei kleinen Datensätzen nur wenige Reads vorhanden, so dass gilt $ k \leq 
 \end{aligned}
 \end{equation}
 
-Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige hundert Basenpaare zählt, tatsächlich die Anzahl der Reads übersteigt und somit $ k > V $, so kann die Gesamtlaufzeit unter direkter Berücksichtigung von $ k $ nach \eqref{eqn:3-10} mit $ O(V^2 + E \, \cdotp (V + k)) $ angegeben werden.
+Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige hundert Basenpaare zählt, tatsächlich die Anzahl der Reads übersteigt und somit $ k > V $, kann die Gesamtlaufzeit unter direkter Berücksichtigung von $ k $ nach \eqref{eqn:3-10} mit $ O(V^2 + E \, \cdotp (V + k)) $ angegeben werden. Da der Datensatz in diesem Fall relativ klein ist, hätte die damit verbundene höhere Laufzeit dennoch nur geringe Auswirkungen.
 \begin{equation} \label{eqn:3-10}
 \tag{3-10}
 \begin{aligned}
@@ -163,6 +163,43 @@ Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige
 \section{Bestimmung der maximalen Likelihood der Allele} \label{sec:lh_allele}
 \subsection{} \label{subsec:}
 ======================= draft =======================\\
+Die einzelnen Zusammenhangskomponenten repräsentieren einen oder mehrere Loci.\\
+get\_candidate\_alleles(): Bestimmen der Häufigkeiten der in der comp vorkommenden seq, liegt anzahl über dem in config festgelegten schwellenwert 'treshold-seq-noise', dann werden sie als cand allele lexicographisch sortiert (für deterministischer Ergebnisse) in eine liste eingefügt\\
+-> filtern: noise-seq werden nicht als allel-kandidaten ausgewählt \\
+vafs kandidaten bestimmen:\\
+1. tatsächlich zu erwartende Anzahl von allelen anhand der ploidie bestimmen:
+\begin{itemize}
+	\item aus anzahl der beobachteten allele (länge der allel-liste, $n_{observed}$) und ploidie
+	\item get\_max\_parsimony\_n\_alleles(): bestimmung der erwarteten tatsächlichen anzahl $n_{alleles}$von allelen aus der Anzahl der beobachteten allele $n_{observed}$ in abhänigkeit von der ploidie
+	\item durch die ploidie werden unnötige und unmögliche allel-kombinationen   eingespart und in der weiteren berechnung nicht berücksichtigt
+	\item Fall ploidie ist höher als die anzahl der beobachteten allele, so muss es mindestens so viele ggf. identische allele geben (-> Homozygotie), damit die ploidie erfüllt werden kann\\
+	\item wurden dagegen mehr allele beobachtet als aufgrund der ploidie möglich sind und die ploidie ist teiler von $n_{observed}$, so wurden genauso viele allele beobachtet, wie auch möglich sind und es gilt $n_{observed} = n_{alleles}$. 
+	\item gilt $n_{observed}>ploidie$ und ist die beobachtete anzahl von allelen aber nicht ganzzahlig durch die ploidie teilbar, so $n_{alleles}$ so erhöht werden, dass die ploidie ein teiler hiervon ist, d.h .es müssen tatsächlich so viele allele vorkommen, dass eine korrekte ploidie erreicht wird. es muss also um die ploidie abzüglich des restes aus der restdivision erhöht werden: $ n_{alleles} = n_{observed} + ploidy - (n_{observed} \mod ploidy)$
+\end{itemize}
+
+\noindent 2.alle kombinationen möglicher häufigkeitsverteilungen zur ermittelten anzahl von allelen $ n_{alleles} $ bestimmen:\\
+\begin{itemize}
+	\item Allel-Verteilung durch Urnenmodell bestimmen: k elem werden ausgewählt, reihenfolge nicht relevant -> binominalkoeffizient $\binom{n}{k} = \frac{n!}{(n-k)!\, \cdotp k!}$ \\
+	\item alle Kombinationen mit wiederholung für $n_{alleles} $ bestimmen -> mehrfaches vorkommen erlaubt -> n in binomialkoeffizient wird durch $(n + k -1)$ ersetzt: $\binom{n + k - 1}{k} = \frac{(n+k-1)!}{(n-1)!\, \cdotp k!}$\\ 
+	durch combinations\_with\_replacement  aus python-library itertools umgesetzt:
+	Bsp.: \\	
+	$ n_{alleles} = 2$: \\
+	{[(0, 0), (0, 1), (1, 1)]}\\
+	$ n_{alleles} = 3$: \\
+	{[(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 0, 2), (0, 0, 1, 1), (0, 0, 1, 2), (0, 0, 2, 2), (0, 1, 1, 1), (0, 1, 1, 2), (0, 1, 2, 2), (0, 2, 2, 2), (1, 1, 1, 1), (1, 1, 1, 2), (1, 1, 2, 2), (1, 2, 2, 2), (2, 2, 2, 2)]}\\
+		
+	\item relative Häufigkeiten $ h_{n} $  aus den absoluten Häufigkeiten jedes allesl aus jeder Kombination der allelverteilungen bestimmen:  $ h_{n} = \frac{H_{n}} {n_{alleles}} $\\
+	Bsp.: \\
+	$ n_{alleles} = 2$: \\
+	{[1.0, 0.0]}, {[0.5, 0.5]}, {[0.0, 1.0]} \\
+	$ n_{alleles} = 3$: \\
+	{[{[1.0, 0.0, 0.0]}, {[0.75, 0.25, 0.0]}, {[0.75, 0.0, 0.25]}, {[0.5, 0.5, 0.0]}, {[0.5, 0.25, 0.25]}, {[0.5, 0.0, 0.5]},
+		{[0.25, 0.75, 0.0]}, {[0.25, 0.5, 0.25]}, {[0.25, 0.25, 0.5]}, {[0.25, 0.0, 0.75]}, {[0.0, 1.0, 0.0]}, {[0.0, 0.75, 0.25]}, {[0.0, 0.5, 0.5]}, {[0.0, 0.25, 0.75]}, {[0.0, 0.0, 1.0]}]} \\
+	\item die relativen Häufigkeiten der Allelverteilungen sollen im weiteren als VAF (Variant allele frequency) oder Fraktionen bezeichnet werden
+\end{itemize}
+
+
+
 
 
 \section{Bestimmung der maximalen Likelihood der Loci} \label{sec:lh_loci}

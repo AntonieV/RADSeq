@@ -1,7 +1,59 @@
 % kapitel2.tex
 \chapter{Analyse von RAD-Seq-Daten} \label{chapter:kap2}
 \section{Problemstellung} \label{sec:probl}
+gegeben: reads einer sample \\
+Ziel: Zuordnung der Reads zu loci -> Ausgabe: Sequenz der Loci \\
+es soll die Menge von Loci gefunden werden, die die Beobachtungen erklären können \\
+Ergebnis: loci aus den beobachtungen der reads
+im Gegensatz zu Stacks ohne Vorwissen abschätzbar, Stacks berücksichtigt keine Ploidie und Heterozygotie \\
+
 
 \section{Formale Definition} \label{sec:formal}
+Problem wird aufgeteilt in Teilprobleme -> Zusammenhangskomponeneten \\
+für jede Komponente: Lösung finden für eine Komposition von Loci, die am besten die beobachteten Reads erklären können
+-> Berücksichtigung der Basenqualität $q_{r}$ => Sequenzierfehler fließen mit geringerer liklihood in die weitere Berechnung ein -> werden weniger berücksichtigt und kommen seltener vor, z.T als noise entfernt-> loci likelihood wird mit den sequenzen mit seq-fehlern geringer sein -> seq-fehler gefiltert, da es nicht möglich ist eine  bessere lh für z.B. 3 Allele zu bekommen (von denen eines aber auf einem seq-fehler beruht), wenn es nur 2 tatsächliche Allele in einer komp gibt, d.h. lh für 2 Allele ist in diesem fall höher als für 3 -> loci likelihood enthält mutationen \\
+
 \section{Lösungsansatz} \label{sec:solution}
-\subsection{pair Hidden Markov Model} \label{subsec:phmm}
+Defs von Sequ, Mutationsrate, ploidie, heterozyg
+\subsection{Graph und Zusammenhangskomponenten} \label{subsec:sol_graph}
+Graph als Gesamtproblem -> Verkleinern durch Zerlegung in Teilprobleme -> Menge der conn comp\\
+unklar wie viele loci jede conn comp beinhaltet, jede conn comp kann auch mehr als einen locus enthalten\\
+\subsection{Pair Hidden Markov Model} \label{subsec:sol_phmm}
+paarweises Alignment aus Minimap2 als Teilproblem -> fast jede Beobachtung wird berücksichtigt\\
+Bewertung/wslk ob ein read aus einem anderen read entstanden ist\\
+\subsection{Die maximale Likelihood der Allele}
+\noindent0. noise nicht als Kandidaten-Allele -> liste lexicogra. sortierter Allele\\
+
+\noindent1. lh zwischen 1 read und 1 allel; likelihood im pair: Wslk, dasss von 1 bestimmten Allel $a_{i}$ mit Fehlerrate $\epsilon$ tatsächlich die readsequenz $s_{r}$ stammt \\
+
+\noindent2. Info über alle Kandidatenallele für 1 read; Zusammenhangskomponenten kann auch >1 locus enthalten -> Fractions finden in der möglichen Menge von loci \\
+Berechnung der Wslk, einen Read zu beobachten anhand der gegebenen Allele-Fraktion\\
+die Wslk der Fraktion $\Theta_{i}$ muss sich aus den tatsächlichen Beobachtungen ergeben => Urnenmodell (entspricht binominal model)\\
+Urnenmodell: bsp. 2 farben in unterschiedl. Menge -> Wslk, wenn n Kugeln gezogen werden, dass dabei jeweils genau 50\% von jeder Farbe gezogen wurden (Binomial Formel), Anzahl der roten Kugeln P (Erfolgswslk) $\Theta_{i}$ und  > 2 Farben => Mulitnomialverteilung $\Theta_{i}$ + individuellen Verteilung $Pr$: $\Theta_{i} * Pr$
+es gilt $\sum \Theta_{i} = 1$ => die mögliche Zuordnung entspricht der Häufigkeit die gezogen wurde $\Theta_{i}$ \\
+Wslk. $ s_{r} $ zu beobachten unter der gegebenen Verteilung aus den Fraktionen; Wslk read zu sehen gegeben das Allel, nur ausgehend von Sequenzierfehlern \\
+
+\noindent3. Für alle Reads: \\
+1 read $s_{r}$ mit $n$ candidaten allelen -> $n$ mögliche Allele von denen $s_{r}$ stammen kann -> es wird für jedes der allele wslk berechnet, dass die allele aus $s_{r}$ entstanden sind\\
+bsp. allel i hat frac 0.25, also 1/4 für i, allel i+1 mit 0.75 => zu 25\% allel i und zu 75\% allel i+1 -> über max lh wird bestimmt, wie die seq der allele zusammenpassen -> modellierung ähnlicher,  unsicherheit bei der zuordung der reads, wenn sie weder der dem eine noch dem anderen allel entstammen, z.b. bei 0.5/0.5 => Unsicherheit wird an schritt 3 weitergegeben \\
+Produkt über alle reads für jede mögliche Kombination an fractions \\
+max wählen innerhalb der conn. comp\\
+insgesamt:\\
+=> $\Theta$ berechnen -> max lh aus allel-fractions\\
+=> alles was an Unterschieden vorkommt, kann nur ein Sequenzierfehler sein\\
+\subsection{Die maximale Likelihood der Loci}
+connected comp in loci aufsplitten\\
+Zuordnung zu loci, also welche genomischen loci stecken dahinter, wie werden die allele den loci zugeordnet -> max parximony, prinzip der einfachsen möglichen lösung \\
+-> ploidy als eingabeparam -> zuordnung der candidaten allele zu loci\\
+lh ausrechnen aus anzahl der allele und loci -> gerade die loci, die die seq. der reads am besten unter der geg. ploidy und heterozygotie erklären haben max lh
+max\_lh\_vafs nur noch 1 Vektor\\
+Zuordnung von cand-Allelen zu den loci => die beobachteten max\_lh\_allel\_fractionen müssen sie durch die gewählten loci erklären, z.B. 2 loci => 1.locus: allel 0, 0 homozyg, 2. locus allel 0, 2 heterozygot\\
+-> bei z.B 3 Allelen sind min 2 Loci notwendig => min \# der loci, so dass alle ausgewählten allele passen -> diese menge muss gefunden werden und muss wieder max lh haben\\
+unter der annahme der loci-verteilung muss bestimmt werden ob sinnvoll, d.h allel-vafs müssen sich zu 1 summieren -> indikator-funktion: wenn 1, dann gilt Pr(T|S), d.h. Wslk, dass sich aus S die seq T gebildet hat\\
+indicator-function: wird 1, wenn anzahl des auftretens des allels = $\Theta_{i} * g * \phi$ 
+Kombi von loci -> lh berechnen
+pHMM: Wslk, dass allel 2 aus allel 1 entstanden ist -> heterozygotie (in conf konfigurierbar) =>$ match = 1 - (het_{sub} + het_{del} + het_{ins}) $
+
+\subsection{Varianten und Genotyp}
+mit den allelen jedes locus, allelsequenz, genotyp\\
+Menge von Loci, die die Beobachtungen erklären
