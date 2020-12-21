@@ -164,10 +164,10 @@ Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige
 \subsection{} \label{subsec:}
 ======================= draft =======================\\
 Die einzelnen Zusammenhangskomponenten repräsentieren einen oder mehrere Loci.\\
-get\_candidate\_alleles(): Bestimmen der Häufigkeiten der in der comp vorkommenden seq, liegt anzahl über dem in config festgelegten schwellenwert 'treshold-seq-noise', dann werden sie als cand allele lexicographisch sortiert (für deterministischer Ergebnisse) in eine liste eingefügt\\
+0. get\_candidate\_alleles(): gibt die in der comp vorkommmenden seq lexikographisch sortiert fpr deterministischere Ergebnisse zurück. Übersteigt die Größe des Clusters, d.h. die Knotenzahl einer Zusammenhangskomponenten einen in der Konfigurationsdatei als treshold-cluster-size festgelegten Wert, so wird von den im Cluster vorkommenden Sequenzen zunächst die absolute Häufigkeit bestimmt. Es werden dann nur diejenigen sequenzen lexikographisch sortier zurückgegeben, die einen weiteren, ebenfalls in der config festgelegten schwellenwert, 'treshold-seq-noise', überschreiten.\\
 -> filtern: noise-seq werden nicht als allel-kandidaten ausgewählt \\
 vafs kandidaten bestimmen:\\
-1. tatsächlich zu erwartende Anzahl von allelen anhand der ploidie bestimmen:
+1. tatsächlich zu erwartende Anzahl von allelen anhand der ploidie bestimmen get\_max\_parsimony\_n\_alleles:
 \begin{itemize}
 	\item aus anzahl der beobachteten allele (länge der allel-liste, $n_{observed}$) und ploidie
 	\item get\_max\_parsimony\_n\_alleles(): bestimmung der erwarteten tatsächlichen anzahl $n_{alleles}$von allelen aus der Anzahl der beobachteten allele $n_{observed}$ in abhänigkeit von der ploidie
@@ -177,7 +177,7 @@ vafs kandidaten bestimmen:\\
 	\item gilt $n_{observed}>ploidie$ und ist die beobachtete anzahl von allelen aber nicht ganzzahlig durch die ploidie teilbar, so $n_{alleles}$ so erhöht werden, dass die ploidie ein teiler hiervon ist, d.h .es müssen tatsächlich so viele allele vorkommen, dass eine korrekte ploidie erreicht wird. es muss also um die ploidie abzüglich des restes aus der restdivision erhöht werden: $ n_{alleles} = n_{observed} + ploidy - (n_{observed} \mod ploidy)$
 \end{itemize}
 
-\noindent 2.alle kombinationen möglicher häufigkeitsverteilungen zur ermittelten anzahl von allelen $ n_{alleles} $ bestimmen:\\
+\noindent 2.alle kombinationen möglicher häufigkeitsverteilungen zur ermittelten anzahl von allelen $ n_{alleles} $ bestimmen get\_candidate\_vafs:\\
 \begin{itemize}
 	\item Allel-Verteilung durch Urnenmodell bestimmen: k elem werden ausgewählt, reihenfolge nicht relevant -> binominalkoeffizient $\binom{n}{k} = \frac{n!}{(n-k)!\, \cdotp k!}$ \\
 	\item alle Kombinationen mit wiederholung für $n_{alleles} $ bestimmen -> mehrfaches vorkommen erlaubt -> n in binomialkoeffizient wird durch $(n + k -1)$ ersetzt: $\binom{n + k - 1}{k} = \frac{(n+k-1)!}{(n-1)!\, \cdotp k!}$\\ 
@@ -195,12 +195,102 @@ vafs kandidaten bestimmen:\\
 	$ n_{alleles} = 3$: \\
 	{[{[1.0, 0.0, 0.0]}, {[0.75, 0.25, 0.0]}, {[0.75, 0.0, 0.25]}, {[0.5, 0.5, 0.0]}, {[0.5, 0.25, 0.25]}, {[0.5, 0.0, 0.5]},
 		{[0.25, 0.75, 0.0]}, {[0.25, 0.5, 0.25]}, {[0.25, 0.25, 0.5]}, {[0.25, 0.0, 0.75]}, {[0.0, 1.0, 0.0]}, {[0.0, 0.75, 0.25]}, {[0.0, 0.5, 0.5]}, {[0.0, 0.25, 0.75]}, {[0.0, 0.0, 1.0]}]} \\
-	\item die relativen Häufigkeiten der Allelverteilungen sollen im weiteren als VAF (Variant allele frequency) oder Fraktionen bezeichnet werden
+	\item die relativen Häufigkeiten der Allelverteilungen sollen im weiteren als VAF (Variant allele frequency) oder Fraktionen bezeichnet werden. Sie entsprechen den in Kap. \ref{subsec:sol_allele_lh} beschriebenen Franktionen $ \Theta = (\theta_{1}, \dots , \theta_{n}) $\\
 \end{itemize}
 
+2. Berechnung der Likelihoods anhand der möglichen Häufigkeitsverteilungen:\\
+2.1 Berechnung der Wslk, einen Read zu beobachten anhand der gegebenen Allele-Fraktion, get\_allele\_likelihood\_read(): Vgl Kap. \ref{subsec:sol_allele_lh}, Formel ....(step 2.1)
+\begin{itemize}
+	\item für jeden Read soll zunächst die Wslk gesucht werden, dass der Read durch seq-fehler aus einem der Kanditatenallele entstanden ist. 
+	\item hierzu werden für jeden Read $ r_{i} $ die ausgehende Kanten gesucht, die jeweils zu jedem der Kandidatenallele $ a_{i} $ führen und die nach \eqref{eqn:3-2} berechnete Likelihood zurückgegeben.
+	\item hierbei werden, geordnet nach Laufzeitaufwand verschiedene möglichkeiten geprüft: 
+	\item Fall (1) es existiert eine solche Kanten, dann kann die likelihood direkt zurückgegeben werden; 
+	\item Fall (2) eine solche Kante existiert nicht, aber es gibt eine entgegengesetzt gerichtete Kanten, dann kann die gesuchte Likelihood des Gegenrichtung, also mit reverese = True über die funktion get\_alignment\_likelihood() bestimmt werden; 
+	\item Fall (3) im gesamten Graphen wird nach einer Kante gesucht, die zwischen Knoten verläuft, deren seqenzen denen von $ r_{i} $ und $ a_{i} $ entsprechen. Existiert eine solche Kanten so werden die CIGAR-Tupel dieser Kante verwendet, um für $ r_{i} $ die likelihood zu bestimmen. Da die CIGAR-Tupel allein über die Sequenz definiert werden, gilt das so ermittelte CIGAR-Tupel wegen identischer Sequenzen der begrenzenden Knoten auch für eine nicht existierenden Kante zwischen $ r_{i} $ und $ a_{i} $. Für die Berechnung der Likelihood können diese CIGAR-Tupel also zusammen den p-Werten des Phred Quality Scores (aus \eqref{eqn:3-1}) von $ r_{i} $ die Likelihood mit Hilfe der Funktion get\_alignment\_likelihood() berechnet. 
+	\item Fall (4) existiert im gesamten Graphen keine vergleichbare Kante, die $ r_{i} $ und $ a_{i} $ mit einander verbindet, so wird der Wert Null zurückgegeben.
+	\item laufzeit:\\	 
+	 Laufzeit Kante suchen bei bekannter source und target Knoten $O(\min (d(r_{i}), d(a_{i})))$, mit den Knotengraden $d(r_{i}) $von Knoten $r_{i}$ und $d(a_{i}) $ von Knoten $a_{i}$ ~\cite{docs_graph_tool} -> Worst Case sind alle Knoten des Graphen ausschließlich mit den beiden Knoten $r_{i}$ und $a_{i}$ verbunden, also haben $r_{i}$ und $a_{i}$ jeweils einen Knotengrad, welcher der Anzahl der Knoten des Graphen entspricht mit Ausnahme des Knotens selbst, also : $O(V+\min (d(r_{i}), d(a_{i}))) = O(V+\min (d(V+1), d(V-1))) = O(V+V-1) = O(2 \, \cdotp V) = O(V)$ \\
+	 Worst-Case muss die Laufzeit aller Fälle summiert werden:\\
+	 Fall (1): über alle out\_neighbors $d(r_{i_{out}})$ des Knotens $r_{i}$ Kante suchen im Worst Case hat $r_{i}$ nur ausgehende Kanten zu allen Knoten des Graphen -> in $ O(d(r_{i_{out}}) \, \cdotp V) = O((V-1) \, \cdotp V) = O(V^2)$, außerdem die Likelihood als Kanteneigenschaft abrufen in $ O(1) $ => also insgesamt $ O(V^2) + O(1)=O(V^2)$\\
+	 Fall (2): analog über alle in\_neighbors $d(r_{i_{in}})$ ebenfalls in $O(V^2)$ aber mit Likelihoodberechnung der rückläufigen Kanten in $O(E \, \cdotp (V+k))$ => insgesamt $ O(V^2 + E \, \cdotp (V + k)) $ \\
+	 Fall (3): cigar-Tupel finden $O(V)$ (siehe laufzeitberechnung cigar tupel) + likelihoodberechnung $O(E \, \cdotp (V+k))$ => gesamt: $ O(V + E \, \cdotp (V + k)) $\\
+	 Fall (4): konstanten Wert zurückgeben in $ O(1) $\\
+	 => Gesamt Fall 1 bis 4: \\
+	 \begin{equation} \label{eqn:3-xxx}
+	 \tag{3-xxx}
+	 \begin{aligned}
+	 &\ {} O(V^2) + O(V^2 + E \, \cdotp (V + k)) + O(V + E \, \cdotp (V + k)) + O(1)  \\
+	 & \ = O(2 \, \cdotp V^2 +2 \, \cdotp E \, \cdotp (V + k) + V + E\\
+	 &\ = O(V^2 + E \, \cdotp (V + k) + V + E) \\
+	 &\ = O(V \, \cdotp (V + 1) + E \, \cdotp (1 + V + k))\\
+	 &\ = O(V  \, \cdotp  V + E \, \cdotp  (V + k))\\
+	 &\ = O(V^2 + E \, \cdotp (V + k))\\
+	 \end{aligned}
+	 \end{equation}
+	 entspricht also der Laufzeit zur Konstruktion des Graphen im Worst Case
+	\item pseudocode
+	%\begin{algorithm}[H]
+	%	\caption{Likelihood zwischen Read und Allel bestimmen}  \label{alg:cig}
+	%	\begin{algorithmic}[1]	
+	%ToDo -> to pseudocode
+	%def get_allele_likelihood_read(comp, allele, node):
+	   % # obtian one arbitrary out edge of node that points to another node with 
+	   % # sequence = allele
+       % out_neighbors = comp.get_out_neighbors(node)
+       % in_neighbors = comp.get_in_neighbors(node)
+       % # search for existing edge from given node to target node with 
+       % # sequence = allele
+       % for neighbor in out_neighbors:
+       %     if comp.vertex_properties['sequence'][neighbor] == allele:
+       %         return comp.edge_properties["likelihood"][comp.edge(node, neighbor)]
+       % # search for reverse target node with sequence = allele to given node
+       % qual = comp.vp["quality"][node]
+       % for neighbor in in_neighbors:
+       %     if comp.vertex_properties['sequence'][neighbor] == allele:
+       %         return get_alignment_likelihood(comp, 
+       %         list(eval(comp.edge_properties['cigar-tuples'][comp.edge(neighbor,  
+       %         node)])), qual, reverse=True)
+       % cigar_tuples = get_cigar_tuples(comp, comp.vp["sequence"][node], allele)
+       % if cigar_tuples:
+       %     return get_alignment_likelihood(comp, list(eval(cigar_tuples[0])), qual, 
+       %     reverse=cigar_tuples[1])
+       % return 0
+	%	\end{algorithmic}
+	%\end{algorithm}
+\end{itemize}
+Methode get\_cigar\_tuples():\\
+\begin{itemize}
+	\item argument sind 2 sequenzen $ s_{source} $ und $ s_{target} $ -> rückgabe CIGAR-Tupel einer kante zwischen source und target und eines boolschen Wertes für das argument 'reverse' der Funktion get\_alignment\_likelihood(), die im anschluss die übergebenenen CIGAR-Tupel zur likelihood berechnung verwendet. Verläuft die Kante von $ s_{source} $ zu $ s_{target} $ so ist dieser Wert False, verläuft sie dagegen in Gegenrichtung so gilt reverse = True. \\
+    \item Algorithmus:
+	\item 1. im Graphen Menge aller Knoten suchen $ S_{source} $, die die sequenz $ s_{source} $ besitzen $O(V)$ (vgl. Kap. \ref{subsec:edges}) \\
+	\item 2. im Graphen Menge aller Knoten suchen $ S_{target} $, die die sequenz $ s_{target} $ besitzen $ O(V) $\\
+	\item 3. im Graphen eine Kante suchen die einen der Knoten $v$ aus $ S_{source} $ mit einem der Knoten $w$ aus $ S_{target} $ verbindet. Falls eine solche Kanten existiert, dann werden die CIGAR-Tupel dieser Kanten sowie der boolsche Wert False zurückgegeben. $O(\min (d(v), d(w)))$, mit den Knotengraden $d(v) $von Knoten $v$ und $d(w) $ von Knoten $w$ ~\cite{docs_graph_tool}\\
+	\item 4. war die Suche aus 3. erfolglos, so wird eine Kante in Gegenrichtung gesucht, d.h. eine Kante die zwischen einem Knoten aus $ S_{target} $ zu einem Knoten aus $ S_{source} $ verläuft. Wurde eine solche Kanten gefunden, so werden ihre CIGAR-Tupel zusammen mit dem boolschen Wert True zurückgegeben $O(E)$.\\
+	\item 5. Existiert im gesamten Graphen keine Kante, die  $ s_{source} $ und $ s_{target} $ verbindet, so wird None zurückgegeben.$O(\min (d(v), d(w)))$\\
+	\item -> gesamt $ O(V+\min (d(v), d(w))$	\\
+	\item -> pseudocode\\
 
-
-
+	%\begin{algorithm}[H]
+	%	\caption{CIGAR-Tupel bestimmen}  \label{alg:cig}
+	%	\begin{algorithmic}[1]	
+		%ToDo -> to pseudocode
+		%def get_cigar_tuples(comp, seq, allele):
+		%    source_nodes = [comp.vertex_index[node] for node in
+		%    find_vertex(comp, comp.vp["sequence"], seq)]
+		%    target_nodes = [comp.vertex_index[node] for node in find_vertex(comp, comp.vp["sequence"], allele)]
+		%    for node_s in source_nodes:
+		%        for node_t in target_nodes:
+		%            edge = comp.edge(node_s, node_t)
+		%            if edge:
+		%                return comp.edge_properties["cigar-tuples"][edge], False
+		%            rev_edge = comp.edge(node_t, node_s)
+		%            if rev_edge:
+		%                return comp.edge_properties["cigar-tuples"][rev_edge], True
+		%    return None
+	%	\end{algorithmic}
+	%\end{algorithm}
+\end{itemize}
+=> gesamtlaufzeit step 2.1: $O(V+\min (d(v), d(w)))$ für CIGAR-Tupel-Suche -> im Worst Case $O(V+\min (d(v), d(w))) = O(V)$ (Vgl. Laufzeit get\_allele\_likelihood\_read(), Fall 1), Likelihood read-allel $O(V^2 + E \, \cdotp (V + k))$
 
 \section{Bestimmung der maximalen Likelihood der Loci} \label{sec:lh_loci}
 \subsection{} \label{subsec:}
