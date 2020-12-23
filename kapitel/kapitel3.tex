@@ -46,7 +46,7 @@ Jede Base $ b $ an Position $ i $ einer Readsequenz $ s $ der Länge $ k $ läss
 L_{i\,_{match}} = 1 - p_{i\,_{query}}
 \end{equation}
 
-Bei einem Mismatch dagegen müssen die Wahrscheinlichkeiten von Mutationen und Sequenzierfehlern berücksichtigt werden. Im Falle einer Mutation muss in die Wahrscheinlichkeit eines Matches auch die Mutationsrate des aufgetretenen Mismatches $ m_{rate} \in \{m_{sub} $, $ m_{ins} $, $ m_{del}\} $ einbezogen werden:
+Bei einem Mismatch dagegen müssen die Wahrscheinlichkeiten von Mutationen und Sequenzierfehlern berücksichtigt werden. Im Falle einer Mutation muss in die Wahrscheinlichkeit eines Matches auch die Mutationsrate des aufgetretenen Mismatches $ m_{rate} \in \{\,m_{sub},\,  m_{ins},\, m_{del}\,\} $ einbezogen werden:
 \begin{equation} \label{eqn:3-4}
 \tag{3-4}
 L_{i\,_{mut}} = m_{rate}\; \cdotp \;(1 - p_{i\,_{query}})
@@ -120,9 +120,9 @@ Die Bestimmung und Indexierung der Zusammenhangskomponenten erfolgt durch graph-
 
 In der Log-Datei wird die Anzahl der Knoten aller Zusammenhangskomponenten als Histogramm festgehalten. Ebenso wird dort für alle Komponenten mit mehr als einem Element die Anzahl ihrer Knoten, Kanten und Eigenschaften aufgelistet.
 
-Über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| können optional auch für die Zusammenhangskomponenten jeweils Visualisierungen und detaillierte Graphinformationen in den oben genannten Formaten (Kap. \ref{subsec:edges}) ausgegeben werden. Zudem kann optional auch der gesamte Graph mit den Komponentenidizes als Knoteneigenschaften gespeichert werden. In der visuellen Darstellung werden seine Knoten entsprechend der zugehörigen Zusammenhangskomponente eingefärbt, seine Kantenfärbung richtet sich weiterhin nach der aus \eqref{eqn:3-3} resultierenden Likelihood.
+Über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| können optional auch für die Zusammenhangskomponenten jeweils Visualisierungen und detaillierte Graphinformationen in den oben genannten Formaten (Kap. \ref{subsec:edges}) ausgegeben werden. Zudem kann optional auch der gesamte Graph mit den Komponentenindizes als Knoteneigenschaften gespeichert werden. In der visuellen Darstellung werden seine Knoten entsprechend der zugehörigen Zusammenhangskomponente eingefärbt, seine Kantenfärbung richtet sich weiterhin nach der aus \eqref{eqn:3-3} resultierenden Likelihood.
 
-\subsection{Laufzeitanalyse zur Konstruktion des Graphen}
+\subsection{Laufzeitanalyse zur Konstruktion des Graphen} \label{subsec:runtime_graph}
 Wie an entsprechender Stelle bereits beschrieben, ist für die Erzeugung der Knoten eine Laufzeit von $ O(V^2) $ (Kap. \ref{subsec:nodes}) erforderlich, das Hinzufügen der Kanten kann in $ O(E\, \cdotp V) $ erfolgen (Kap. \ref{subsec:edges}). Somit wird für den vollständigen Aufbau des Graphen eine Laufzeit von $ O(V \, \cdotp (V+E)) $ benötigt. In Zusammenschau mit der für die Extraktion der Zusammenhangskomponenten erforderliche Laufzeit von $ O(C \, \cdotp V + (V + E)) $ (Kap. \ref{subsec:comp}) ergibt sich daraus nach  \eqref{eqn:3-7} eine Laufzeit von $ O(V \, \cdotp (V + C) + E \, \cdotp (V + 1)) $. 
 \begin{equation} \label{eqn:3-7}
 \tag{3-7}
@@ -160,8 +160,9 @@ Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige
 \end{aligned}
 \end{equation}
 
-\section{Bestimmung der maximalen Likelihood der Allele} \label{sec:lh_allele}
-\subsection{} \label{subsec:}
+Zusammenfassend soll daher für die folgenden Berechnungen vereinfachend der Mittelwert der Readlänge als konstant betrachtet werden, also $\overline{k}=const$, so dass für die Berechnung der Likelihoods zwischen den Reads eine Laufzeit von $ O(V) $ angenommen werden kann und damit die Gesamtlaufzeit zur Konstruktion des Graphen in $ O(E\, \cdotp (k + V)) $ erfolgt.
+\section{Bestimmung der maximalen Likelihood der Allele} \label{sec:max_lh_allele}
+\subsection{Bestimmung der Allele und ihrer möglichen Häufigkeitsverteilung} \label{subsec:cand_allele}
 ======================= draft =======================\\
 Die einzelnen Zusammenhangskomponenten repräsentieren einen oder mehrere Loci.\\
 0. get\_candidate\_alleles(): gibt die in der comp vorkommmenden seq lexikographisch sortiert fpr deterministischere Ergebnisse zurück. Übersteigt die Größe des Clusters, d.h. die Knotenzahl einer Zusammenhangskomponenten einen in der Konfigurationsdatei als treshold-cluster-size festgelegten Wert, so wird von den im Cluster vorkommenden Sequenzen zunächst die absolute Häufigkeit bestimmt. Es werden dann nur diejenigen sequenzen lexikographisch sortier zurückgegeben, die einen weiteren, ebenfalls in der config festgelegten schwellenwert, 'treshold-seq-noise', überschreiten.\\
@@ -183,23 +184,24 @@ vafs kandidaten bestimmen:\\
 	\item alle Kombinationen mit wiederholung für $n_{alleles} $ bestimmen -> mehrfaches vorkommen erlaubt -> n in binomialkoeffizient wird durch $(n + k -1)$ ersetzt: $\binom{n + k - 1}{k} = \frac{(n+k-1)!}{(n-1)!\, \cdotp k!}$\\ 
 	durch combinations\_with\_replacement  aus python-library itertools umgesetzt:
 	Bsp.: \\	
-	$ n_{alleles} = 2$: \\
+	$ n_{alleles} = 2, ploidy = 2$: \\
 	{[(0, 0), (0, 1), (1, 1)]}\\
-	$ n_{alleles} = 3$: \\
+	$ n_{alleles} = 3, ploidy = 2$: \\
 	{[(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 0, 2), (0, 0, 1, 1), (0, 0, 1, 2), (0, 0, 2, 2), (0, 1, 1, 1), (0, 1, 1, 2), (0, 1, 2, 2), (0, 2, 2, 2), (1, 1, 1, 1), (1, 1, 1, 2), (1, 1, 2, 2), (1, 2, 2, 2), (2, 2, 2, 2)]}\\
 		
 	\item relative Häufigkeiten $ h_{n} $  aus den absoluten Häufigkeiten jedes allesl aus jeder Kombination der allelverteilungen bestimmen:  $ h_{n} = \frac{H_{n}} {n_{alleles}} $\\
 	Bsp.: \\
-	$ n_{alleles} = 2$: \\
+	$ n_{alleles} = 2, ploidy = 2$: \\
 	{[1.0, 0.0]}, {[0.5, 0.5]}, {[0.0, 1.0]} \\
-	$ n_{alleles} = 3$: \\
+	$ n_{alleles} = 3, ploidy = 2$: \\
 	{[{[1.0, 0.0, 0.0]}, {[0.75, 0.25, 0.0]}, {[0.75, 0.0, 0.25]}, {[0.5, 0.5, 0.0]}, {[0.5, 0.25, 0.25]}, {[0.5, 0.0, 0.5]},
 		{[0.25, 0.75, 0.0]}, {[0.25, 0.5, 0.25]}, {[0.25, 0.25, 0.5]}, {[0.25, 0.0, 0.75]}, {[0.0, 1.0, 0.0]}, {[0.0, 0.75, 0.25]}, {[0.0, 0.5, 0.5]}, {[0.0, 0.25, 0.75]}, {[0.0, 0.0, 1.0]}]} \\
 	\item die relativen Häufigkeiten der Allelverteilungen sollen im weiteren als VAF (Variant allele frequency) oder Fraktionen bezeichnet werden. Sie entsprechen den in Kap. \ref{subsec:sol_allele_lh} beschriebenen Franktionen $ \Theta = (\theta_{1}, \dots , \theta_{n}) $\\
 \end{itemize}
 
-2. Berechnung der Likelihoods anhand der möglichen Häufigkeitsverteilungen:\\
-2.1 Berechnung der Wslk, einen Read zu beobachten anhand der gegebenen Allele-Fraktion, get\_allele\_likelihood\_read(): Vgl Kap. \ref{subsec:sol_allele_lh}, Formel ....(step 2.1)
+\subsection{Berechnung der Likelihoods der Allele anhand der möglichen Häufigkeitsverteilungen} \label{subsec:lh_allele}
+für jede Zusammenhangskomponente
+2.1 Berechnung der Wslk, einen Read zu beobachten anhand der gegebenen Allele-Fraktion, get\_allele\_likelihood\_read(): Vgl Kap. \ref{subsec:sol_allele_lh}, Formel  \eqref{eqn:2-xxx1} (step 2.1)
 \begin{itemize}
 	\item für jeden Read soll zunächst die Wslk gesucht werden, dass der Read durch seq-fehler aus einem der Kanditatenallele entstanden ist. 
 	\item hierzu werden für jeden Read $ r_{i} $ die ausgehende Kanten gesucht, die jeweils zu jedem der Kandidatenallele $ a_{i} $ führen und die nach \eqref{eqn:3-2} berechnete Likelihood zurückgegeben.
@@ -212,22 +214,19 @@ vafs kandidaten bestimmen:\\
 	 Laufzeit Kante suchen bei bekannter source und target Knoten $O(\min (d(r_{i}), d(a_{i})))$, mit den Knotengraden $d(r_{i}) $von Knoten $r_{i}$ und $d(a_{i}) $ von Knoten $a_{i}$ ~\cite{docs_graph_tool} -> Worst Case sind alle Knoten des Graphen ausschließlich mit den beiden Knoten $r_{i}$ und $a_{i}$ verbunden, also haben $r_{i}$ und $a_{i}$ jeweils einen Knotengrad, welcher der Anzahl der Knoten des Graphen entspricht mit Ausnahme des Knotens selbst, also : $O(V+\min (d(r_{i}), d(a_{i}))) = O(V+\min (d(V+1), d(V-1))) = O(V+V-1) = O(2 \, \cdotp V) = O(V)$ \\
 	 Worst-Case muss die Laufzeit aller Fälle summiert werden:\\
 	 Fall (1): über alle out\_neighbors $d(r_{i_{out}})$ des Knotens $r_{i}$ Kante suchen im Worst Case hat $r_{i}$ nur ausgehende Kanten zu allen Knoten des Graphen -> in $ O(d(r_{i_{out}}) \, \cdotp V) = O((V-1) \, \cdotp V) = O(V^2)$, außerdem die Likelihood als Kanteneigenschaft abrufen in $ O(1) $ => also insgesamt $ O(V^2) + O(1)=O(V^2)$\\
-	 Fall (2): analog über alle in\_neighbors $d(r_{i_{in}})$ ebenfalls in $O(V^2)$ aber mit Likelihoodberechnung der rückläufigen Kanten in $O(E \, \cdotp (V+k))$ => insgesamt $ O(V^2 + E \, \cdotp (V + k)) $ \\
-	 Fall (3): cigar-Tupel finden $O(V)$ (siehe laufzeitberechnung cigar tupel) + likelihoodberechnung $O(E \, \cdotp (V+k))$ => gesamt: $ O(V + E \, \cdotp (V + k)) $\\
+	 Fall (2): analog über alle in\_neighbors $d(r_{i_{in}})$ ebenfalls in $O(V^2)$ aber mit Likelihoodberechnung der rückläufigen Kanten in $O(k)$ => insgesamt $ O(V^2 +k) = O(V^2)$, da $\overline{k}=const$ (siehe \ref{subsec:runtime_graph})\\
+	 Fall (3): cigar-Tupel finden $O(V)$ (siehe laufzeitberechnung cigar tupel) + likelihoodberechnung $O(k)$ => gesamt: $ O(V +k) = O(V) $\\
 	 Fall (4): konstanten Wert zurückgeben in $ O(1) $\\
 	 => Gesamt Fall 1 bis 4: \\
-	 \begin{equation} \label{eqn:3-xxx}
-	 \tag{3-xxx}
+	 \begin{equation} \label{eqn:3-xxx1}
+	 \tag{3-xxx1}
 	 \begin{aligned}
-	 &\ {} O(V^2) + O(V^2 + E \, \cdotp (V + k)) + O(V + E \, \cdotp (V + k)) + O(1)  \\
-	 & \ = O(2 \, \cdotp V^2 +2 \, \cdotp E \, \cdotp (V + k) + V + E\\
-	 &\ = O(V^2 + E \, \cdotp (V + k) + V + E) \\
-	 &\ = O(V \, \cdotp (V + 1) + E \, \cdotp (1 + V + k))\\
-	 &\ = O(V  \, \cdotp  V + E \, \cdotp  (V + k))\\
-	 &\ = O(V^2 + E \, \cdotp (V + k))\\
+	 &\ {} O(V^2) + O(V^2) + O(V) + O(1))  \\
+	 & \ = O(2 \, \cdotp V^2 + V )\\
+	 &\ = O(V^2 + V) \\
+	 &\ = O(V^2) \\
 	 \end{aligned}
 	 \end{equation}
-	 entspricht also der Laufzeit zur Konstruktion des Graphen im Worst Case
 	\item pseudocode
 	%\begin{algorithm}[H]
 	%	\caption{Likelihood zwischen Read und Allel bestimmen}  \label{alg:cig}
@@ -265,9 +264,9 @@ Methode get\_cigar\_tuples():\\
 	\item 1. im Graphen Menge aller Knoten suchen $ S_{source} $, die die sequenz $ s_{source} $ besitzen $O(V)$ (vgl. Kap. \ref{subsec:edges}) \\
 	\item 2. im Graphen Menge aller Knoten suchen $ S_{target} $, die die sequenz $ s_{target} $ besitzen $ O(V) $\\
 	\item 3. im Graphen eine Kante suchen die einen der Knoten $v$ aus $ S_{source} $ mit einem der Knoten $w$ aus $ S_{target} $ verbindet. Falls eine solche Kanten existiert, dann werden die CIGAR-Tupel dieser Kanten sowie der boolsche Wert False zurückgegeben. $O(\min (d(v), d(w)))$, mit den Knotengraden $d(v) $von Knoten $v$ und $d(w) $ von Knoten $w$ ~\cite{docs_graph_tool}\\
-	\item 4. war die Suche aus 3. erfolglos, so wird eine Kante in Gegenrichtung gesucht, d.h. eine Kante die zwischen einem Knoten aus $ S_{target} $ zu einem Knoten aus $ S_{source} $ verläuft. Wurde eine solche Kanten gefunden, so werden ihre CIGAR-Tupel zusammen mit dem boolschen Wert True zurückgegeben $O(E)$.\\
-	\item 5. Existiert im gesamten Graphen keine Kante, die  $ s_{source} $ und $ s_{target} $ verbindet, so wird None zurückgegeben.$O(\min (d(v), d(w)))$\\
-	\item -> gesamt $ O(V+\min (d(v), d(w))$	\\
+	\item 4. war die Suche aus 3. erfolglos, so wird eine Kante in Gegenrichtung gesucht, d.h. eine Kante die zwischen einem Knoten aus $ S_{target} $ zu einem Knoten aus $ S_{source} $ verläuft. Wurde eine solche Kanten gefunden, so werden ihre CIGAR-Tupel zusammen mit dem boolschen Wert True zurückgegeben $O(\min (d(v), d(w)))$.\\
+	\item 5. Existiert im gesamten Graphen keine Kante, die  $ s_{source} $ und $ s_{target} $ verbindet, so wird None zurückgegeben. O(1)\\
+	\item -> gesamt $ O(V+\min (d(v), d(w)+\min (d(v), d(w)) = O(V+\min (d(v), d(w))$	\\
 	\item -> pseudocode\\
 
 	%\begin{algorithm}[H]
@@ -290,11 +289,91 @@ Methode get\_cigar\_tuples():\\
 	%	\end{algorithmic}
 	%\end{algorithm}
 \end{itemize}
-=> gesamtlaufzeit step 2.1: $O(V+\min (d(v), d(w)))$ für CIGAR-Tupel-Suche -> im Worst Case $O(V+\min (d(v), d(w))) = O(V)$ (Vgl. Laufzeit get\_allele\_likelihood\_read(), Fall 1), Likelihood read-allel $O(V^2 + E \, \cdotp (V + k))$
 
-\section{Bestimmung der maximalen Likelihood der Loci} \label{sec:lh_loci}
-\subsection{} \label{subsec:}
+2.2 Summe der Wslk über die Häufigkeiten aller Kandidatenallele in einer vaf-kombi für 1 read im Worst Case $O(n + \phi - (n \mod \phi))$ mit $n$ Anzahl der Allele und $\phi$ ploidie; Formel \eqref{eqn:2-xxx2} calc\_vafs\_likelihood\_read()\\ 
+
+2.3 Produkt für alle Reads $O(V)$; calc\_vafs\_likelihood(); Formel \eqref{eqn:2-xxx3}\\ 
+
+2.4 schritte 2.1 bis 2.3 für alle vafs/für alle Kombinationsmöglichkeiten der Allele bestimmen und daraus => Maximum \\
+
+=> gesamtlaufzeit:\\
+\begin{itemize}
+	\item da jeder Schritt 2.1 bis 2.4 komponentenweise berechnet werden, d.h. jeder Knoten und jede Kante jeder Komponente betrachtet wird, entspricht dies allen Knoten und Kanten des Graphen, also wird die Laufzeitberechnung zusammenfassend auf allen Knoten und Kanten berechnet mit $O(\sum_{i=1}^{|C|} C_{i} \, \cdotp V_{c_{i}})=O(V) $ und $O(\sum_{i=1}^{|C|} C_{i} \, \cdotp E_{c_{i}})=O(E) $ mit $C$ Menge der Zusammenhangskomponenten, $C_{i}$ ist $i$-te Zusammenhangskomponenten, $V_{c_{i}}$ Anzahl der Knoten innerhalb der Komponente $C_{i}$ und $E_{c_{i}} $ Anzahl der Kanten innerhalb der Komponente  $C_{i}$
+	\item step 2.1: $O(V^2)$\\
+	\item step 2.2: im Worst Case hat jeder Knoten eine einzigartige sequenz, dann entspricht die Anzahl der Allele der Anzahl der Knoten, also $n = V$, die Laufzeit kann also maximal $O(n + \phi - (n \mod \phi) = O(V+\phi-1)= O(V+\phi)) = O(V)$ betragen, da $\phi = const$ gilt $ O(V+\phi)) = O(V) $
+	\item insgesamt ergibt sich also aus 2.1 bis 2.3 eine Laufzeit von:\\
+    \begin{equation} \label{eqn:3-xxx2}
+	\tag{3-xxx2}
+	\begin{aligned}
+	&\ {} O(V) \, \cdotp (O(V) + O(V^2)\\
+	&\ = O(V^2 + V^3) \\
+	&\ = O(V^3)\\
+	\end{aligned}
+	\end{equation}
+\end{itemize}
+
+in den log-files werden für jede Komponente die anzahl der allele, die ploidie und die Häufigkeitsverteilung aus der vaf mit der maximalen likelihood mit den dazugehörigen allelsequenzen festgehalten.
 
 
-\section{Ausgabe der Loci im VCF-Format} \label{sec:vcf}
-\subsection{} \label{subsec:}
+\section{Bestimmung der maximalen Likelihood der Loci} \label{sec:max_lh_loci}
+Für jede Zusammenhangskomponente\\
+jede zusammenhangskomponente kann auch mehr als nur einen Locus beinhalten.\\
+\subsection{Bestimmung der möglichen Loci} \label{subsec:max}
+ermittlung der möglichen loci-Kombinationen erfolgt in der Funktion get\_candidate\_loci() analog zur Funktion get\_candidate\_vafs() (vgl. Kap \ref{subsec:cand_allele}):
+\begin{itemize}
+	\item auch hier ist die bereits beschriebene anzahl der tatsächlich zu erwartenden allele $n_{alleles}$ aus get\_max\_parsimony\_n\_alleles() grundlage für die berechnung der möglichen loci-Kombinationen 
+	\item anschließend auch hier durch combinations\_with\_replacement (python-library itertools) alle Kombinationen mit wiederholung für $n_{alleles} $ bestimmen -> mehrfaches vorkommen erlaubt, reihenfolge irrelevant 
+	\item die daraus resultierenden Allel-Kombinationen werden denn aber mit Hilfe der Funktion grouper (aus den itertools recipes der python-library itertools) zu gruppen entsprechend der in der Konfigurationsdatei angegebenen ploidie zusammengefasst.
+	\item dadurch entstehen verschiedene Kombinationen von möglichen loci als listen von Tupeln:\\
+		Bsp.: \\
+	    $ n_{alleles} = 2, ploidy = 2$: \\
+	    {[(0, 0)]}, {[(0, 1)]}, {[(1, 1)]} \\
+	\item falls aufgrund der erwarteten tatsächlichen anzahl der allele $n_{alleles} $ mehrere Loci möglich sind, resultieren Kombinationen von Loci:\\
+	    $ n_{alleles} = 3, ploidy = 2$: \\
+	    {[(0, 0), (0, 0)]}, {[(0, 0), (0, 1)]}, {[(0, 0), (0, 2)]}, {[(0, 0), (1, 1)]}, {[(0, 0), (1, 2)]}, {[(0, 0), (2, 2)]}, {[(0, 1), (1, 1)]}, {[(0, 1), (1, 2)]}, {[(0, 1), (2, 2)]}, {[(0, 2), (2, 2)]}, {[(1, 1), (1, 1)]}, {[(1, 1), (1, 2)]}, {[(1, 1), (2, 2)]}, {[(1, 2), (2, 2)]}, {[(2, 2), (2, 2)]} \\
+	\item jedes Tupel der Länge der ploidie entspricht also einem möglichen Locus
+\end{itemize}
+
+\subsection{Zuordnung der wahrscheinlichsten Allelverteilung zu passenden Loci} \label{subsec:lh_loci}
+Für jede mögliche Kombination der Loci  aus get\_candidate\_loci() wird zunächst durch die Indikatorfunktion indicator\_constrait() nach Formel \eqref{eqn:2-xxx4} geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten vaf mit maximaler Likelihood, also der wahrscheinlichsten Allelverteilung, zuordnen lassen. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Heterozygotiewahrscheinlichkeit für die allele der loci dieser Kombination berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben.
+
+Trifft die Bedingung der Indikatorfunktion zu, so folgt die Berechnung der wahrscheinlichsten Zuordnung der Loci zu den Allelen aus den max. Likelihood vafs. Dafür werden der Loci-Kombination zunächst die dazugehörigen allelsequenzen zugeordnet. Die allel-nummer in einer Loci-Kombination entspricht dabei dem index der liste der allelsequenzen der kandidaten-allele aus get\_candidate\_alleles() (siehe Kap. \ref{subsec:cand_allele}).
+
+Analog zur Likelihoodberechnung beim paarweisen Vergleich der Reads unter Berücksichtigung der Sequenzierfehlerwahrscheinlichkeit \ref{subsec:edges} erfolgt auch die Berechnung der Likelihood für eine bestimmte Loci-Kombination durch den paarweisen Vergleich der Allele im Sinne eines pair Hidden Markov Models $ pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}}) $ (vgl. Kap. ~\ref{subsec:sol_phmm}). Allerdings erfolgt nun der Vergleich unter Berücksichtigung der Heterozygotiewahrscheinlichkeit nach Formel \eqref{eqn:2-xxx5}. 
+
+Durch die Funktion get\_allel\_linkelihood\_allele() werden dabei die Allelsequenzen der Loci-Kombination paarweise miteinander verglichen. Hierfür wird für jedes Paar der CIGAR-String durch die in Kap. ~\ref{subsec:lh_allele} bereits beschriebene Funktion get\_cigar\_tuples() ermittelt.
+
+Der CIGAR-String wird anschließend dafür benötigt aus den paarweisen Kombinationen der Allelsequenzen innerhalb eines Locus die Likelihood im Hinblick auf die Heterozygotiewahrscheinlichkeit zu berechnen. Analog zum Algorithmus ~\ref{alg:lh_read} wird in der Funktion  get\_heterozygosity() die Likelihood über die Heterozygotiewahrscheinlichkeiten aller Matches und Mismatches berechnet.
+
+Dabei entspricht im Falle eines Mismatches die Likelihood der in der Konfigurationsdatei angegebenen Heterozygotiewahrscheinlichkeit $ \eta $ für die betreffende Mutationsart, also $ \eta_{sub} $ für Substitutionen , $ \eta_{ins} $ für Insertionen bzw. $ \eta_{del} $ Deletionen. Sei $i$ der Index der betreffenden Base innerhalb der betrachteten Allelsequenz und $ \eta_{rate} \in \{\,\eta_{sub},\, \eta_{ins},\, \eta_{del}\,\}$, dann berechnet sich bei einem Mismatch die Likelihood $L_{i}$ der Base nach Formel \eqref{eqn:3-xxx3}.
+\begin{equation} \label{eqn:3-xxx3}
+\tag{3-xxx3}
+L_{i\,_{mismatch}} = \eta_{rate}
+\end{equation}
+
+Im Falle eines Matches senkt die Möglichkeit eines Mismatches die Likelihood der betreffenden Base entsprechend um die Summe der Heterozygotiewahrscheinlichkeiten der genannten Mutationsarten (Formel \eqref{eqn:3-xxx4}).
+\begin{equation} \label{eqn:3-xxx4}
+\tag{3-xxx4}
+L_{i\,_{match}} = 1 - (\eta_{sub} + \eta_{ins} + \eta_{del})
+\end{equation}
+
+Die Likelihood $ Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) $ des paarweisen Vergleichs der Allele $a_{l_{j,1}}$ und $a_{l_{j,2}}$ hinsichtlich der Zuordnung zu den Loci-Kombinationen errechnet sich schließlich aus dem Produkt der Wahrscheinlichkeiten der einzelnen Basen:
+\eqref{eqn:3-xxx5}).
+\begin{equation} \label{eqn:3-xxx5}
+\tag{3-xxx5}
+Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) = pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}}) = \prod_{i=1}^{k}L_{i}
+\end{equation}
+
+
+komponentenweise mit $C = V$ im Worst Case (Kap. \ref{subsec:comp}) -> $O(V)$
+
+\section{Ausgabe der wahrscheinlichsten Loci als VCF-Datei} \label{sec:vcf}
+
+Ausgabe im VCF-Format, tab-separierter body\\
+Als Header der Spalten: CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMA, <Name der sample>
+get\_sorted\_loci\_alleles(): lexikographisch sortierte Liste der Menge (d.h. ohne Duplikate) der Allelsequenzen der loci-Kombination mit max. Likelihood $A_{opt}$-> der erste Eintrag wird in die REF-Spalte des VCF-Files eingetragen, alle übrigen kommasepariert in die ALT-Spalte
+
+Da die vollständige Sequenz der Allele angegeben wird ist immer POS=1
+CHROM wird für die Bennennung der Loci genutzt im Format LOC<ldf.-Nr>
+ID, QUAL, FILTER und INFO werden hier nicht genutzt und mit "." als Platzhalter bei allen Loci befüllt
+FORMAT für alle Loci wird der Genotype-Datentyp "GT" angegeben, dieser wird in der Spalte der sample spezifiziert. Da die Indizes der Loci der gesamten Liste der Kandidaten-Allele $A_{cand}$ zugeordnet sind, muss ihre Indizierung nun auf $A_{opt}$ angepasst werden.  Dafür werden in get\_alleles\_matched\_to\_loci() zunächst jedem Locus der max Likelihood Loci-Kombination die dazugehörigen Allelsequenzen zugeordnet. Diese werden anschließend in get\_gt\_indices() den Indizes der entsprechenden Sequenz aus $A_{opt}$ zugeordnet, so dass das lexikographisch erste Allel, also REF mit 0 im Genotyp indiziert ist, die Allele aus ALT entsprechend mit höheren Indizes entsprechend ihrer Sortierung in $A_{opt}$. Nun lässt sich der Genotyp im Bezug auf die Sequenzen in REF und ALT aus diesen Indizes und getrennt durch "/" direkt angeben. Dies geschieht in der der Funktion get\_genotype(), deren Ergebnis dann in das sample-Feld eingetragen wird.

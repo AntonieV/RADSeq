@@ -25,14 +25,23 @@ Bewertung/wslk ob ein read aus einem anderen read entstanden ist\\
 \noindent0. noise nicht als Kandidaten-Allele -> liste lexicogra. sortierter Allele\\
 
 \noindent1. lh zwischen 1 read und 1 allel; likelihood im pair: Wslk, dasss von 1 bestimmten Allel $a_{i}$ mit Fehlerrate $\epsilon$ tatsächlich die readsequenz $s_{r}$ stammt \\
+$s_{r}$ Sequenz von Read $r$, $q_{r}$ Basenqualität aller Basen von Read $r$, $a_{i}$ Allel $i$ aus der Menge der Kandidatenallele $A=(a_{1},\dots, a_{n})$ mit Anzahl $n$ und $\epsilon$ Sequenzierfehlerrate
+\begin{equation} \label{eqn:2-xxx1}
+\tag{2-xxx1}
+Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) = pairHMM_{\epsilon,q_{r}}(a_{i}, s_{r})
+\end{equation}
 
-\noindent2. Info über alle Kandidatenallele für 1 read; Zusammenhangskomponenten kann auch >1 locus enthalten -> Fractions finden in der möglichen Menge von loci \\
+\noindent2. Info über alle vafs aller Kandidatenallele für 1 read; Zusammenhangskomponenten kann auch >1 locus enthalten -> Fractions finden in der möglichen Menge von loci \\
 Berechnung der Wslk, einen Read zu beobachten anhand der gegebenen Allele-Fraktion\\
 die Wslk der Fraktion $\Theta_{i}$ muss sich aus den tatsächlichen Beobachtungen ergeben => Urnenmodell (entspricht binominal model)\\
 Urnenmodell: bsp. 2 farben in unterschiedl. Menge -> Wslk, wenn n Kugeln gezogen werden, dass dabei jeweils genau 50\% von jeder Farbe gezogen wurden (Binomial Formel), Anzahl der roten Kugeln P (Erfolgswslk) $\Theta_{i}$ und  > 2 Farben => Mulitnomialverteilung $\Theta_{i}$ + individuellen Verteilung $Pr$: $\Theta_{i} * Pr$
 es gilt $\sum \Theta_{i} = 1$ => die mögliche Zuordnung entspricht der Häufigkeit die gezogen wurde $\Theta_{i}$ \\
 Wslk. $ s_{r} $ zu beobachten unter der gegebenen Verteilung aus den Fraktionen; Wslk read zu sehen gegeben das Allel, nur ausgehend von Sequenzierfehlern \\
-
+$\Theta=\theta_{1},\dots,\theta_{n}) \in [0,1]^n $ sind Allel-Fraktionen, $n$ ist Anzahl der Allele \\
+\begin{equation} \label{eqn:2-xxx2}
+\tag{2-xxx2}
+Pr(s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n}) = \sum_{i=1}^{n}\theta_{i} \, \cdotp Pr(T=s_{r} \, | \, S=a_{i}, \epsilon)
+\end{equation}
 \noindent3. Für alle Reads: \\
 1 read $s_{r}$ mit $n$ candidaten allelen -> $n$ mögliche Allele von denen $s_{r}$ stammen kann -> es wird für jedes der allele wslk berechnet, dass die allele aus $s_{r}$ entstanden sind\\
 bsp. allel i hat frac 0.25, also 1/4 für i, allel i+1 mit 0.75 => zu 25\% allel i und zu 75\% allel i+1 -> über max lh wird bestimmt, wie die seq der allele zusammenpassen -> modellierung ähnlicher,  unsicherheit bei der zuordung der reads, wenn sie weder der dem eine noch dem anderen allel entstammen, z.b. bei 0.5/0.5 => Unsicherheit wird an schritt 3 weitergegeben \\
@@ -41,6 +50,12 @@ max wählen innerhalb der conn. comp\\
 insgesamt:\\
 => $\Theta$ berechnen -> max lh aus allel-fractions\\
 => alles was an Unterschieden vorkommt, kann nur ein Sequenzierfehler sein\\
+$m$ ist Anzahl der Reads, $L \in \{l_{i} \in \mathds{N}_{\leq n}^\phi \, | \, i=1, \dots, g\}$ ist Menge der Loci, $D = (s_{1}, \dots, s_{m}) \in \{A,C, G, T\}^{k^m}$ ist Menge der Readsequenzen/der Reads,
+\begin{equation} \label{eqn:2-xxx3}
+\tag{2-xxx3}
+L(\Theta=\theta_{1},\dots,\theta_{n} \, | \, D) = Pr(D \, | \, \Theta=\theta_{1},\dots,\theta_{n}) = \prod_{r=1}^{m}Pr (s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n})
+\end{equation}
+für jede vaf wurde also liklihood über alle reads bestimmt -> Maximum 
 \subsection{Die maximale Likelihood der Loci}
 connected comp in loci aufsplitten\\
 Zuordnung zu loci, also welche genomischen loci stecken dahinter, wie werden die allele den loci zugeordnet -> max parximony, prinzip der einfachsen möglichen lösung \\
@@ -50,10 +65,26 @@ max\_lh\_vafs nur noch 1 Vektor\\
 Zuordnung von cand-Allelen zu den loci => die beobachteten max\_lh\_allel\_fractionen müssen sie durch die gewählten loci erklären, z.B. 2 loci => 1.locus: allel 0, 0 homozyg, 2. locus allel 0, 2 heterozygot\\
 -> bei z.B 3 Allelen sind min 2 Loci notwendig => min \# der loci, so dass alle ausgewählten allele passen -> diese menge muss gefunden werden und muss wieder max lh haben\\
 unter der annahme der loci-verteilung muss bestimmt werden ob sinnvoll, d.h allel-vafs müssen sich zu 1 summieren -> indikator-funktion: wenn 1, dann gilt Pr(T|S), d.h. Wslk, dass sich aus S die seq T gebildet hat\\
-indicator-function: wird 1, wenn anzahl des auftretens des allels = $\Theta_{i} * g * \phi$ 
-Kombi von loci -> lh berechnen
-pHMM: Wslk, dass allel 2 aus allel 1 entstanden ist -> heterozygotie (in conf konfigurierbar) =>$ match = 1 - (het_{sub} + het_{del} + het_{ins}) $
 
+indicator-function $z_{l} \in {[0,1]}$: wird 1, wenn anzahl des auftretens aller allele $A = (a_{1}, \dots, a_{n})$ in einer möglichen locus-verteilung $l = (l_{1}, \dots, l_{g \, \cdotp \phi})$ jeweils genau ihrer absoluten Häufigkeit aus der in Kap. \ref{subsec:sol_allele_lh} errechneten vaf mit maximaler Likelihood entspricht, also $\theta_{i} \, \cdotp g \, \cdotp \phi$ entsprechen, andernfalls gilt $ z_{l} = 0 $. Seien dabei  $\Theta=\theta_{1},\dots,\theta_{n}) \in [0,1]^n $ die vaf mit maximaler Likelihood, $ \phi $ die Ploidie und gilt für eine mögliche Locusverteilung $l$ außerdem $L \in \{l_{j} \in \mathds{N}_{\leq n}^\phi \, | \, j=1, \dots, g\}$, so lässt sich die Indikatorfunktion wie folgt definieren:
+\begin{equation} \label{eqn:2-xxx4}
+\tag{2-xxx4}
+z_{l}=\prod_{i=1}^{n}1_{\sum_{j=1}^{g}\sum_{k=1}^{\phi}1_{l_{j,k}=i} = \theta_{i} \, \cdotp g \, \cdotp \phi}
+\end{equation}
+
+pHMM: Wslk, dass allel 2 $ a_{l_{j,2}} $ aus allel 1 $ a_{l_{j,1}} $ entstanden ist -> heterozygotie $\eta$ (in conf konfigurierbar) =>$ match = 1 - (het_{sub} + het_{del} + het_{ins}) $
+\begin{equation} \label{eqn:2-xxx5}
+\tag{2-xxx5}
+Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) = pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}})
+\end{equation}
+
+Kombi von loci -> lh berechnen
+\begin{equation} \label{eqn:2-xxx6}
+\tag{2-xxx6}
+Pr(\Theta,A \, | \, L=\{l_{j}\, |\, j=1,\dots,g\})=z_{l} \, \cdotp \prod_{j=1}^{g}Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}})
+\end{equation}
+
+=> maximum der loci Likelihoods wählen
 \subsection{Varianten und Genotyp}
-mit den allelen jedes locus, allelsequenz, genotyp\\
+mit den allelen $A = (a_{1}, \dots, a_{n})$ jedes locus $L \in \{l_{j} \in \mathds{N}_{\leq n}^\phi \, | \, j=1, \dots, g\}$, allelsequenz, genotyp\\
 Menge von Loci, die die Beobachtungen erklären
