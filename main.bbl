@@ -211,4 +211,9 @@
 \newblock source:
   https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html.
 
+\bibitem{itertools}
+{\sc Python Software~Foundation, Van~Rossum, Guido}: {\em itertools —
+  functions creating iterators for efficient looping}.
+\newblock https://docs.python.org/3/library/itertools.html.
+
 \end{thebibliography}

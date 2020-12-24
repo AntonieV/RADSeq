@@ -32,9 +32,9 @@ Die Laufzeit für das Hinzufügen eines Knotens beträgt nach der Dokumentation 
 \subsection{Kanten des Graphen} \label{subsec:edges}
 Die Kanten des Graphen definieren sich durch das mittels Minimap2 erzeugten Sequenzalignments (vgl. Kap. \ref{sec:edit}). Jedes Alignment zwischen zwei Reads entspricht im Graphen einer gerichteten Kante $e = (source,\; target)$, die den Vergleich der Query- zur Referenzsequenz repräsentiert. Sie verbindet somit zwei der zuvor aus der FASTQ-Daten erzeugten Knoten. Das Auslesen des sam-Formats des Alignmentfiles erfolgt mit Hilfe der Python-Library pysam ~\cite{pysam}. Dabei wird die Edit-Distanz aus dem NM-Tag zunächst genutzt, um nur Kanten in den Graphen aufzunehmen, die bereits einen optimierten Minimap2-Path darstellen. Liegen diese unterhalb des durch die Konfigurationsdatei festgelegten Grenzwertes, so wird die Kante dem Graphen hinzugefügt. Dabei werden als Kanteneigenschaften die Edit-Distanz, die CIGAR-Tupel sowie die aus der Basenqualität und Mutationsrate bestimmte Likelihood hinzugefügt. Zusätzlich kann zur Kontrolle oder für eine spätere Verwendung auch der CIGAR-String selbst als Kanteneigenschaft gespeichert werden, falls bei Minimap2 die Option zur Erzeugung des cs-Tags aktiviert wurde. Die CIGAR-Tupel werden durch pysam aus dem CIGAR-String geparsed, hierbei handelt es sich um eine Liste von Tupeln, die jeweils aus Integer-Wertepaaren bestehen. Der erste Wert jedes Tupels gibt die spezifische Operation des Matches oder Mismatches. So entspricht beispielsweise ein Wert von $ 7 $ oder $ 0 $ einem Match und ein Wert von $ 2 $ einer Deletion. Der zweite Werte jedes Tupels gibt die Anzahl der Basen an, die von der entsprechenden Operation betroffen sind. \\
 
-Diese CIGAR-Tupel werden für die Berechnung der Likelihood zwischen zwei Knoten benötigt, dies erfolgt in der Methode \lstinline|get_alignment_likelihood()| (Algorithmus \ref{alg:lh_read}) aus dem Modul \lstinline|likelihood_operations|. Dabei wird aus den p-Werten der Basenqualität für jede Base der Query-Sequenz die Wahrscheinlichkeit errechnet, dass es sich im Falle eines Matches um die korrekte Base handelt  \eqref{eqn:3-2} bzw. im Falle eines Mismatches, dass es sich um einen Sequenzierfehler \eqref{eqn:3-3} oder um eine Mutation handelt \eqref{eqn:3-4}. \\
+Diese CIGAR-Tupel werden für die Berechnung der Likelihood zwischen zwei Knoten benötigt, dies erfolgt in der Methode \lstinline|get_alignment_likelihood()| (Algorithmus \ref{alg:lh_read}) aus dem Modul \lstinline|likelihood_operations.py|. Dabei wird aus den p-Werten der Basenqualität für jede Base der Query-Sequenz die Wahrscheinlichkeit errechnet, dass es sich im Falle eines Matches um die korrekte Base handelt  \eqref{eqn:3-2} bzw. im Falle eines Mismatches, dass es sich um einen Sequenzierfehler \eqref{eqn:3-3} oder um eine Mutation handelt \eqref{eqn:3-4}. \\
 
-Die Berechnung der Likelihoods für die paarweisen Vergleiche der Reads basiert auf dem in Kap. ~\ref{subsec:phmm} beschriebenen pair Hidden Markov Model. Hierbei repräsentiert das durch Minimap2 bestimmte Sequenzalignment bereits den wahrscheinlichsten Pfad durch die pairHMM-Matrix. Da dieser Pfad ohnehin die Wahrscheinlichkeit des pairHMM dominieren würde, wird zugunsten der Laufzeit direkt auf das Alignment von Minimap2 zurückgegriffen, um die Likelihoods zwischen den Readsequenzen zu bestimmen. Dabei werden die Sequenzierfehlerrate $ \epsilon $ und Basenqualität $ q_{query} $ durch die bereits zuvor ermittelte geschätzte Fehlerrate $ p_{query} $ berücksichtigt. Die Likelihood $ pairHMM_{\epsilon, q_{query}} \;(s_{ref}\;|\; s_{query}) $, dass der Queryread aus dem Referenzread allein durch Sequenzierfehler und Mutationen entstanden ist, errechnet sich schließlich aus dem Produkt der Likelihoods $ L_{i} $ für jede Base $ b $ an jeder Position $ i $ innerhalb der Sequenz $ s $ des Queryreads $ s_{query} $ im Vergleich zum Referenzread $ s_{ref} $.
+Die Berechnung der Likelihoods für die paarweisen Vergleiche der Reads basiert auf dem in Kap. ~\ref{subsec:sol_phmm} beschriebenen pair Hidden Markov Model. Hierbei repräsentiert das durch Minimap2 bestimmte Sequenzalignment bereits den wahrscheinlichsten Pfad durch die pairHMM-Matrix. Da dieser Pfad ohnehin die Wahrscheinlichkeit des pairHMM dominieren würde, wird zugunsten der Laufzeit direkt auf das Alignment von Minimap2 zurückgegriffen, um die Likelihoods zwischen den Readsequenzen zu bestimmen. Dabei werden die Sequenzierfehlerrate $ \epsilon $ und Basenqualität $ q_{query} $ durch die bereits zuvor ermittelte geschätzte Fehlerrate $ p_{query} $ berücksichtigt. Die Likelihood $ pairHMM_{\epsilon, q_{query}} \;(s_{ref}\;|\; s_{query}) $, dass der Queryread aus dem Referenzread allein durch Sequenzierfehler und Mutationen entstanden ist, errechnet sich schließlich aus dem Produkt der Likelihoods $ L_{i} $ für jede Base $ b $ an jeder Position $ i $ innerhalb der Sequenz $ s $ des Queryreads $ s_{query} $ im Vergleich zum Referenzread $ s_{ref} $.
 \begin{equation} \label{eqn:3-2}
 \tag{3-2}
 pairHMM_{\epsilon, q_{query}} \;(s_{query}\;|\; s_{ref}) = \prod_{i=1}^{k}L_{i}
@@ -108,7 +108,27 @@ Zur zusätzlichen Veranschaulichung ist die Methode \lstinline|get_alignment_lik
 	\end{algorithmic}
 \end{algorithm}
 
-Hinsichtlich der Laufzeit benötigt das Hinzufügen einer Kante nach Angaben der graph-tool Dokumentation ~\cite{docs_graph_tool} eine Laufzeit von $ O(1) $. Da aber die Query- und die Referenzreads den bereits zuvor angelegten Knoten zugeordnet werden müssen, erfordert dies eine Suche der betreffenden Knoten. Dabei durchsucht graph-tool mit seiner Funktion \lstinline|find_vertex()| allein die Knoten und prüft auf die gesuchte Read-ID aus den FASTQ-Daten. Die ein- und ausgehenden Kanten der Knoten werden nicht beachtet, so dass eine Tiefen- oder Breitensuche des Graphen nicht notwendig ist und die Suche in $ O(V) $ durchgeführt werden kann ~\cite{graph_tool_coplexity_find_vertex}. Die Zuweisung der Kanteneigenschaften erfolgt jeweils in $ O(1) $, da diese direkt bei der Erzeugung der Kante hinzugefügt werden und keine vorherige Suche der Kante erforderlich ist. Für die Berechnung der Likelihood wird die geschätzte Fehlerrate $ p_{query} $ jeder Base verwendet, so dass die Anzahl der Berechnungen für jede Kante der Länge der Readsequenz $ k $ entspricht. Die Laufzeit für das Hinzufügen einer Kante beträgt somit $ O(k) $. Für alle Kanten ergibt sich daraus eine Gesamtlaufzeit von $ O(E\, \cdotp (k + V)) $. Bei realen Datensätzen gilt in der Regel $ k << V $ und die Länge der Reads variiert nur in einem engen Bereich, so dass $ k $ als vernachlässigbar klein und als nahezu konstant betrachtet werden kann. Die Gesamtlaufzeit kann dort also auf $ O(E\, \cdotp V) $ geschätzt werden. \\
+Hinsichtlich der Laufzeit benötigt das Hinzufügen einer Kante nach Angaben der graph-tool Dokumentation ~\cite{docs_graph_tool} eine Laufzeit von $ O(1) $. Da aber die Query- und die Referenzreads den bereits zuvor angelegten Knoten zugeordnet werden müssen, erfordert dies eine Suche der betreffenden Knoten. Dabei durchsucht graph-tool mit seiner Funktion \lstinline|find_vertex()| allein die Knoten und prüft auf die gesuchte Read-ID aus den FASTQ-Daten. Die ein- und ausgehenden Kanten der Knoten werden nicht beachtet, so dass eine Tiefen- oder Breitensuche des Graphen nicht notwendig ist und die Suche in $ O(V) $ durchgeführt werden kann ~\cite{graph_tool_coplexity_find_vertex}. Die Zuweisung der Kanteneigenschaften erfolgt jeweils in $ O(1) $, da diese direkt bei der Erzeugung der Kante hinzugefügt werden und keine vorherige Suche der Kante erforderlich ist. Für die Berechnung der Likelihood wird die geschätzte Fehlerrate $ p_{query} $ jeder Base verwendet, so dass die Anzahl der Berechnungen für jede Kante der Länge der Readsequenz $ k $ entspricht. Die Laufzeit für das Hinzufügen einer Kante beträgt somit $ O(k) $. Für alle Kanten ergibt sich daraus eine Gesamtlaufzeit von $ O(E\, \cdotp (k + V)) $. Bei realen Datensätzen gilt in der Regel $ k << V $ und die Länge der Reads variiert nur in einem engen Bereich, so dass $ k $ als vernachlässigbar klein und als nahezu konstant betrachtet werden kann. Dann ergibt sich aus Formel \eqref{eqn:3-7} eine Laufzeit von $O(E\, \cdotp V) $. 
+\begin{equation} \label{eqn:3-7}
+\tag{3-7}
+ O(E\, \cdotp (k + V)) = O(E\, \cdotp V)
+\end{equation}
+
+Sind bei kleinen Datensätzen nur wenige Reads vorhanden, so dass $ k \leq V $, dann ergibt sich unter zusätzlicher Berücksichtigung von $k$ im Worst Case mit $ k = V $ nach Formel \eqref{eqn:3-8} ebenfalls eine Laufzeit von $O(E\, \cdotp V) $.
+\begin{equation} \label{eqn:3-8}
+\tag{3-8}
+O(E\, \cdotp (k + V)) = O(E\, \cdotp (V + V)) = O(E\, \cdotp 2 \, \cdotp V) = O(E\, \cdotp V)
+\end{equation}
+
+Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige hundert Basenpaare zählt, tatsächlich die Anzahl der Reads übersteigt und somit $ k > V $ gilt, dann dominiert $k$ die Laufzeit. In diesem Fall wäre im Worst Case $k$ eine obere Schranke für $V$, so dass gilt:
+\begin{equation} \label{eqn:3-9}
+\tag{3-9}
+O(E\, \cdotp (k + V)) = O(E\, \cdotp (k + k)) = O(E\, \cdotp 2 \, \cdotp k) = O(E\, \cdotp k)
+\end{equation}
+
+Da die Länge der Reads durch die gewählten Restriktionsenzyme sowie durch das Sequenzierverfahren selbst beschränkt ist, müsste ein solcher Datensatz relativ klein sein, so dass die damit verbundene Laufzeiterhöhung nur geringfügige Auswirkungen hätte. \\
+
+Zusammenfassend soll daher für die folgenden Berechnungen vereinfachend der Mittelwert der Readlänge als konstant betrachtet werden, also $\overline{k}=const$, so dass für die Berechnung der Likelihoods zwischen den Reads eine Laufzeit von $O(\overline{k}) = O(1)$ veranschlagt wird. Für das Hinzufügen der Kanten des Graphen wird somit die Gesamtlaufzeit auf $ O(E\, \cdotp V) $ geschätzt.\\
 
 Nach Abschluss der Graphkonstruktion werden für jedes Individuum noch einige Statistiken in die Log-Dateien geschrieben. Hier werden neben der Anzahl der Knoten und Kanten des Graphen auch die Anzahl der Substitutionen bzw. SNPs, Insertionen und Deletionen festgehalten, die beim Auslesen der CIGAR-Tupel registriert wurden. Zudem findet sich hier auch die maximal vorkommenden Edit-Distanz über alle Knoten, sofern sich diese unterhalb des festgelegten Schwellenwertes liegt. Ansonsten entspricht sie dem in der Konfigurationsdatei angegebenen Schwellenwert.\\
 
@@ -116,90 +136,86 @@ Als optionaler Output können über die Konfigurationsdatei und die Snakemake-Re
 
 \subsection{Bestimmung der Zusammenhangskomponenten} \label{subsec:comp}
 
-Die Bestimmung und Indexierung der Zusammenhangskomponenten erfolgt durch graph-tool selbst und kann in $ O(V + E) $ durchgeführt werden ~\cite{docs_graph_tool}. Die Indexnummer jeder Zusammenhangskomponente wird den in ihr enthaltenen Knoten als Knoteneigenschaft hinzugefügt. Zusammenhangskomponenten mit mehr als einem Knoten  werden als neuer eigenständiger Graph initialisiert und in einer Liste abgelegt. Hierfür wird aus dem Graphen für jede Komponente eine gefilterte Sicht erzeugt, die als neues Graph-Object gespeichert wird. Der Filtervorgang jeder Zusammenhangskomponente $ C $ muss für alle Knoten des Graphen durchgeführt werden, daher beträgt die Laufzeit hierfür $ O(C \, \cdotp V) $. Da alle weiteren Schritte des Algorithmus jeweils auf den einzelnen Komponenten durchgeführt werden, kann durch die Verwendung einer Liste von Graphen im Folgenden eine einfachen Iteration über die Komponenten in $ O(C) $ ausgeführt werden, ohne dass der Filtervorgang über alle Knoten jeder Komponente wiederholt werden muss. Zudem ermöglicht diese Datenstruktur eine effizientere Traversierung und Suche innerhalb der Zusammenhangskomponente, ohne dass für jede Komponente der gesamte Graph betrachtet werden muss. Der ursprüngliche Graph wird anschließend entfernt, um Arbeitsspeicher freizugeben. Auch dies erfolgt in konstanter Zeit. \\
+Die Bestimmung und Indexierung der Zusammenhangskomponenten erfolgt durch graph-tool selbst und kann in $ O(V + E) $ durchgeführt werden ~\cite{docs_graph_tool}. Die Indexnummer jeder Zusammenhangskomponente wird den in ihr enthaltenen Knoten als Knoteneigenschaft hinzugefügt. Zusammenhangskomponenten mit mehr als einem Knoten  werden als neuer eigenständiger Graph initialisiert und in einer Liste abgelegt. Hierfür wird aus dem Graphen für jede Komponente eine gefilterte Sicht erzeugt, die als neues Graph-Object gespeichert wird. Der Filtervorgang jeder Zusammenhangskomponente $ C $ muss für alle Knoten des Graphen durchgeführt werden, daher beträgt die Laufzeit hierfür $ O(C \, \cdotp V) $. Da alle weiteren Schritte des Algorithmus jeweils auf den einzelnen Komponenten durchgeführt werden, kann durch die Verwendung einer Liste von Graphen im Folgenden eine einfachen Iteration über die Komponenten in $ O(C) $ ausgeführt werden, ohne dass der Filtervorgang über alle Knoten jeder Komponente wiederholt werden muss. Zudem ermöglicht diese Datenstruktur eine effizientere Traversierung und Suche innerhalb der Zusammenhangskomponente, ohne dass für jede Komponente der gesamte Graph betrachtet werden muss. Der ursprüngliche Graph wird anschließend entfernt, um Arbeitsspeicher freizugeben. Auch dies erfolgt in konstanter Zeit. Die Laufzeit für die Extraktion der Zusammenhangskomponenten wird also bestimmt durch Identifikation, Indexierung und Filterung der Komponenten mit $ O(C \, \cdotp V) + O(V + E) = O(V \, \cdotp (C + 1) +E)$. Bei realen Daten gibt es in der Regel deutlich mehr Knoten als Cluster bzw. Zusammenhangskomponenten, so dass gilt $ C < V $. Würde im Worst Case aber jede Zusammenhangskomponente aus nur einem Knoten bestehen, also $ C = V $, so kann die maximale Laufzeit auf $ O(V \, \cdotp (C + 1) +E) = O(V \, \cdotp (V + 1) + E) = O(V^2 + E) $ geschätzt werden kann.\\
 
-In der Log-Datei wird die Anzahl der Knoten aller Zusammenhangskomponenten als Histogramm festgehalten. Ebenso wird dort für alle Komponenten mit mehr als einem Element die Anzahl ihrer Knoten, Kanten und Eigenschaften aufgelistet.
+In der Log-Datei wird die Anzahl der Knoten aller Zusammenhangskomponenten als Histogramm festgehalten. Ebenso wird dort für alle Komponenten mit mehr als einem Element die Anzahl ihrer Knoten, Kanten und Eigenschaften aufgelistet.\\
 
 Über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| können optional auch für die Zusammenhangskomponenten jeweils Visualisierungen und detaillierte Graphinformationen in den oben genannten Formaten (Kap. \ref{subsec:edges}) ausgegeben werden. Zudem kann optional auch der gesamte Graph mit den Komponentenindizes als Knoteneigenschaften gespeichert werden. In der visuellen Darstellung werden seine Knoten entsprechend der zugehörigen Zusammenhangskomponente eingefärbt, seine Kantenfärbung richtet sich weiterhin nach der aus \eqref{eqn:3-3} resultierenden Likelihood.
 
 \subsection{Laufzeitanalyse zur Konstruktion des Graphen} \label{subsec:runtime_graph}
-Wie an entsprechender Stelle bereits beschrieben, ist für die Erzeugung der Knoten eine Laufzeit von $ O(V^2) $ (Kap. \ref{subsec:nodes}) erforderlich, das Hinzufügen der Kanten kann in $ O(E\, \cdotp V) $ erfolgen (Kap. \ref{subsec:edges}). Somit wird für den vollständigen Aufbau des Graphen eine Laufzeit von $ O(V \, \cdotp (V+E)) $ benötigt. In Zusammenschau mit der für die Extraktion der Zusammenhangskomponenten erforderliche Laufzeit von $ O(C \, \cdotp V + (V + E)) $ (Kap. \ref{subsec:comp}) ergibt sich daraus nach  \eqref{eqn:3-7} eine Laufzeit von $ O(V \, \cdotp (V + C) + E \, \cdotp (V + 1)) $. 
-\begin{equation} \label{eqn:3-7}
-\tag{3-7}
-O(V \, \cdotp (V + E + C) + E) = O(V \, \cdotp (V + C) + E \, \cdotp (V + 1))
+Wie an entsprechender Stelle bereits beschrieben, ist für die Erzeugung der Knoten eine Laufzeit von $ O(V^2) $ (Kap. \ref{subsec:nodes}) erforderlich, das Hinzufügen der Kanten kann in $ O(E\, \cdotp V) $ erfolgen. Somit wird für den vollständigen Aufbau des Graphen nach \eqref{eqn:3-10} eine Laufzeit von $ O(V \, \cdotp (V+E)) $ benötigt. \\
+\begin{equation} \label{eqn:3-10}
+\tag{3-10}
+O(V^2) + O(E\, \cdotp V) = O(V \, \cdotp (V+E))
 \end{equation}
+In Zusammenschau mit der für die Extraktion der Zusammenhangskomponenten erforderliche Laufzeit von $ O(V^2 + E) $ (Kap. \ref{subsec:comp}) ergibt sich daraus nach  \eqref{eqn:3-11} eine Laufzeit von $ O(V \, \cdotp (V + E)) $. 
 
-Bei realen Daten gibt es in der Regel deutlich mehr Knoten als Cluster bzw. Zusammenhangskomponenten, so dass gilt $ C < V $. Würde im Worst Case jede Zusammenhangskomponente aus nur einem Knoten bestehen, also $ C = V $, so gilt $ O(V + C) = O(V + V) = O(V) $. Ebenso gilt $ O(V + 1) = O(V) $. Unter der Voraussetzung aus Kap. \ref{subsec:nodes}, dass für die Readlänge $ k $ gilt, dass $ k << V $, folgt nach  \eqref{eqn:3-8} eine Gesamtlaufzeit von $ O(V \, \cdotp (V + E)) $.
-\begin{equation} \label{eqn:3-8}
-\tag{3-8}
-O(V \, \cdotp (V + C) + E \, \cdotp (V + 1)) = O (V^2 + E \, \cdotp V) = O(V \, \cdotp (V + E))
-\end{equation}
-
-Sind bei kleinen Datensätzen nur wenige Reads vorhanden, so dass gilt $ k \leq V $, dann ergibt sich unter zusätzlicher Berücksichtigung von $ k $ im Worst Case mit $ k = V $ und mit $ C = V $ nach \eqref{eqn:3-9} ebenfalls eine Gesamtlaufzeit von $ O(V \, \cdotp (V + E)) $.
-\begin{equation} \label{eqn:3-9}
-\tag{3-9}
+\begin{equation} \label{eqn:3-11}
+\tag{3-11}
 \begin{aligned}
-&\ {} O(V^2) + O((V + k) \, \cdotp E) + O(V + E) + O(C \, \cdotp V) \\
-& \ = O(V^2 + E \, \cdotp V + k \, \cdotp E) + O(V + E + C \, \cdotp V)\\
-&\ = O(V^2 + C \, \cdotp V + V + E + E \, \cdotp V + k \, \cdotp E) \\
-&\ = O(V \, \cdotp (V + C + 1) + E \, \cdotp (1 + V + k))\\
-&\ = O(V \, \cdotp (V + C) + E \, \cdotp (V + k))\\
-&\ = O(V \, \cdotp (V + V) + E \, \cdotp (V + V))\\
-&\ = O( 2 \, \cdotp V \, \cdotp (V + E))\\
+&\ {} O(V \, \cdotp (V+E)) +O(V^2 + E) \\
+& \ = O(V^2 + E \, \cdotp V + V^2 + E)\\
+&\ = O(2 \, \cdotp V^2 + E \, \cdotp (V + 1)) \\
+&\ = O(V^2 + E \, \cdotp V)\\
 &\ = O(V \, \cdotp (V + E))\\
 \end{aligned}
 \end{equation}
 
-Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige hundert Basenpaare zählt, tatsächlich die Anzahl der Reads übersteigt und somit $ k > V $, kann die Gesamtlaufzeit unter direkter Berücksichtigung von $ k $ nach \eqref{eqn:3-10} mit $ O(V^2 + E \, \cdotp (V + k)) $ angegeben werden. Da der Datensatz in diesem Fall relativ klein ist, hätte die damit verbundene höhere Laufzeit dennoch nur geringe Auswirkungen.
-\begin{equation} \label{eqn:3-10}
-\tag{3-10}
-\begin{aligned}
-&\ {} O(V^2) + O((V + k) \, \cdotp E) + O(V + E) + O(C \, \cdotp V) \\
-&\ = O(V \, \cdotp (V + C) + E \, \cdotp (V + k))\\
-&\ = O(V^2 + E \, \cdotp (V + k))\\
-\end{aligned}
-\end{equation}
-
-Zusammenfassend soll daher für die folgenden Berechnungen vereinfachend der Mittelwert der Readlänge als konstant betrachtet werden, also $\overline{k}=const$, so dass für die Berechnung der Likelihoods zwischen den Reads eine Laufzeit von $ O(V) $ angenommen werden kann und damit die Gesamtlaufzeit zur Konstruktion des Graphen in $ O(E\, \cdotp (k + V)) $ erfolgt.
 \section{Bestimmung der maximalen Likelihood der Allele} \label{sec:max_lh_allele}
 \subsection{Bestimmung der Allele und ihrer möglichen Häufigkeitsverteilung} \label{subsec:cand_allele}
-======================= draft =======================\\
-Die einzelnen Zusammenhangskomponenten repräsentieren einen oder mehrere Loci.\\
-0. get\_candidate\_alleles(): gibt die in der comp vorkommmenden seq lexikographisch sortiert fpr deterministischere Ergebnisse zurück. Übersteigt die Größe des Clusters, d.h. die Knotenzahl einer Zusammenhangskomponenten einen in der Konfigurationsdatei als treshold-cluster-size festgelegten Wert, so wird von den im Cluster vorkommenden Sequenzen zunächst die absolute Häufigkeit bestimmt. Es werden dann nur diejenigen sequenzen lexikographisch sortier zurückgegeben, die einen weiteren, ebenfalls in der config festgelegten schwellenwert, 'treshold-seq-noise', überschreiten.\\
--> filtern: noise-seq werden nicht als allel-kandidaten ausgewählt \\
-vafs kandidaten bestimmen:\\
-1. tatsächlich zu erwartende Anzahl von allelen anhand der ploidie bestimmen get\_max\_parsimony\_n\_alleles:
-\begin{itemize}
-	\item aus anzahl der beobachteten allele (länge der allel-liste, $n_{observed}$) und ploidie
-	\item get\_max\_parsimony\_n\_alleles(): bestimmung der erwarteten tatsächlichen anzahl $n_{alleles}$von allelen aus der Anzahl der beobachteten allele $n_{observed}$ in abhänigkeit von der ploidie
-	\item durch die ploidie werden unnötige und unmögliche allel-kombinationen   eingespart und in der weiteren berechnung nicht berücksichtigt
-	\item Fall ploidie ist höher als die anzahl der beobachteten allele, so muss es mindestens so viele ggf. identische allele geben (-> Homozygotie), damit die ploidie erfüllt werden kann\\
-	\item wurden dagegen mehr allele beobachtet als aufgrund der ploidie möglich sind und die ploidie ist teiler von $n_{observed}$, so wurden genauso viele allele beobachtet, wie auch möglich sind und es gilt $n_{observed} = n_{alleles}$. 
-	\item gilt $n_{observed}>ploidie$ und ist die beobachtete anzahl von allelen aber nicht ganzzahlig durch die ploidie teilbar, so $n_{alleles}$ so erhöht werden, dass die ploidie ein teiler hiervon ist, d.h .es müssen tatsächlich so viele allele vorkommen, dass eine korrekte ploidie erreicht wird. es muss also um die ploidie abzüglich des restes aus der restdivision erhöht werden: $ n_{alleles} = n_{observed} + ploidy - (n_{observed} \mod ploidy)$
-\end{itemize}
 
-\noindent 2.alle kombinationen möglicher häufigkeitsverteilungen zur ermittelten anzahl von allelen $ n_{alleles} $ bestimmen get\_candidate\_vafs:\\
-\begin{itemize}
-	\item Allel-Verteilung durch Urnenmodell bestimmen: k elem werden ausgewählt, reihenfolge nicht relevant -> binominalkoeffizient $\binom{n}{k} = \frac{n!}{(n-k)!\, \cdotp k!}$ \\
-	\item alle Kombinationen mit wiederholung für $n_{alleles} $ bestimmen -> mehrfaches vorkommen erlaubt -> n in binomialkoeffizient wird durch $(n + k -1)$ ersetzt: $\binom{n + k - 1}{k} = \frac{(n+k-1)!}{(n-1)!\, \cdotp k!}$\\ 
-	durch combinations\_with\_replacement  aus python-library itertools umgesetzt:
-	Bsp.: \\	
-	$ n_{alleles} = 2, ploidy = 2$: \\
-	{[(0, 0), (0, 1), (1, 1)]}\\
-	$ n_{alleles} = 3, ploidy = 2$: \\
-	{[(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 0, 2), (0, 0, 1, 1), (0, 0, 1, 2), (0, 0, 2, 2), (0, 1, 1, 1), (0, 1, 1, 2), (0, 1, 2, 2), (0, 2, 2, 2), (1, 1, 1, 1), (1, 1, 1, 2), (1, 1, 2, 2), (1, 2, 2, 2), (2, 2, 2, 2)]}\\
-		
-	\item relative Häufigkeiten $ h_{n} $  aus den absoluten Häufigkeiten jedes allesl aus jeder Kombination der allelverteilungen bestimmen:  $ h_{n} = \frac{H_{n}} {n_{alleles}} $\\
-	Bsp.: \\
-	$ n_{alleles} = 2, ploidy = 2$: \\
-	{[1.0, 0.0]}, {[0.5, 0.5]}, {[0.0, 1.0]} \\
-	$ n_{alleles} = 3, ploidy = 2$: \\
-	{[{[1.0, 0.0, 0.0]}, {[0.75, 0.25, 0.0]}, {[0.75, 0.0, 0.25]}, {[0.5, 0.5, 0.0]}, {[0.5, 0.25, 0.25]}, {[0.5, 0.0, 0.5]},
-		{[0.25, 0.75, 0.0]}, {[0.25, 0.5, 0.25]}, {[0.25, 0.25, 0.5]}, {[0.25, 0.0, 0.75]}, {[0.0, 1.0, 0.0]}, {[0.0, 0.75, 0.25]}, {[0.0, 0.5, 0.5]}, {[0.0, 0.25, 0.75]}, {[0.0, 0.0, 1.0]}]} \\
-	\item die relativen Häufigkeiten der Allelverteilungen sollen im weiteren als VAF (Variant allele frequency) oder Fraktionen bezeichnet werden. Sie entsprechen den in Kap. \ref{subsec:sol_allele_lh} beschriebenen Franktionen $ \Theta = (\theta_{1}, \dots , \theta_{n}) $\\
-\end{itemize}
+Die einzelnen Zusammenhangskomponenten repräsentieren einen oder mehrere Loci. Alle weiteren Berechnungen aus diesem und den folgenden Kapiteln ~\ref{sec:max_lh_loci} und ~\ref{sec:vcf} werden für jede Komponenten einzeln durchgeführt mit dem Ziel die wahrscheinlichsten Allelsequenzen und die dazugehörigen Loci zu identifizieren.\\
+
+Zunächst werden mit der Funktion \lstinline|get_candidate_alleles()| aus dem Modul \linebreak \lstinline|likelihood_operations.py| die Allelsequenzen ermittelt, die in der Zusammenhangskomponenten vorkommen. Für deterministischere Ergebnisse werden diese lexikographisch sortiert in Form einer Liste durch die Funktion zurückgegeben. Übersteigt die Größe des Clusters, d.h. die Knotenanzahl einer Zusammenhangskomponenten einen in der Konfigurationsdatei als \lstinline|treshold-cluster-size| festgelegten Wert, so wird von den im Cluster vorkommenden Sequenzen zunächst die absolute Häufigkeit bestimmt. Es werden dann nur diejenigen Sequenzen lexikographisch sortiert zurückgegeben, die einen weiteren, ebenfalls in der Konfigurationsdatei festgelegten Schwellenwert, \lstinline|treshold-seq-noise|, überschreiten. Dies dient dazu, bei großen Clustern Komplexität und Rechenaufwand zu reduzieren, da davon auszugehen ist, dass innerhalb eines großen Clusters echte Varianten einer Sequenz mehrfach vorkommen, wohingegen Artefakte und Sequenzierfehler eher vereinzelt auftreten. Dieses sog. Rauschen kann durch Anpassung der Schwellwerte in der Konfigurationsdatei herausgefiltert werden. Da bei kleineren Clustern auch einmalig registrierte Varianten einer Sequenz von Bedeutung sein können, soll der Filtervorgang erst ab einer festlegbaren Clustergröße durchgeführt werden. Für das Erstellen der Liste muss jeder Knoten in jeder Komponente betrachtet werden, so dass der Vorgang für alle Knoten in $ O(V) $ durchführbar ist.\\
+
+Aus der so erzeugten Liste lexikographisch sortierter Kandidatenallele $ A_{observed} $ der Länge $ n_{observed} $ sollen nun die möglichen Häufigkeitsverteilungen in Abhängigkeit von der Ploidie bestimmt werden. Hierzu muss zunächst die aufgrund der Ploidie tatsächlich zu erwartende Anzahl von Allelen $n_{alleles}$ bestimmt werden. Die geschieht durch die Funktion \lstinline|get_max_parsimony_n_alleles()| in \lstinline|likelihood_operations.py|. Dadurch werden unnötige bzw. nicht mögliche Allelkombinationen eingespart und in der weiteren Berechnung nicht berücksichtigt. Ist die Ploidie $ \phi $ höher als die Anzahl der beobachteten Allele, so muss es mindestens genauso viele und bei Homozygotie auch mehrfach vorkommende Allele geben, damit die Ploidie erfüllt werden kann. Es muss also gelten $ n_{alleles} = \phi $. Wurden dagegen mehr Allele beobachtet als aufgrund der Ploidie möglich sind und die Ploidie ist Teiler von $n_{observed}$, so können alle beobachteten Allele auch tatsächlich vorkommen, da die Zusammenhangskomponente auch mehrere Loci enthalten kann. Es gilt dann also $ n_{alleles} = n_{observed} $. Ist dagegen die Anzahl der beobachteten Allele höher als die Ploidie, aber nicht ganzzahlig durch die Ploidie teilbar, so muss die Anzahl der Allele entsprechend erhöht werden. Das heißt, es müssen tatsächlich so viele Allele vorkommen, dass eine korrekte Ploidie erreicht wird, dass also die Ploidie eine Teiler von $ n_{alleles} $ wird. Die Anzahl der Allele muss also um die Ploidie abzüglich des Restes aus der Restdivision erhöht werden: $ n_{alleles} = n_{observed} + \phi - (n_{observed} \mod \phi)$. Diese Anpassung der Anzahl der Allele kann für jede Komponente $C$ in $ O(1) $ erfolgen, so dass die Laufzeit für alle Komponenten O(C) beträgt. Im Worst Case, bei dem jede Komponente nur einen Knoten enthält und somit $ C = V $ gilt, würde die Laufzeit maximal $ O(V) $ betragen.
+
+Aus der tatsächlich zu erwarteten Anzahl von Allelen $ n_{alleles} $ können nun alle Kombinationen möglicher Häufigkeitsverteilungen der Allele bestimmt werden (Funktion \linebreak \lstinline|get_candidate_vafs()| im Modul \lstinline|likelihood_operations.py|). Hierfür werden zunächst alle möglichen Allelkombinationen ermittelt. Dies erfolgt nach dem Urnenmodell unter Auswahl von $ n_{alleles} $ Elementen mit Zurücklegen aus insgesamt $ n_{observed} $ verschiedenen Elementen und ohne Berücksichtigung der Reihenfolge. Dadurch berechnet sich die Anzahl möglicher Kombination nach \eqref{eqn:3-12} aus dem  Binomialkoeffizienten der $k$-ten Ordnung aus $ n $ Elementen mit Zurücklegen.
+\begin{equation} \label{eqn:3-12}
+\tag{3-12}
+\binom{n + k - 1}{k} = \frac{(n+k-1)!}{(n-1)!\, \cdotp k!} = \frac{(n_{alleles}+n_{observed}-1)!}{(n_{alleles}-1)!\, \cdotp n_{observed}!} 
+\end{equation}
+
+Diese Allelkombinationen werden mit Hilfe der Funktion  \lstinline|combinations_with_replacement| aus der Python-Library \lstinline|itertools| erzeugt \cite{itertools}.\\
+\\
+\definecolor{light-gray}{gray}{0.93}
+\fcolorbox{black}{light-gray}{
+	\parbox{\textwidth}{
+		\vspace{0.5cm}
+		\textbf{Beispiele möglicher Allelkombinationen:} \\	
+		\\	
+		$ ploidy = 2, n_{observed} = 2, n_{alleles} = 2$: \\
+		{[(0, 0), (0, 1), (1, 1)]}\\
+		\\
+		$ ploidy = 2, n_{observed} = 3, n_{alleles} = 4$: \\
+		{[(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 0, 2), (0, 0, 1, 1), (0, 0, 1, 2), (0, 0, 2, 2), (0, 1, 1, 1), (0, 1, 1, 2), (0, 1, 2, 2), (0, 2, 2, 2), (1, 1, 1, 1), (1, 1, 1, 2), (1, 1, 2, 2), (1, 2, 2, 2), (2, 2, 2, 2)]}
+		\\
+	}}
+\linebreak 
+\\
+\\
+Für jedes Allel $i$ können im Anschluss aus seinen absoluten Häufigkeiten $H_{a_{i}}$ innerhalb jeder Allelkombination die relativen Häufigkeiten $h_{a_{i}}$ nach \eqref{eqn:3-13} bestimmt werden. 
+\begin{equation} \label{eqn:3-13}
+\tag{3-13}
+h_{a_{i}} = \frac{H_{a_{i}}} {n_{alleles}}
+\end{equation}
+\\		
+\fcolorbox{black}{light-gray}{
+	\parbox{\textwidth}{
+		\vspace{0.5cm}
+		\textbf{Beispiele möglicher Allelkombinationen:} \\	
+		\\	
+		$ ploidy = 2, n_{observed} = 2, n_{alleles} = 2$: \\
+		{[1.0, 0.0]}, {[0.5, 0.5]}, {[0.0, 1.0]} \\
+		\\
+		$ ploidy = 2, n_{observed} = 3, n_{alleles} = 4$: \\
+		{[1.0, 0.0, 0.0]}, {[0.75, 0.25, 0.0]}, {[0.75, 0.0, 0.25]}, {[0.5, 0.5, 0.0]}, {[0.5, 0.25, 0.25]}, {[0.5, 0.0, 0.5]}, {[0.25, 0.75, 0.0]}, {[0.25, 0.5, 0.25]}, {[0.25, 0.25, 0.5]}, {[0.25, 0.0, 0.75]}, {[0.0, 1.0, 0.0]}, {[0.0, 0.75, 0.25]}, {[0.0, 0.5, 0.5]}, {[0.0, 0.25, 0.75]}, {[0.0, 0.0, 1.0]} \\
+		\\
+}}
+\linebreak 
 
 \subsection{Berechnung der Likelihoods der Allele anhand der möglichen Häufigkeitsverteilungen} \label{subsec:lh_allele}
+======================= draft =======================\\
 für jede Zusammenhangskomponente
 2.1 Berechnung der Wslk, einen Read zu beobachten anhand der gegebenen Allele-Fraktion, get\_allele\_likelihood\_read(): Vgl Kap. \ref{subsec:sol_allele_lh}, Formel  \eqref{eqn:2-xxx1} (step 2.1)
 \begin{itemize}
