@@ -211,6 +211,18 @@
 \newblock source:
   https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html.
 
+\bibitem{tb_stat}
+{\sc Voß, W, Sauerbier~T}: {\em Taschenbuch der Statistik}, \btxchapterlong{}\
+  8. Kombinatorik, \btxpageslong{}\ 281--281.
+\newblock Fachbuchverlag Leipzig, 2004.
+
+\bibitem{bronst}
+{\sc Bronstein, I.~N.} \btxandlong{}\ {\sc K.A. Semendjajew}: {\em Taschenbuch
+  der Mathematik, 22. Auflage}, \btxchapterlong{}\ 2.2. Kombinatorik,
+  \btxpageslong{}\ 103--105.
+\newblock Verlag Nauka, Moskau and BSB B.G. Teubner Verlagsgesellschaft,
+  Leipzig, 1985.
+
 \bibitem{itertools}
 {\sc Python Software~Foundation, Van~Rossum, Guido}: {\em itertools —
   functions creating iterators for efficient looping}.

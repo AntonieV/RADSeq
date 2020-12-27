@@ -11,44 +11,49 @@ A level-1 auxiliary file: kapitel/anhang.aux
 The style file: gerunsrt.bst
 A level-1 auxiliary file: kapitel/erklaerung.aux
 Database file #1: literatur/diplom.bib
-You've used 34 entries,
+Too many commas in name 1 of "Voß, W, Sauerbier, T" for entry tb_stat
+while executing---line 1056 of file gerunsrt.bst
+Warning--can't use both author and editor fields in tb_stat
+Warning--can't use both author and editor fields in bronst
+You've used 36 entries,
             2016 wiz_defined-function locations,
-            717 strings with 11563 characters,
-and the built_in function-call counts, 10529 in all, are:
-= -- 839
-> -- 608
-< -- 2
-+ -- 216
-- -- 182
-* -- 1151
-:= -- 1581
-add.period$ -- 70
-call.type$ -- 34
+            732 strings with 11891 characters,
+and the built_in function-call counts, 11257 in all, are:
+= -- 910
+> -- 620
+< -- 6
++ -- 221
+- -- 185
+* -- 1201
+:= -- 1660
+add.period$ -- 74
+call.type$ -- 36
 change.case$ -- 34
 chr.to.int$ -- 0
-cite$ -- 34
-duplicate$ -- 483
-empty$ -- 962
-format.name$ -- 182
-if$ -- 2384
+cite$ -- 38
+duplicate$ -- 528
+empty$ -- 1041
+format.name$ -- 185
+if$ -- 2573
 int.to.chr$ -- 0
-int.to.str$ -- 34
-missing$ -- 57
-newline$ -- 141
-num.names$ -- 36
-pop$ -- 71
+int.to.str$ -- 36
+missing$ -- 61
+newline$ -- 149
+num.names$ -- 38
+pop$ -- 83
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 231
+skip$ -- 264
 stack$ -- 0
-substring$ -- 523
-swap$ -- 231
-text.length$ -- 2
+substring$ -- 579
+swap$ -- 258
+text.length$ -- 6
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
-warning$ -- 0
-while$ -- 65
-width$ -- 36
-write$ -- 339
+warning$ -- 2
+while$ -- 71
+width$ -- 38
+write$ -- 359
+(There was 1 error message)

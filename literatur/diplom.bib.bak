@@ -876,4 +876,32 @@
   url           = {https://docs.python.org/3/library/itertools.html},
 }
 
+@InBook{tb_stat,
+  chapter   = {8. Kombinatorik},
+  pages     = {281-281},
+  title     = {Taschenbuch der Statistik},
+  publisher = {Fachbuchverlag Leipzig},
+  year      = {2004},
+  author    = {Voß, W, Sauerbier, T},
+  editor    = {Voß, W},
+}
+
+@InBook{bronst,
+  chapter   = {2.2. Kombinatorik},
+  pages     = {103-105},
+  title     = {Taschenbuch der Mathematik, 22. Auflage},
+  publisher = {Verlag Nauka, Moskau and BSB B.G. Teubner Verlagsgesellschaft, Leipzig},
+  year      = {1985},
+  author    = {Bronstein, I. N. and Semendjajew, K.A.},
+  editor    = {Grosche, G. and Ziegler, V. and Ziegler, D.},
+}
+
+@Misc{script_binom,
+  author = {Wittenburg, Kim},
+  title  = {Algorithmen und Datenstrukturen},
+  year   = {2017},
+  note   = {https://www2.informatik.uni-hamburg.de/fachschaft/wiki/images/3/3e/AD-Skript_%28WS16-17%29.pdf, pages 156-156},
+  url    = {https://www2.informatik.uni-hamburg.de/fachschaft/wiki/images/3/3e/AD-Skript_%28WS16-17%29.pdf},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}

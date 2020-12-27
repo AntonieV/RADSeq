@@ -168,9 +168,9 @@ Die einzelnen Zusammenhangskomponenten repräsentieren einen oder mehrere Loci. 
 
 Zunächst werden mit der Funktion \lstinline|get_candidate_alleles()| aus dem Modul \linebreak \lstinline|likelihood_operations.py| die Allelsequenzen ermittelt, die in der Zusammenhangskomponenten vorkommen. Für deterministischere Ergebnisse werden diese lexikographisch sortiert in Form einer Liste durch die Funktion zurückgegeben. Übersteigt die Größe des Clusters, d.h. die Knotenanzahl einer Zusammenhangskomponenten einen in der Konfigurationsdatei als \lstinline|treshold-cluster-size| festgelegten Wert, so wird von den im Cluster vorkommenden Sequenzen zunächst die absolute Häufigkeit bestimmt. Es werden dann nur diejenigen Sequenzen lexikographisch sortiert zurückgegeben, die einen weiteren, ebenfalls in der Konfigurationsdatei festgelegten Schwellenwert, \lstinline|treshold-seq-noise|, überschreiten. Dies dient dazu, bei großen Clustern Komplexität und Rechenaufwand zu reduzieren, da davon auszugehen ist, dass innerhalb eines großen Clusters echte Varianten einer Sequenz mehrfach vorkommen, wohingegen Artefakte und Sequenzierfehler eher vereinzelt auftreten. Dieses sog. Rauschen kann durch Anpassung der Schwellwerte in der Konfigurationsdatei herausgefiltert werden. Da bei kleineren Clustern auch einmalig registrierte Varianten einer Sequenz von Bedeutung sein können, soll der Filtervorgang erst ab einer festlegbaren Clustergröße durchgeführt werden. Für das Erstellen der Liste muss jeder Knoten in jeder Komponente betrachtet werden, so dass der Vorgang für alle Knoten in $ O(V) $ durchführbar ist.\\
 
-Aus der so erzeugten Liste lexikographisch sortierter Kandidatenallele $ A_{observed} $ der Länge $ n_{observed} $ sollen nun die möglichen Häufigkeitsverteilungen in Abhängigkeit von der Ploidie bestimmt werden. Hierzu muss zunächst die aufgrund der Ploidie tatsächlich zu erwartende Anzahl von Allelen $n_{alleles}$ bestimmt werden. Die geschieht durch die Funktion \lstinline|get_max_parsimony_n_alleles()| in \lstinline|likelihood_operations.py|. Dadurch werden unnötige bzw. nicht mögliche Allelkombinationen eingespart und in der weiteren Berechnung nicht berücksichtigt. Ist die Ploidie $ \phi $ höher als die Anzahl der beobachteten Allele, so muss es mindestens genauso viele und bei Homozygotie auch mehrfach vorkommende Allele geben, damit die Ploidie erfüllt werden kann. Es muss also gelten $ n_{alleles} = \phi $. Wurden dagegen mehr Allele beobachtet als aufgrund der Ploidie möglich sind und die Ploidie ist Teiler von $n_{observed}$, so können alle beobachteten Allele auch tatsächlich vorkommen, da die Zusammenhangskomponente auch mehrere Loci enthalten kann. Es gilt dann also $ n_{alleles} = n_{observed} $. Ist dagegen die Anzahl der beobachteten Allele höher als die Ploidie, aber nicht ganzzahlig durch die Ploidie teilbar, so muss die Anzahl der Allele entsprechend erhöht werden. Das heißt, es müssen tatsächlich so viele Allele vorkommen, dass eine korrekte Ploidie erreicht wird, dass also die Ploidie eine Teiler von $ n_{alleles} $ wird. Die Anzahl der Allele muss also um die Ploidie abzüglich des Restes aus der Restdivision erhöht werden: $ n_{alleles} = n_{observed} + \phi - (n_{observed} \mod \phi)$. Diese Anpassung der Anzahl der Allele kann für jede Komponente $C$ in $ O(1) $ erfolgen, so dass die Laufzeit für alle Komponenten O(C) beträgt. Im Worst Case, bei dem jede Komponente nur einen Knoten enthält und somit $ C = V $ gilt, würde die Laufzeit maximal $ O(V) $ betragen.
+Aus der so erzeugten Liste lexikographisch sortierter Kandidatenallele $ A_{observed} $ der Länge $ n_{observed} $ sollen nun die möglichen Häufigkeitsverteilungen in Abhängigkeit von der Ploidie bestimmt werden. Hierzu muss zunächst die aufgrund der Ploidie tatsächlich zu erwartende Anzahl von Allelen $n_{alleles}$ bestimmt werden. Die geschieht durch die Funktion \lstinline|get_max_parsimony_n_alleles()| in \lstinline|likelihood_operations.py|. Dadurch werden unnötige bzw. nicht mögliche Allelkombinationen eingespart und in der weiteren Berechnung nicht berücksichtigt. Ist die Ploidie $ \phi $ höher als die Anzahl der beobachteten Allele, so muss es mindestens genauso viele und bei Homozygotie auch mehrfach vorkommende Allele geben, damit die Ploidie erfüllt werden kann. Es muss also gelten $ n_{alleles} = \phi $. Wurden dagegen mehr Allele beobachtet als aufgrund der Ploidie möglich sind und die Ploidie ist Teiler von $n_{observed}$, so können alle beobachteten Allele auch tatsächlich vorkommen, da die Zusammenhangskomponente auch mehrere Loci enthalten kann. Es gilt dann also $ n_{alleles} = n_{observed} $. Ist dagegen die Anzahl der beobachteten Allele höher als die Ploidie, aber nicht ganzzahlig durch die Ploidie teilbar, so muss die Anzahl der Allele entsprechend erhöht werden. Das heißt, es müssen tatsächlich so viele Allele vorkommen, dass eine korrekte Ploidie erreicht wird, dass also die Ploidie eine Teiler von $ n_{alleles} $ wird. Die Anzahl der Allele muss also um die Ploidie abzüglich des Restes aus der Restdivision erhöht werden: $ n_{alleles} = n_{observed} + \phi - (n_{observed} \mod \phi)$. Diese Anpassung der Anzahl der Allele kann für jede Komponente $C$ in $ O(1) $ erfolgen, so dass die Laufzeit für alle Komponenten O(C) beträgt. Im Worst Case, bei dem jede Komponente nur einen Knoten enthält und somit $ C = V $ gilt, würde die Laufzeit maximal $ O(V) $ betragen.\\
 
-Aus der tatsächlich zu erwarteten Anzahl von Allelen $ n_{alleles} $ können nun alle Kombinationen möglicher Häufigkeitsverteilungen der Allele bestimmt werden (Funktion \linebreak \lstinline|get_candidate_vafs()| im Modul \lstinline|likelihood_operations.py|). Hierfür werden zunächst alle möglichen Allelkombinationen ermittelt. Dies erfolgt nach dem Urnenmodell unter Auswahl von $ n_{alleles} $ Elementen mit Zurücklegen aus insgesamt $ n_{observed} $ verschiedenen Elementen und ohne Berücksichtigung der Reihenfolge. Dadurch berechnet sich die Anzahl möglicher Kombination nach \eqref{eqn:3-12} aus dem  Binomialkoeffizienten der $k$-ten Ordnung aus $ n $ Elementen mit Zurücklegen.
+Mit Hilfe der tatsächlich zu erwarteten Anzahl von Allelen $ n_{alleles} $ können nun alle Kombinationen möglicher Häufigkeitsverteilungen der Allele bestimmt werden (Funktion \linebreak \lstinline|get_candidate_vafs()| im Modul \lstinline|likelihood_operations.py|). Hierfür werden zunächst alle möglichen Allelkombinationen ermittelt. Dies erfolgt nach dem Urnenmodell unter Auswahl von $ n_{alleles} $ Elementen mit Zurücklegen aus insgesamt $ n_{observed} $ verschiedenen Elementen und ohne Berücksichtigung der Reihenfolge. Dadurch berechnet sich die Anzahl möglicher Kombination nach \eqref{eqn:3-12} aus dem  Binomialkoeffizienten der $k$-ten Ordnung aus $ n $ Elementen mit Zurücklegen ~\cite{tb_stat,bronst}.
 \begin{equation} \label{eqn:3-12}
 \tag{3-12}
 \binom{n + k - 1}{k} = \frac{(n+k-1)!}{(n-1)!\, \cdotp k!} = \frac{(n_{alleles}+n_{observed}-1)!}{(n_{alleles}-1)!\, \cdotp n_{observed}!} 
@@ -190,10 +190,72 @@ Diese Allelkombinationen werden mit Hilfe der Funktion  \lstinline|combinations_
 		$ ploidy = 2, n_{observed} = 3, n_{alleles} = 4$: \\
 		{[(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 0, 2), (0, 0, 1, 1), (0, 0, 1, 2), (0, 0, 2, 2), (0, 1, 1, 1), (0, 1, 1, 2), (0, 1, 2, 2), (0, 2, 2, 2), (1, 1, 1, 1), (1, 1, 1, 2), (1, 1, 2, 2), (1, 2, 2, 2), (2, 2, 2, 2)]}
 		\\
-	}}
-\linebreak 
-\\
-\\
+	}}\\
+
+\subsubsection{Abschätzung der oberenen Laufzeitschranke bei Kombinationen mit Wiederholung}
+Kombinationen mit Wiederholung werden sowohl für die Bestimmung der Allelkombinationen aus diesem Kapitel als auch später in Kap. \ref{subsec:comb_loci} für die Ermittlung möglicher Kombinationen von Loci genutzt. Hinsichtlich der Laufzeit und des Speicherplatzbedarfs kann diese Berechnung bei sehr großen Clustern zum dominierenden Faktor werden. Daher soll die Laufzeit an dieser Stelle genauer abgeschätzt werden. Seien dabei für eine bessere Übersichtlichkeit $ n_{alleles} $ als $ n $ und $ n_{observed} $ als $k$ bezeichnet. Nach Formel \eqref{eqn:3-12} werden also $ \binom{n + k - 1}{k} $ Kombinationen jeweils in $O(1)$ erzeugt, d.h. in $ O(\binom{n + k - 1}{k}) $ für jede Zusammenhangskomponente. \\
+
+Die Formel \eqref{eqn:3-12} ergibt sich aus der allgemeinen Formel des Binomialkoeffizienten \eqref{eqn:3-13}, durch den die Anzahl aller Kombinationen ohne Zurücklegen berechnet wird \cite{tb_stat}. 
+\begin{equation} \label{eqn:3-13}
+\tag{3-13}
+\binom{n}{k} = \frac{n!}{(n-k)!\, \cdotp k!}
+\end{equation} 
+Mit anderen Worten, die Formel \eqref{eqn:3-12} kann auf zwei Arten interpretiert werden: es werden aus n Elementen $ k $ Elemente mit Zurücklegen gezogen oder es werden aus $ n + k - 1 $ Elementen $ k $ Elemente ohne Zurücklegen gezogen. Sei also  $ m = n + k - 1 $, dann gilt:
+\begin{equation} \label{eqn:3-14}
+\tag{3-14}
+\binom{m}{k} = \frac{m!}{(m - k)!\, \cdotp k!} \leq m!
+\end{equation} 
+
+Daraus ergibt sich eine Laufzeit zunächst eine obere Schranke der Laufzeit von $ O(m!) = O((n + k)!) $. Hierfür soll nun eine kleinere obere Schranke gefunden werden. Um die Fakultät näherungsweise zu berechnen kann die Stirlingsche Formel \cite{bronst} verwendet werden:
+\begin{equation} \label{eqn:3-15}
+\tag{3-15}
+n! \approx \left( \frac{n}{e} \right) ^n \, \cdotp \sqrt{2 \, \cdotp \pi \, \cdotp n}
+\end{equation} 
+
+Somit gilt auch \eqref{eqn:3-16} und ist eine untere Schranke der Fakultät.
+\begin{equation} \label{eqn:3-16}
+\tag{3-16}
+n! \geq \left( \frac{n}{e} \right) ^n 
+\end{equation} 
+
+Durch \eqref{eqn:3-12} und \eqref{eqn:3-16} lässt sich durch einige Umformungen die obere Schranke der Laufzeit von ursprünglich $ O(n!) $  auf $ O\left( \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k\right) $ eingrenzen:
+\begin{equation} \label{eqn:3-17}
+\tag{3-17}
+\begin{aligned}
+ \binom{n + k - 1}{k} &\ {} \overset{\eqref{eqn:3-12}}{=}  \frac{(n+k-1)!}{(n-1)!\, \cdotp k!} = \frac{\prod\limits_{i=1}^{n+k-1}i}{\prod\limits_{i=1}^{n-1}i \; \cdotp \, \prod\limits_{i=1}^{k}i}  \\
+&\ = \frac{\prod\limits_{i=n}^{n+k-1}i \; \cdotp \, \prod\limits_{i=1}^{n-1}i}{\prod\limits_{i=1}^{n-1}i \; \cdotp \, \prod\limits_{i=1}^{k}i} = \frac{\prod\limits_{i=n}^{n+k-1}i}{\prod\limits_{i=1}^{k}i}\\
+&\ = \frac{(n + k - 1) \, \cdotp (n + k - 2)\, \cdotp \; \dots \; \, \cdotp n}{k!} \\
+&\ \leq \frac{(n + k - 1)^k}{k!} \\
+&\ \overset{\eqref{eqn:3-16}}{\leq} \frac{(n + k - 1)^k}{\left( \frac{k}{e} \right) ^k} \\
+&\ = \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k  \\
+\end{aligned}
+\end{equation} 
+Der Binomialkoeffizient verfügt über bestimmte Eigenschaften, insbesondere gelten der Symmetrie- \eqref{eqn:3-18} und der Additionssatz \eqref{eqn:3-19} , die sich auch in der Struktur des Pascalschen Dreiecks widerspiegeln \cite{bronst}. 
+\begin{equation} \label{eqn:3-18}
+\tag{3-18}
+\binom{n}{k} = \binom{n}{n - k}
+\end{equation} 
+\begin{equation} \label{eqn:3-19}
+\tag{3-19}
+\binom{n}{k} + \binom{n}{k + 1} = \binom{n + 1}{k + 1} 
+\end{equation} 
+Aufgrund der Symmetrie sind die Binomialkoeffizienten jeder Zeile des Dreiecks $\binom{n}{k_{i}}$ mit $ k_{i} \in 1, \dots n $ und $ i \in \mathds{N} $ symmetrisch im Bezug auf die Zeilenmitte. Und da nach \eqref{eqn:3-19} jeder Koeffizient aus der Summe der beiden darüber liegenden Koeffizienten entsteht, sind die Werte der Koeffizienten zu den Zeilenrändern hin abnehmend und weisen in der Zeilenmitte ihr Maximum auf. Ist $n$ gerade, so befindet sich die Zeilenmitte bei $ k = \frac{n}{2} $. Ist $n$ ungerade so befinden sich die Maxima bei $ k = \lceil \frac{n}{2} \rceil $ und $ k = \lfloor \frac{n}{2} \rfloor $ und besitzen aufgrund der Symmetrie den gleichen Wert. Vereinfacht gilt also für ein gegebenes $n$, dass der Binomialkoeffizient $\binom{n}{k_{i}}$ bei $ k = \frac{n}{2} $ maximal ist. \\
+
+Daher soll $ k = \frac{n}{2} $ als Worst Case angenommen werden, dann ergibt sich aus \eqref{eqn:3-17} eine Laufzeit von $ O(3e^{\frac{n}{2}} ) \in O(e^n) $. 
+	 \begin{equation} \label{eqn:3-xxx1}
+\tag{3-xxx1}
+\begin{aligned}
+\left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k &\ {} = \left( \frac{e \, \cdotp (n + \frac{n}{2} - 1)}{\frac{n}{2}}\right)^{\frac{n}{2}}  \\
+&\ = \left( \frac{\frac{3en - 2e}{2}} {\frac{n}{2}}\right)^{\frac{n}{2}} \\
+&\ = \left( \frac{3en - 2e}{n}\right)^{\frac{n}{2}} \\
+&\ \leq \left( \frac{3en}{n}\right)^{\frac{n}{2}}\\
+&\ = 3e^{\frac{n}{2}}\\
+\end{aligned}
+\end{equation}
+Hinsichtlich der Allelkombinationen entspricht dies einer Zeit von $ O(e^{n_{alleles}}) $ für jede Zusammenhangskomponente. Für die Laufzeit über alle Komponenten $C_{i}$ gilt dann \linebreak $O\left( \sum\limits_{i=1}^{|C|}e^{n_{alleles}}\right) $, es dominiert also die Komponente, welche die meisten Knoten enthält. \\
+
+Für sehr große Cluster ist daher die Laufzeit problematisch. Ebenso kommt es zu einem hohen Bedarf an Arbeitsspeicher, aufgrund der großen Anzahl von Kombinationen die dabei erzeugt werden. Um dies bedingt kompensieren zu können, wurden die oben beschriebenen Schwellwerte eingeführt, die ab einer bestimmten Clustergröße \lstinline|treshold-cluster-size| nur Allelkandidaten ab einer bestimmten Sequenzhäufigkeit in den Reads des Clusters \lstinline|treshold-seq-noise| berücksichtigen.\\
+
 Für jedes Allel $i$ können im Anschluss aus seinen absoluten Häufigkeiten $H_{a_{i}}$ innerhalb jeder Allelkombination die relativen Häufigkeiten $h_{a_{i}}$ nach \eqref{eqn:3-13} bestimmt werden. 
 \begin{equation} \label{eqn:3-13}
 \tag{3-13}
@@ -203,17 +265,16 @@ h_{a_{i}} = \frac{H_{a_{i}}} {n_{alleles}}
 \fcolorbox{black}{light-gray}{
 	\parbox{\textwidth}{
 		\vspace{0.5cm}
-		\textbf{Beispiele möglicher Allelkombinationen:} \\	
+		\textbf{Beispiele möglicher Häufigkeitsverteilungen der Allele:} \\	
 		\\	
 		$ ploidy = 2, n_{observed} = 2, n_{alleles} = 2$: \\
 		{[1.0, 0.0]}, {[0.5, 0.5]}, {[0.0, 1.0]} \\
 		\\
 		$ ploidy = 2, n_{observed} = 3, n_{alleles} = 4$: \\
-		{[1.0, 0.0, 0.0]}, {[0.75, 0.25, 0.0]}, {[0.75, 0.0, 0.25]}, {[0.5, 0.5, 0.0]}, {[0.5, 0.25, 0.25]}, {[0.5, 0.0, 0.5]}, {[0.25, 0.75, 0.0]}, {[0.25, 0.5, 0.25]}, {[0.25, 0.25, 0.5]}, {[0.25, 0.0, 0.75]}, {[0.0, 1.0, 0.0]}, {[0.0, 0.75, 0.25]}, {[0.0, 0.5, 0.5]}, {[0.0, 0.25, 0.75]}, {[0.0, 0.0, 1.0]} \\
+		{[1.0, 0.0, 0.0]}, {[0.75, 0.25, 0.0]}, {[0.75, 0.0, 0.25]}, {[0.5, 0.5, 0.0]}, {[0.5, 0.25, 0.25]}, {[0.5, 0.0, 0.5]}, {[0.25, 0.75, 0.0]}, {[0.25, 0.5, 0.25]}, {[0.25, 0.25, 0.5]}, {[0.25, 0.0, 0.75]}, {[0.0, 1.0, 0.0]}, {[0.0, 0.75, 0.25]}, {[0.0, 0.5, 0.5]}, {[0.0, 0.25, 0.75]}, {[0.0, 0.0, 1.0]}
 		\\
 }}
 \linebreak 
-
 \subsection{Berechnung der Likelihoods der Allele anhand der möglichen Häufigkeitsverteilungen} \label{subsec:lh_allele}
 ======================= draft =======================\\
 für jede Zusammenhangskomponente
@@ -334,7 +395,7 @@ in den log-files werden für jede Komponente die anzahl der allele, die ploidie 
 \section{Bestimmung der maximalen Likelihood der Loci} \label{sec:max_lh_loci}
 Für jede Zusammenhangskomponente\\
 jede zusammenhangskomponente kann auch mehr als nur einen Locus beinhalten.\\
-\subsection{Bestimmung der möglichen Loci} \label{subsec:max}
+\subsection{Bestimmung der möglichen Loci} \label{subsec:comb_loci}
 ermittlung der möglichen loci-Kombinationen erfolgt in der Funktion get\_candidate\_loci() analog zur Funktion get\_candidate\_vafs() (vgl. Kap \ref{subsec:cand_allele}):
 \begin{itemize}
 	\item auch hier ist die bereits beschriebene anzahl der tatsächlich zu erwartenden allele $n_{alleles}$ aus get\_max\_parsimony\_n\_alleles() grundlage für die berechnung der möglichen loci-Kombinationen 
