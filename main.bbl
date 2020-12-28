@@ -228,4 +228,10 @@
   functions creating iterators for efficient looping}.
 \newblock https://docs.python.org/3/library/itertools.html.
 
+\bibitem{script_binom}
+{\sc Wittenburg, Kim}: {\em Algorithmen und datenstrukturen}, 2017.
+\newblock
+  $https://www2.informatik.uni-hamburg.de/fachschaft/wiki/images/3/3e/AD-Skript\_\%28WS16-17\%9.pdf$,
+  pages 156-157.
+
 \end{thebibliography}

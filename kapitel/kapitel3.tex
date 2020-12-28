@@ -132,7 +132,7 @@ Zusammenfassend soll daher für die folgenden Berechnungen vereinfachend der Mit
 
 Nach Abschluss der Graphkonstruktion werden für jedes Individuum noch einige Statistiken in die Log-Dateien geschrieben. Hier werden neben der Anzahl der Knoten und Kanten des Graphen auch die Anzahl der Substitutionen bzw. SNPs, Insertionen und Deletionen festgehalten, die beim Auslesen der CIGAR-Tupel registriert wurden. Zudem findet sich hier auch die maximal vorkommenden Edit-Distanz über alle Knoten, sofern sich diese unterhalb des festgelegten Schwellenwertes liegt. Ansonsten entspricht sie dem in der Konfigurationsdatei angegebenen Schwellenwert.\\
 
-Als optionaler Output können über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| auch die detaillierten Graphinformationen sowie eine Visualisierung des Graphen ausgegeben werden. Die Graphinformationen wie Knoten, Kanten und ihre Eigenschaften können dabei im GraphMl-, DOT-, GML- oder im binären gt-Format gespeichert werden. Die graphische Darstellung wird als pdf-Datei ausgegeben, dabei entspricht die Kantenfärbung der berechneten Likelihood zwischen den Reads.. \\
+Als optionaler Output können über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| auch die detaillierten Graphinformationen sowie eine Visualisierung des Graphen ausgegeben werden. Die Graphinformationen wie Knoten, Kanten und ihre Eigenschaften können dabei im GraphMl-, DOT-, GML- oder im binären gt-Format gespeichert werden. Die graphische Darstellung wird als pdf-Datei ausgegeben, dabei entspricht die Kantenfärbung der berechneten Likelihood zwischen den Reads. \\
 
 \subsection{Bestimmung der Zusammenhangskomponenten} \label{subsec:comp}
 
@@ -164,7 +164,7 @@ In Zusammenschau mit der für die Extraktion der Zusammenhangskomponenten erford
 \section{Bestimmung der maximalen Likelihood der Allele} \label{sec:max_lh_allele}
 \subsection{Bestimmung der Allele und ihrer möglichen Häufigkeitsverteilung} \label{subsec:cand_allele}
 
-Die einzelnen Zusammenhangskomponenten repräsentieren einen oder mehrere Loci. Alle weiteren Berechnungen aus diesem und den folgenden Kapiteln ~\ref{sec:max_lh_loci} und ~\ref{sec:vcf} werden für jede Komponenten einzeln durchgeführt mit dem Ziel die wahrscheinlichsten Allelsequenzen und die dazugehörigen Loci zu identifizieren.\\
+Die einzelnen Zusammenhangskomponenten repräsentieren einen oder mehrere Loci. Alle weiteren Berechnungen aus diesem und den folgenden Kapiteln ~\ref{sec:max_lh_loci} und ~\ref{sec:vcf} werden für jede Komponente einzeln durchgeführt, dabei sollen die wahrscheinlichsten Allelsequenzen und die dazugehörigen Loci zu identifiziert werden.\\
 
 Zunächst werden mit der Funktion \lstinline|get_candidate_alleles()| aus dem Modul \linebreak \lstinline|likelihood_operations.py| die Allelsequenzen ermittelt, die in der Zusammenhangskomponenten vorkommen. Für deterministischere Ergebnisse werden diese lexikographisch sortiert in Form einer Liste durch die Funktion zurückgegeben. Übersteigt die Größe des Clusters, d.h. die Knotenanzahl einer Zusammenhangskomponenten einen in der Konfigurationsdatei als \lstinline|treshold-cluster-size| festgelegten Wert, so wird von den im Cluster vorkommenden Sequenzen zunächst die absolute Häufigkeit bestimmt. Es werden dann nur diejenigen Sequenzen lexikographisch sortiert zurückgegeben, die einen weiteren, ebenfalls in der Konfigurationsdatei festgelegten Schwellenwert, \lstinline|treshold-seq-noise|, überschreiten. Dies dient dazu, bei großen Clustern Komplexität und Rechenaufwand zu reduzieren, da davon auszugehen ist, dass innerhalb eines großen Clusters echte Varianten einer Sequenz mehrfach vorkommen, wohingegen Artefakte und Sequenzierfehler eher vereinzelt auftreten. Dieses sog. Rauschen kann durch Anpassung der Schwellwerte in der Konfigurationsdatei herausgefiltert werden. Da bei kleineren Clustern auch einmalig registrierte Varianten einer Sequenz von Bedeutung sein können, soll der Filtervorgang erst ab einer festlegbaren Clustergröße durchgeführt werden. Für das Erstellen der Liste muss jeder Knoten in jeder Komponente betrachtet werden, so dass der Vorgang für alle Knoten in $ O(V) $ durchführbar ist.\\
 
@@ -192,69 +192,6 @@ Diese Allelkombinationen werden mit Hilfe der Funktion  \lstinline|combinations_
 		\\
 	}}\\
 
-\subsubsection{Abschätzung der oberenen Laufzeitschranke bei Kombinationen mit Wiederholung}
-Kombinationen mit Wiederholung werden sowohl für die Bestimmung der Allelkombinationen aus diesem Kapitel als auch später in Kap. \ref{subsec:comb_loci} für die Ermittlung möglicher Kombinationen von Loci genutzt. Hinsichtlich der Laufzeit und des Speicherplatzbedarfs kann diese Berechnung bei sehr großen Clustern zum dominierenden Faktor werden. Daher soll die Laufzeit an dieser Stelle genauer abgeschätzt werden. Seien dabei für eine bessere Übersichtlichkeit $ n_{alleles} $ als $ n $ und $ n_{observed} $ als $k$ bezeichnet. Nach Formel \eqref{eqn:3-12} werden also $ \binom{n + k - 1}{k} $ Kombinationen jeweils in $O(1)$ erzeugt, d.h. in $ O(\binom{n + k - 1}{k}) $ für jede Zusammenhangskomponente. \\
-
-Die Formel \eqref{eqn:3-12} ergibt sich aus der allgemeinen Formel des Binomialkoeffizienten \eqref{eqn:3-13}, durch den die Anzahl aller Kombinationen ohne Zurücklegen berechnet wird \cite{tb_stat}. 
-\begin{equation} \label{eqn:3-13}
-\tag{3-13}
-\binom{n}{k} = \frac{n!}{(n-k)!\, \cdotp k!}
-\end{equation} 
-Mit anderen Worten, die Formel \eqref{eqn:3-12} kann auf zwei Arten interpretiert werden: es werden aus n Elementen $ k $ Elemente mit Zurücklegen gezogen oder es werden aus $ n + k - 1 $ Elementen $ k $ Elemente ohne Zurücklegen gezogen. Sei also  $ m = n + k - 1 $, dann gilt:
-\begin{equation} \label{eqn:3-14}
-\tag{3-14}
-\binom{m}{k} = \frac{m!}{(m - k)!\, \cdotp k!} \leq m!
-\end{equation} 
-
-Daraus ergibt sich eine Laufzeit zunächst eine obere Schranke der Laufzeit von $ O(m!) = O((n + k)!) $. Hierfür soll nun eine kleinere obere Schranke gefunden werden. Um die Fakultät näherungsweise zu berechnen kann die Stirlingsche Formel \cite{bronst} verwendet werden:
-\begin{equation} \label{eqn:3-15}
-\tag{3-15}
-n! \approx \left( \frac{n}{e} \right) ^n \, \cdotp \sqrt{2 \, \cdotp \pi \, \cdotp n}
-\end{equation} 
-
-Somit gilt auch \eqref{eqn:3-16} und ist eine untere Schranke der Fakultät.
-\begin{equation} \label{eqn:3-16}
-\tag{3-16}
-n! \geq \left( \frac{n}{e} \right) ^n 
-\end{equation} 
-
-Durch \eqref{eqn:3-12} und \eqref{eqn:3-16} lässt sich durch einige Umformungen die obere Schranke der Laufzeit von ursprünglich $ O(n!) $  auf $ O\left( \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k\right) $ eingrenzen:
-\begin{equation} \label{eqn:3-17}
-\tag{3-17}
-\begin{aligned}
- \binom{n + k - 1}{k} &\ {} \overset{\eqref{eqn:3-12}}{=}  \frac{(n+k-1)!}{(n-1)!\, \cdotp k!} = \frac{\prod\limits_{i=1}^{n+k-1}i}{\prod\limits_{i=1}^{n-1}i \; \cdotp \, \prod\limits_{i=1}^{k}i}  \\
-&\ = \frac{\prod\limits_{i=n}^{n+k-1}i \; \cdotp \, \prod\limits_{i=1}^{n-1}i}{\prod\limits_{i=1}^{n-1}i \; \cdotp \, \prod\limits_{i=1}^{k}i} = \frac{\prod\limits_{i=n}^{n+k-1}i}{\prod\limits_{i=1}^{k}i}\\
-&\ = \frac{(n + k - 1) \, \cdotp (n + k - 2)\, \cdotp \; \dots \; \, \cdotp n}{k!} \\
-&\ \leq \frac{(n + k - 1)^k}{k!} \\
-&\ \overset{\eqref{eqn:3-16}}{\leq} \frac{(n + k - 1)^k}{\left( \frac{k}{e} \right) ^k} \\
-&\ = \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k  \\
-\end{aligned}
-\end{equation} 
-Der Binomialkoeffizient verfügt über bestimmte Eigenschaften, insbesondere gelten der Symmetrie- \eqref{eqn:3-18} und der Additionssatz \eqref{eqn:3-19} , die sich auch in der Struktur des Pascalschen Dreiecks widerspiegeln \cite{bronst}. 
-\begin{equation} \label{eqn:3-18}
-\tag{3-18}
-\binom{n}{k} = \binom{n}{n - k}
-\end{equation} 
-\begin{equation} \label{eqn:3-19}
-\tag{3-19}
-\binom{n}{k} + \binom{n}{k + 1} = \binom{n + 1}{k + 1} 
-\end{equation} 
-Aufgrund der Symmetrie sind die Binomialkoeffizienten jeder Zeile des Dreiecks $\binom{n}{k_{i}}$ mit $ k_{i} \in 1, \dots n $ und $ i \in \mathds{N} $ symmetrisch im Bezug auf die Zeilenmitte. Und da nach \eqref{eqn:3-19} jeder Koeffizient aus der Summe der beiden darüber liegenden Koeffizienten entsteht, sind die Werte der Koeffizienten zu den Zeilenrändern hin abnehmend und weisen in der Zeilenmitte ihr Maximum auf. Ist $n$ gerade, so befindet sich die Zeilenmitte bei $ k = \frac{n}{2} $. Ist $n$ ungerade so befinden sich die Maxima bei $ k = \lceil \frac{n}{2} \rceil $ und $ k = \lfloor \frac{n}{2} \rfloor $ und besitzen aufgrund der Symmetrie den gleichen Wert. Vereinfacht gilt also für ein gegebenes $n$, dass der Binomialkoeffizient $\binom{n}{k_{i}}$ bei $ k = \frac{n}{2} $ maximal ist. \\
-
-Daher soll $ k = \frac{n}{2} $ als Worst Case angenommen werden, dann ergibt sich aus \eqref{eqn:3-17} eine Laufzeit von $ O(3e^{\frac{n}{2}} ) \in O(e^n) $. 
-	 \begin{equation} \label{eqn:3-xxx1}
-\tag{3-xxx1}
-\begin{aligned}
-\left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k &\ {} = \left( \frac{e \, \cdotp (n + \frac{n}{2} - 1)}{\frac{n}{2}}\right)^{\frac{n}{2}}  \\
-&\ = \left( \frac{\frac{3en - 2e}{2}} {\frac{n}{2}}\right)^{\frac{n}{2}} \\
-&\ = \left( \frac{3en - 2e}{n}\right)^{\frac{n}{2}} \\
-&\ \leq \left( \frac{3en}{n}\right)^{\frac{n}{2}}\\
-&\ = 3e^{\frac{n}{2}}\\
-\end{aligned}
-\end{equation}
-Hinsichtlich der Allelkombinationen entspricht dies einer Zeit von $ O(e^{n_{alleles}}) $ für jede Zusammenhangskomponente. Für die Laufzeit über alle Komponenten $C_{i}$ gilt dann \linebreak $O\left( \sum\limits_{i=1}^{|C|}e^{n_{alleles}}\right) $, es dominiert also die Komponente, welche die meisten Knoten enthält. \\
-
-Für sehr große Cluster ist daher die Laufzeit problematisch. Ebenso kommt es zu einem hohen Bedarf an Arbeitsspeicher, aufgrund der großen Anzahl von Kombinationen die dabei erzeugt werden. Um dies bedingt kompensieren zu können, wurden die oben beschriebenen Schwellwerte eingeführt, die ab einer bestimmten Clustergröße \lstinline|treshold-cluster-size| nur Allelkandidaten ab einer bestimmten Sequenzhäufigkeit in den Reads des Clusters \lstinline|treshold-seq-noise| berücksichtigen.\\
 
 Für jedes Allel $i$ können im Anschluss aus seinen absoluten Häufigkeiten $H_{a_{i}}$ innerhalb jeder Allelkombination die relativen Häufigkeiten $h_{a_{i}}$ nach \eqref{eqn:3-13} bestimmt werden. 
 \begin{equation} \label{eqn:3-13}
@@ -275,65 +212,158 @@ h_{a_{i}} = \frac{H_{a_{i}}} {n_{alleles}}
 		\\
 }}
 \linebreak 
+\subsubsection{Abschätzung der oberenen Laufzeitschranke bei Kombinationen mit Wiederholung und Laufzeit der Funktion \lstinline|get_candidate_vafs()|} \label{subsubsec:cand_vafs}
+Kombinationen mit Wiederholung werden sowohl für die Bestimmung der Allelkombinationen aus diesem Kapitel als auch später in Kap. \ref{subsec:comb_loci} für die Ermittlung möglicher Kombinationen von Loci genutzt. Hinsichtlich der Laufzeit und des Speicherplatzbedarfs kann diese Berechnung bei sehr großen Clustern zum dominierenden Faktor werden. Daher soll die Laufzeit an dieser Stelle genauer abgeschätzt werden. Seien dabei für eine bessere Übersichtlichkeit $ n_{alleles} $ als $ n $ und $ n_{observed} $ als $k$ bezeichnet und es gilt $n, k \in \mathds{N} $. Nach Formel \eqref{eqn:3-12} werden also $ \binom{n + k - 1}{k} $ Kombinationen jeweils in $O(1)$ erzeugt, d.h. in $ O(\binom{n + k - 1}{k}) $ für jede Zusammenhangskomponente. \\
+
+Die Formel \eqref{eqn:3-12} ergibt sich aus der allgemeinen Formel des Binomialkoeffizienten \eqref{eqn:3-13}, durch den die Anzahl aller Kombinationen ohne Zurücklegen berechnet wird \cite{tb_stat}. 
+\begin{equation} \label{eqn:3-13}
+\tag{3-13}
+\binom{n}{k} = \frac{n!}{(n-k)!\, \cdotp k!}
+\end{equation} 
+Mit anderen Worten, die Formel \eqref{eqn:3-12} kann auf zwei Arten interpretiert werden: es werden aus n Elementen $ k $ Elemente mit Zurücklegen gezogen oder es werden aus $ n + k - 1 $ Elementen $ k $ Elemente ohne Zurücklegen gezogen. Sei also  $ m = n + k - 1 $, dann gilt:
+\begin{equation} \label{eqn:3-14}
+\tag{3-14}
+\binom{m}{k} = \frac{m!}{(m - k)!\, \cdotp k!} \leq m!
+\end{equation} 
+
+Daraus ergibt sich eine Laufzeit zunächst eine obere Schranke der Laufzeit von $ O(m!) = O((n + k)!) $. Hierfür soll nun eine kleinere obere Schranke gefunden werden. Um die Fakultät näherungsweise zu berechnen kann die Stirlingsche Formel \cite{bronst} verwendet werden:
+\begin{equation} \label{eqn:3-15}
+\tag{3-15}
+n! \approx \left( \frac{n}{e} \right) ^n \, \cdotp \sqrt{2 \, \cdotp \pi \, \cdotp n}
+\end{equation} 
+
+Somit gilt auch \eqref{eqn:3-16} und ist eine untere Schranke der Fakultät \cite{script_binom}.
+\begin{equation} \label{eqn:3-16}
+\tag{3-16}
+n! \geq \left( \frac{n}{e} \right) ^n 
+\end{equation} 
+
+Durch \eqref{eqn:3-12} und \eqref{eqn:3-16} lässt sich durch einige Umformungen die obere Schranke der Laufzeit von ursprünglich $ O(n!) $  auf $ O\left( \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k\right) $ eingrenzen:
+\begin{equation} \label{eqn:3-17}
+\tag{3-17}
+\begin{aligned}
+\binom{n + k - 1}{k} &\ {} \overset{\eqref{eqn:3-12}}{=}  \frac{(n+k-1)!}{(n-1)!\, \cdotp k!} = \frac{\prod\limits_{i=1}^{n+k-1}i}{\prod\limits_{i=1}^{n-1}i \; \cdotp \, \prod\limits_{i=1}^{k}i}  \\
+&\ = \frac{\prod\limits_{i=n}^{n+k-1}i \; \cdotp \, \prod\limits_{i=1}^{n-1}i}{\prod\limits_{i=1}^{n-1}i \; \cdotp \, \prod\limits_{i=1}^{k}i} = \frac{\prod\limits_{i=n}^{n+k-1}i}{\prod\limits_{i=1}^{k}i}\\
+&\ = \frac{(n + k - 1) \, \cdotp (n + k - 2)\, \cdotp \; \dots \; \, \cdotp n}{k!} \\
+&\ \leq \frac{(n + k - 1)^k}{k!} \\
+&\ \overset{\eqref{eqn:3-16}}{\leq} \frac{(n + k - 1)^k}{\left( \frac{k}{e} \right) ^k} \\
+&\ = \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k  \\
+\end{aligned}
+\end{equation} 
+Der Binomialkoeffizient verfügt über bestimmte Eigenschaften, insbesondere gelten der Symmetrie- \eqref{eqn:3-18} und der Additionssatz \eqref{eqn:3-19} , die sich auch in der Struktur des Pascalschen Dreiecks widerspiegeln \cite{bronst}. 
+\begin{equation} \label{eqn:3-18}
+\tag{3-18}
+\binom{n}{k} = \binom{n}{n - k}
+\end{equation} 
+\begin{equation} \label{eqn:3-19}
+\tag{3-19}
+\binom{n}{k} + \binom{n}{k + 1} = \binom{n + 1}{k + 1} 
+\end{equation} 
+Aufgrund der Symmetrie sind die Binomialkoeffizienten jeder Zeile des Dreiecks $\binom{n}{k_{i}}$ mit $ k_{i} \in 1, \dots n $ und $ i \in \mathds{N} $ symmetrisch im Bezug auf die Zeilenmitte. Und da nach \eqref{eqn:3-19} jeder Koeffizient aus der Summe der beiden darüber liegenden Koeffizienten entsteht, sind die Werte der Koeffizienten zu den Zeilenrändern hin abnehmend und weisen in der Zeilenmitte ihr Maximum auf. Ist $n$ gerade, so befindet sich die Zeilenmitte bei $ k = \frac{n}{2} $. Ist $n$ ungerade so befinden sich die Maxima bei $ k = \lceil \frac{n}{2} \rceil $ und $ k = \lfloor \frac{n}{2} \rfloor $ und besitzen aufgrund der Symmetrie den gleichen Wert. Vereinfacht gilt also für ein gegebenes $n$, dass der Binomialkoeffizient $\binom{n}{k_{i}}$ bei $ k = \frac{n}{2} $ maximal ist. \\
+
+Daher soll $ k = \frac{n}{2} $ als Worst Case angenommen werden, dann ergibt sich aus \eqref{eqn:3-17} eine Laufzeit von $ O(3e^{\frac{n}{2}} ) \in O(e^n) $. 
+\begin{equation} \label{eqn:3-20}
+\tag{3-20}
+\begin{aligned}
+\left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k &\ {} = \left( \frac{e \, \cdotp (n + \frac{n}{2} - 1)}{\frac{n}{2}}\right)^{\frac{n}{2}}  \\
+&\ = \left( \frac{\frac{3en - 2e}{2}} {\frac{n}{2}}\right)^{\frac{n}{2}} \\
+&\ = \left( \frac{3en - 2e}{n}\right)^{\frac{n}{2}} \\
+&\ \leq \left( \frac{3en}{n}\right)^{\frac{n}{2}}\\
+&\ = 3e^{\frac{n}{2}}\\
+\end{aligned}
+\end{equation}
+Hinsichtlich der Allelkombinationen entspricht dies einer Zeit von $ O(e^{n_{alleles}}) $ für jede Zusammenhangskomponente. Für die Laufzeit über alle Komponenten $C_{i}$ gilt dann \linebreak $O\left( \sum\limits_{i=1}^{|C|}e^{n_{alleles}}\right) $, es dominiert also die Komponente, welche die meisten Knoten enthält. \\
+
+Für sehr große Cluster ist daher die Laufzeit problematisch. Ebenso kommt es zu einem hohen Bedarf an Arbeitsspeicher, aufgrund der großen Anzahl von Kombinationen die dabei erzeugt werden. Um dies bedingt kompensieren zu können, wurden die oben beschriebenen Schwellenwerte eingeführt, die ab einer festgelegten Clustergröße \lstinline|treshold-cluster-size| nur Allelkandidaten ab einer bestimmten Häufigkeit ihrere Sequenz in den Reads \linebreak \lstinline|treshold-seq-noise| berücksichtigen.\\
+
+Die Berechnung der Häufigkeitsverteilungen erfordert weitere Iterationen über die ermittelten Allelkombinationen, dabei werden sämtliche Allele für jede Kombination betrachtet. Dadurch erhöht sich die Laufzeit auf $ O(e^{n_{alleles}})\, \cdotp O(n_{alleles}) \, \cdotp O(n_{observed}) $. Den höchsten Wert nimmt $ n_{alleles} $ in dem Fall an, dass die Restdivision $ n_{observed} \mod \phi = 1 $, denn dann gilt  $ n_{alleles} = n_{observed} + \phi - 1 $. Da $\phi$ mit für alle Zusammenhangskomponenten den gleichen Wert besitzt, gilt $\phi = const$. Daraus ergibt sich nach \eqref{eqn:3-21} eine Laufzeit von $ O(e^{n_{observed}}\, \cdotp n_{observed}^2) $ für die Funktion  \lstinline|get_candidate_vafs()|.
+\begin{equation} \label{eqn:3-21}
+\tag{3-21}
+\begin{aligned}
+O(e^{n_{alleles}} \, \cdotp n_{alleles} \, \cdotp n_{observed}) 
+&\ {}= O(e^{n_{observed} + \phi - 1} \, \cdotp (n_{observed} + \phi - 1) \, \cdotp n_{observed})\\
+&\ = O(e^{n_{observed} + \phi}\, \cdotp n_{observed}^2) \, \cdotp \phi\\
+&\ = O(e^{n_{observed}}\, \cdotp n_{observed}^2)\\
+\end{aligned}
+\end{equation} 
+
 \subsection{Berechnung der Likelihoods der Allele anhand der möglichen Häufigkeitsverteilungen} \label{subsec:lh_allele}
-======================= draft =======================\\
-für jede Zusammenhangskomponente
-2.1 Berechnung der Wslk, einen Read zu beobachten anhand der gegebenen Allele-Fraktion, get\_allele\_likelihood\_read(): Vgl Kap. \ref{subsec:sol_allele_lh}, Formel  \eqref{eqn:2-xxx1} (step 2.1)
-\begin{itemize}
-	\item für jeden Read soll zunächst die Wslk gesucht werden, dass der Read durch seq-fehler aus einem der Kanditatenallele entstanden ist. 
-	\item hierzu werden für jeden Read $ r_{i} $ die ausgehende Kanten gesucht, die jeweils zu jedem der Kandidatenallele $ a_{i} $ führen und die nach \eqref{eqn:3-2} berechnete Likelihood zurückgegeben.
-	\item hierbei werden, geordnet nach Laufzeitaufwand verschiedene möglichkeiten geprüft: 
-	\item Fall (1) es existiert eine solche Kanten, dann kann die likelihood direkt zurückgegeben werden; 
-	\item Fall (2) eine solche Kante existiert nicht, aber es gibt eine entgegengesetzt gerichtete Kanten, dann kann die gesuchte Likelihood des Gegenrichtung, also mit reverese = True über die funktion get\_alignment\_likelihood() bestimmt werden; 
-	\item Fall (3) im gesamten Graphen wird nach einer Kante gesucht, die zwischen Knoten verläuft, deren seqenzen denen von $ r_{i} $ und $ a_{i} $ entsprechen. Existiert eine solche Kanten so werden die CIGAR-Tupel dieser Kante verwendet, um für $ r_{i} $ die likelihood zu bestimmen. Da die CIGAR-Tupel allein über die Sequenz definiert werden, gilt das so ermittelte CIGAR-Tupel wegen identischer Sequenzen der begrenzenden Knoten auch für eine nicht existierenden Kante zwischen $ r_{i} $ und $ a_{i} $. Für die Berechnung der Likelihood können diese CIGAR-Tupel also zusammen den p-Werten des Phred Quality Scores (aus \eqref{eqn:3-1}) von $ r_{i} $ die Likelihood mit Hilfe der Funktion get\_alignment\_likelihood() berechnet. 
-	\item Fall (4) existiert im gesamten Graphen keine vergleichbare Kante, die $ r_{i} $ und $ a_{i} $ mit einander verbindet, so wird der Wert Null zurückgegeben.
-	\item laufzeit:\\	 
-	 Laufzeit Kante suchen bei bekannter source und target Knoten $O(\min (d(r_{i}), d(a_{i})))$, mit den Knotengraden $d(r_{i}) $von Knoten $r_{i}$ und $d(a_{i}) $ von Knoten $a_{i}$ ~\cite{docs_graph_tool} -> Worst Case sind alle Knoten des Graphen ausschließlich mit den beiden Knoten $r_{i}$ und $a_{i}$ verbunden, also haben $r_{i}$ und $a_{i}$ jeweils einen Knotengrad, welcher der Anzahl der Knoten des Graphen entspricht mit Ausnahme des Knotens selbst, also : $O(V+\min (d(r_{i}), d(a_{i}))) = O(V+\min (d(V+1), d(V-1))) = O(V+V-1) = O(2 \, \cdotp V) = O(V)$ \\
-	 Worst-Case muss die Laufzeit aller Fälle summiert werden:\\
-	 Fall (1): über alle out\_neighbors $d(r_{i_{out}})$ des Knotens $r_{i}$ Kante suchen im Worst Case hat $r_{i}$ nur ausgehende Kanten zu allen Knoten des Graphen -> in $ O(d(r_{i_{out}}) \, \cdotp V) = O((V-1) \, \cdotp V) = O(V^2)$, außerdem die Likelihood als Kanteneigenschaft abrufen in $ O(1) $ => also insgesamt $ O(V^2) + O(1)=O(V^2)$\\
-	 Fall (2): analog über alle in\_neighbors $d(r_{i_{in}})$ ebenfalls in $O(V^2)$ aber mit Likelihoodberechnung der rückläufigen Kanten in $O(k)$ => insgesamt $ O(V^2 +k) = O(V^2)$, da $\overline{k}=const$ (siehe \ref{subsec:runtime_graph})\\
-	 Fall (3): cigar-Tupel finden $O(V)$ (siehe laufzeitberechnung cigar tupel) + likelihoodberechnung $O(k)$ => gesamt: $ O(V +k) = O(V) $\\
-	 Fall (4): konstanten Wert zurückgeben in $ O(1) $\\
-	 => Gesamt Fall 1 bis 4: \\
-	 \begin{equation} \label{eqn:3-xxx1}
-	 \tag{3-xxx1}
-	 \begin{aligned}
-	 &\ {} O(V^2) + O(V^2) + O(V) + O(1))  \\
-	 & \ = O(2 \, \cdotp V^2 + V )\\
-	 &\ = O(V^2 + V) \\
-	 &\ = O(V^2) \\
-	 \end{aligned}
-	 \end{equation}
-	\item pseudocode
-	%\begin{algorithm}[H]
-	%	\caption{Likelihood zwischen Read und Allel bestimmen}  \label{alg:cig}
-	%	\begin{algorithmic}[1]	
-	%ToDo -> to pseudocode
-	%def get_allele_likelihood_read(comp, allele, node):
-	   % # obtian one arbitrary out edge of node that points to another node with 
-	   % # sequence = allele
-       % out_neighbors = comp.get_out_neighbors(node)
-       % in_neighbors = comp.get_in_neighbors(node)
-       % # search for existing edge from given node to target node with 
-       % # sequence = allele
-       % for neighbor in out_neighbors:
-       %     if comp.vertex_properties['sequence'][neighbor] == allele:
-       %         return comp.edge_properties["likelihood"][comp.edge(node, neighbor)]
-       % # search for reverse target node with sequence = allele to given node
-       % qual = comp.vp["quality"][node]
-       % for neighbor in in_neighbors:
-       %     if comp.vertex_properties['sequence'][neighbor] == allele:
-       %         return get_alignment_likelihood(comp, 
-       %         list(eval(comp.edge_properties['cigar-tuples'][comp.edge(neighbor,  
-       %         node)])), qual, reverse=True)
-       % cigar_tuples = get_cigar_tuples(comp, comp.vp["sequence"][node], allele)
-       % if cigar_tuples:
-       %     return get_alignment_likelihood(comp, list(eval(cigar_tuples[0])), qual, 
-       %     reverse=cigar_tuples[1])
-       % return 0
-	%	\end{algorithmic}
-	%\end{algorithm}
-\end{itemize}
+
+Nun soll nach \eqref{eqn:2-xxx1} die Wahrscheinlichkeit ermittelt werden, einen Read anhand der gegebenen Allelfraktion zu beobachten (vgl. Kap. \ref{subsec:sol_allele_lh}). Dies geschieht in der Funktion \lstinline|get_allele_likelihood_read()| aus dem Modul \lstinline|likelihood_operations.py|). Für jeden Read wird dabei zunächst die Wahrscheinlichkeit bestimmt, dass der Read durch Sequenzierfehler aus einem der Kandidatenallele entstanden ist. Hierzu wird für jeden Read $ r_{i} $ jeweils eine ausgehende Kante zu jedem Kandidatenallel $ a_{j} $ gesucht und die nach \eqref{eqn:3-2} berechnete Likelihood aus den Eigenschaften dieser Kante zurückgegeben.\\
+
+Geordnet nach dem Laufzeitaufwand werden für das Auffinden einer solchen Kante verschiedene Möglichkeiten geprüft:
+\begin{enumerate}
+	\item \label{-1-} Der Read besitzt eine ausgehende Kante zu einem Knoten, der mit der Sequenz des Kandidatenallels übereinstimmt. Hierfür werden alle ausgehenden Nachbarn des Knotens hinsichtlich ihrer in den Knoteneigenschaften abgelegten Sequenz geprüft. Wurde eine solche Kante gefunden, so wird die Likelihood der Kante direkt zurückgegeben. Andernfalls erfolgt die Suche wie unter beschrieben. 
+	\item \label{-2-} Existiert keine Kante vom Knoten des Reads zu einem Knoten mit der Kandidatenallelsequenz, so wird nach einer entgegengesetzt gerichteten Kante gesucht. Dazu werden alle eingehenden Nachbarn auf die Sequenz des Kandidatenalles überprüft. Falls es eine solche Kante gibt, dann kann die gesuchte Likelihood der Gegenrichtung, über die Funktion \lstinline|get_alignment_likelihood()| mit dem Argument \lstinline|reverese = True| bestimmt werden.
+	\item \label{-3-} Falls auch in Gegenrichtung keine passende Kante gefunden wurde, so wird in der gesamten Zusammenhangskomponente nach einer Kante gesucht, die zwei Knoten verbindet, deren Sequenzen denen von $ r_{i} $ und $ a_{j} $ entsprechen. Existiert eine solche Kante, so werden ihre CIGAR-Tupel verwendet, um für $ r_{i} $ die Likelihood zu bestimmen. Da die CIGAR-Tupel allein über die Sequenz definiert werden, gelten die so ermittelten CIGAR-Tupel aufgrund identischer Sequenzen der begrenzenden Knoten auch für eine nicht existente Kante zwischen $ r_{i} $ und $ a_{j} $. Die CIGAR-Tupel können also verwendet werden, um zusammen mit den nach  \eqref{eqn:3-1} berechneten p-Werten des Phred Quality Scores  von $ r_{i} $ die Likelihood mittels \lstinline|get_alignment_likelihood()| zu bestimmen.
+	\item \label{-4-} Existiert auch im gesamten Graphen keine vergleichbare Kante, die $ r_{i} $ und $ a_{i} $ mit einander verbindet, so wird der Wert Null zurückgegeben.
+\end{enumerate}
+
+Zur Veranschaulichung ist der beschriebene Algorithmus zudem in Pseudocode dargestellt \ref{alg:r-a-lh}. Dabei sind $ C_{k} \in \{C_{1}, \dots ,C_{p}\} $ der Subgraph einer Zusammenhangskomponente, $ r_{i} \in C_{k} $ der Knoten des Reads und $ a_{j} \in A $ ein Kandidatenallel mit der Sequenz $ s_{a_{j}} $, wobei $ k,i,j \in \mathds{N} $. Die Verwendung fester Knoten- oder Kanteneigenschaften ist durch eckige Klammern gekennzeichnet, so ruft beispielsweise $r_{i}[p\_values]$ die $ p $-Werte des Phred Quality Scores von $r_{i}$ auf.\\
+
+\renewcommand{\algorithmiccomment}[1]{\hfill$\triangleright$\textit{#1}}
+\begin{algorithm}[H]
+	\caption{Bestimmung der Likelihood zwischen einem Read und einem Kandidatenallel} \label{alg:r-a-lh}
+	\begin{algorithmic}[1]	
+		\Function{get\_allele\_likelihood\_read}{$ C_{k} $, $ r_{i} $, $ s_{a_{j}} $}
+		\State $ out\_neighbors \gets get\_out\_neighbors(r_{i})$
+		\For {$out\_neighbor \in out\_neighbors $}
+		\If{$ s_{a_{j}} = out\_neighbor[sequence] $}
+		\State \Return $ edge(r_{i}, out\_neighbor)[likelihood]$
+		\EndIf
+		\EndFor
+		\State $ m\_{rates} \gets C_{k}[m_{sub},m_{ins},m_{del}] $
+		\State $ qual \gets r_{i}[p\_values] $
+		\State $ in\_neighbors \gets get\_in\_neighbors(r_{i})$		
+		\For {$in\_neighbor \in in\_neighbors $}
+		\If{$ s_{a_{j}} =  in\_neighbor[sequence] $}		
+		\State $ cig \gets edge(in\_neighbor, r_{i})[CIGAR-Tuples]$		
+		\State $ rev \gets True $
+		\State \Return $get\_alignment\_likelihood(m\_{rates},\, cig,\, qual,\, rev)$   \algorithmiccomment{Alg. \ref{alg:lh_read}}
+		\EndIf		
+		\EndFor
+		\State $ cigar \gets get\_cigar\_tuples(C_{k},\, r_{i}[sequence],\, s_{a_{j}}) $ \algorithmiccomment{Alg. \ref{alg:cig}}		
+		\If{cigar exists}
+		\State $ cig \gets cigar[0]$
+		\State $ rev \gets cigar[1]$
+		\State \Return $get\_alignment\_likelihood(m\_{rates},\, cig,\, qual,\, rev)$   \algorithmiccomment{Alg. \ref{alg:lh_read}}
+		\EndIf
+		\State \Return 0
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Im folgenden soll nun die Laufzeit der verschiedenen Suchvorgänge in \linebreak \lstinline|get_allele_likelihood_read()| genauer betrachtet werden. Dabei ist zu berücksichtigen, dass im Allgemeinen der Aufruf einer Kante bei bekannten Source- und Target-Knoten von ihren Knotengraden abhängt. Im Bezug auf die Knotengrade des Readknotens $d(r_{i}) $  und des Kandidatenallels $d(a_{j}) $ ist eine solche Suche durch graph-tool in $O(\min (d(r_{i}), d(a_{j})))$ durchführbar ~\cite{docs_graph_tool}. Im Worst Case sind alle Knoten einer Zusammenhangskomponente mit den beiden Knoten $r_{i}$ und $a_{j}$ verbunden, so dass diese jeweils einen Knotengrad besitzen, welcher der Anzahl der Knoten der Komponente $V_{c}$ mit Ausnahme des Knotens selbst entspricht. In diesem Fall beträgt die Laufzeit für den Aufruf einer Kante im Graphen $ O(V_{c}) $ \eqref{eqn:3-22}.
+\begin{equation} \label{eqn:3-22}
+\tag{3-22}
+O(\min (d(r_{i}), d(a_{j}))) =O(\min (d(V_{c}+1), d(V_{c}-1)))= O(V_{c})
+\end{equation} 
+
+Im Hinblick auf \lstinline|get_allele_likelihood_read()| müssen im Worst Case alle Schritte (\ref{-1-}) bis (\ref{-4-}) ausgeführt werden, so dass sich ihre Laufzeiten summieren. In der unter (\ref{-1-}) beschriebenen Suche, werden alle ausgehenden Nachbarn des Reads betrachtet, ihre Anzahl entspricht also dem ausgehenden Knotengrad des Readknotens $d(r_{i_{out}})$. War die Suche erfolgreich, so muss die Likelihood der betreffenden Kante aus den Kanteneigenschaften ausgegeben werden. Hierfür ist ein Kantenaufruf wie oben beschrieben in $ O(V_{c}) $ notwendig. Im ungünstigsten Fall hat jeder Knoten nur ausgehende Kanten und zwar zu allen anderen Knoten der Zusammenhangskomponente, dann beträgt die Laufzeit nach \eqref{eqn:3-23} für alle Reads der Komponente $ O(V_{c}^2)$.
+\begin{equation} \label{eqn:3-23}
+\tag{3-23}
+O(V_{c}) \, \cdotp (O(d(r_{i_{out}})) +  O(V_{c})) = O(V_{c} \, \cdotp ((V_{c}-1) + V_{c})  = O(V_{c}^2)
+\end{equation} 
+
+Die Suche bei (\ref{-2-}) erfolgt analog über alle eingehenden Nachbarn in $ O(V_{c}^2)$, allerdings mit zusätzlicher Likelihoodberechnung der rückläufigen Kante in $O(k)$. Daraus ergibt sich insgesamt eine Laufzeit von $ O(V_{c}^2 +k) = O(V_{c}^2)$, da $\overline{k}=const$ (siehe Kap. \ref{subsec:runtime_graph}).\\
+% ####### Begin TODO:
+Die Laufzeit für das Auffinden eine geeigneten CIGAR-Tupels (\ref{-3-}) kann in $???$ erfolgen (siehe unten). Auch hier führt die Likelihoodberechnung einer einzelnen Kante zu keiner relevanten Änderung der Laufzeit.\\
+
+Die Rückgabe eines konstanten Wertes bei (\ref{-4-}) benötigt lediglich eine Laufzeit von $ O(1) $.\\
+
+Aus den insgesamt vier Schritten, die im ungünstigsten Fall alle ausgeführt werden ergibt sich für \lstinline|get_allele_likelihood_read()| eine Gesamtlaufzeit von $???$. \\
+\begin{equation} \label{eqn:3-xxx1}
+\tag{3-xxx1}
+\begin{aligned}
+&\ {} O(V_{c}^2) + O(V_{c}^2) + O(???) + O(1))  \\
+& \ = O(2 \, \cdotp V_{c}^2 + ??? )\\
+&\ = ???\\
+\end{aligned}
+\end{equation}
+% ####### End TODO:
+
+\noindent======================= draft =======================\\
+
 Methode get\_cigar\_tuples():\\
 \begin{itemize}
 	\item argument sind 2 sequenzen $ s_{source} $ und $ s_{target} $ -> rückgabe CIGAR-Tupel einer kante zwischen source und target und eines boolschen Wertes für das argument 'reverse' der Funktion get\_alignment\_likelihood(), die im anschluss die übergebenenen CIGAR-Tupel zur likelihood berechnung verwendet. Verläuft die Kante von $ s_{source} $ zu $ s_{target} $ so ist dieser Wert False, verläuft sie dagegen in Gegenrichtung so gilt reverse = True. \\
@@ -345,33 +375,39 @@ Methode get\_cigar\_tuples():\\
 	\item 5. Existiert im gesamten Graphen keine Kante, die  $ s_{source} $ und $ s_{target} $ verbindet, so wird None zurückgegeben. O(1)\\
 	\item -> gesamt $ O(V+\min (d(v), d(w)+\min (d(v), d(w)) = O(V+\min (d(v), d(w))$	\\
 	\item -> pseudocode\\
-
-	%\begin{algorithm}[H]
-	%	\caption{CIGAR-Tupel bestimmen}  \label{alg:cig}
-	%	\begin{algorithmic}[1]	
-		%ToDo -> to pseudocode
-		%def get_cigar_tuples(comp, seq, allele):
-		%    source_nodes = [comp.vertex_index[node] for node in
-		%    find_vertex(comp, comp.vp["sequence"], seq)]
-		%    target_nodes = [comp.vertex_index[node] for node in find_vertex(comp, comp.vp["sequence"], allele)]
-		%    for node_s in source_nodes:
-		%        for node_t in target_nodes:
-		%            edge = comp.edge(node_s, node_t)
-		%            if edge:
-		%                return comp.edge_properties["cigar-tuples"][edge], False
-		%            rev_edge = comp.edge(node_t, node_s)
-		%            if rev_edge:
-		%                return comp.edge_properties["cigar-tuples"][rev_edge], True
-		%    return None
-	%	\end{algorithmic}
-	%\end{algorithm}
 \end{itemize}
+
+\begin{algorithm}[H]
+	\caption{CIGAR-Tupel bestimmen}  \label{alg:cig}
+	\begin{algorithmic}[1]	
+		\Function{blub}{foo}
+		\State $42$
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+	%ToDo -> to pseudocode
+	%def get_cigar_tuples(comp, seq, allele):
+	%    source_nodes = [comp.vertex_index[node] for node in
+	%    find_vertex(comp, comp.vp["sequence"], seq)]
+	%    target_nodes = [comp.vertex_index[node] for node in find_vertex(comp, comp.vp["sequence"], allele)]
+	%    for node_s in source_nodes:
+	%        for node_t in target_nodes:
+	%            edge = comp.edge(node_s, node_t)
+	%            if edge:
+	%                return comp.edge_properties["cigar-tuples"][edge], False
+	%            rev_edge = comp.edge(node_t, node_s)
+	%            if rev_edge:
+	%                return comp.edge_properties["cigar-tuples"][rev_edge], True
+	%    return None
+
 
 2.2 Summe der Wslk über die Häufigkeiten aller Kandidatenallele in einer vaf-kombi für 1 read im Worst Case $O(n + \phi - (n \mod \phi))$ mit $n$ Anzahl der Allele und $\phi$ ploidie; Formel \eqref{eqn:2-xxx2} calc\_vafs\_likelihood\_read()\\ 
 
 2.3 Produkt für alle Reads $O(V)$; calc\_vafs\_likelihood(); Formel \eqref{eqn:2-xxx3}\\ 
 
 2.4 schritte 2.1 bis 2.3 für alle vafs/für alle Kombinationsmöglichkeiten der Allele bestimmen und daraus => Maximum \\
+Die Allelfraktion mit maximaler Likelihood wird anschließend in Kap. \ref{sec:max_lh_loci} verwendet, um die wahrscheinlichsten Loci zu ermitteln, die diese Verteilung erklären können.
 
 => gesamtlaufzeit:\\
 \begin{itemize}
