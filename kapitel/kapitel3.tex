@@ -346,60 +346,62 @@ O(V_{c}) \, \cdotp (O(d(r_{i_{out}})) +  O(V_{c})) = O(V_{c} \, \cdotp ((V_{c}-1
 \end{equation} 
 
 Die Suche bei (\ref{-2-}) erfolgt analog über alle eingehenden Nachbarn in $ O(V_{c}^2)$, allerdings mit zusätzlicher Likelihoodberechnung der rückläufigen Kante in $O(k)$. Daraus ergibt sich insgesamt eine Laufzeit von $ O(V_{c}^2 +k) = O(V_{c}^2)$, da $\overline{k}=const$ (siehe Kap. \ref{subsec:runtime_graph}).\\
-% ####### Begin TODO:
-Die Laufzeit für das Auffinden eine geeigneten CIGAR-Tupels (\ref{-3-}) kann in $???$ erfolgen (siehe unten). Auch hier führt die Likelihoodberechnung einer einzelnen Kante zu keiner relevanten Änderung der Laufzeit.\\
+
+Die Laufzeit für das Auffinden eine geeigneten CIGAR-Tupels (\ref{-3-}) kann in $O(V_{c}^3)$ erfolgen (siehe Formel \eqref{eqn:3-25}). Auch hier führt die Likelihoodberechnung einer einzelnen Kante zu keiner relevanten Änderung der Laufzeit.\\
 
 Die Rückgabe eines konstanten Wertes bei (\ref{-4-}) benötigt lediglich eine Laufzeit von $ O(1) $.\\
 
-Aus den insgesamt vier Schritten, die im ungünstigsten Fall alle ausgeführt werden ergibt sich für \lstinline|get_allele_likelihood_read()| eine Gesamtlaufzeit von $???$. \\
-\begin{equation} \label{eqn:3-xxx1}
-\tag{3-xxx1}
+Aus den insgesamt vier Schritten, die im ungünstigsten Fall alle ausgeführt werden ergibt sich für \lstinline|get_allele_likelihood_read()| eine Gesamtlaufzeit von $O(V_{c}^3)$. \\
+\begin{equation} \label{eqn:3-24}
+\tag{3-24}
 \begin{aligned}
-&\ {} O(V_{c}^2) + O(V_{c}^2) + O(???) + O(1))  \\
-& \ = O(2 \, \cdotp V_{c}^2 + ??? )\\
-&\ = ???\\
+&\ {} O(V_{c}^2) + O(V_{c}^2) + O(V_{c}^3) + O(1))  \\
+& \ = O(2 \, \cdotp V_{c}^2 + V_{c}^3 )\\
+&\ = V_{c}^3\\
 \end{aligned}
 \end{equation}
-% ####### End TODO:
 
-\noindent======================= draft =======================\\
+Wie bereits erwähnt, kann die Bestimmung der Wahrscheinlichkeit, dass ein Read durch Sequenzierfehler aus einem bestimmten Allel entstanden ist, erfordern, die CIGAR-Tupel des Sequenzvergleichs zu identifizieren. Auch im Folgenden (Kap. \ref{sec:max_lh_loci}) kann die Zuordnung der Kandidatenallele zu bestimmten Loci im Hinblick auf die Heterozygotiewahrscheinlichkeiten, die Ermittlung der CIGAR-Tupel zwischen den Kandidatenallelen bedingen. Dies wird in NodeRAD durch die Methode \lstinline|get_cigar_tuples()| bewerkstelligt, die sich ebenfalls im Modul \lstinline|likelihood_operations.py| befindet. Sie benötigt als Eingabeparameter eine Graphen oder Subgraphen sowie zwei Sequenzen: die Query-Sequenz $ s_{source} $ und die Referenz-Sequenz $ s_{target} $. Der Graph wird nach einer Kante durchsucht, die Knoten miteinander verbindet, welche die beiden gegebenen Sequenzen besitzen. Dabei werden nicht nur Kanten berücksichtigt, die von der Query- zur Referenzsequenz verlaufen, sondern auch entgegen gerichtete Kanten, die von der Referenz- zur Querysequenz verlaufen. Zur Markierung der Kantenrichtung gibt die Funktion neben dem CIGAR-Tupel auch einen booleschen Wert zurück. Dieser wird in den Funktionen \lstinline|get_alignment_likelihood()| (Kap. \ref{subsec:edges}) und \lstinline|get_heterozygosity()| (Kap. \ref{subsec:lh_loci}) für die Likelihoodberechnung benötigt. Im Falle einer entgegen gerichteten Kante, also bei \lstinline|reverse=True|, werden Deletionen als Insertionen gewertet und umgekehrt. Bei erfolgreicher Sucher gibt die Funktion neben dem booleschen Wert auch die gefundenen CIGAR-Tupel zurück, ansonsten wird der Wert $ None $ zurückgegeben.\\
 
-Methode get\_cigar\_tuples():\\
-\begin{itemize}
-	\item argument sind 2 sequenzen $ s_{source} $ und $ s_{target} $ -> rückgabe CIGAR-Tupel einer kante zwischen source und target und eines boolschen Wertes für das argument 'reverse' der Funktion get\_alignment\_likelihood(), die im anschluss die übergebenenen CIGAR-Tupel zur likelihood berechnung verwendet. Verläuft die Kante von $ s_{source} $ zu $ s_{target} $ so ist dieser Wert False, verläuft sie dagegen in Gegenrichtung so gilt reverse = True. \\
-    \item Algorithmus:
-	\item 1. im Graphen Menge aller Knoten suchen $ S_{source} $, die die sequenz $ s_{source} $ besitzen $O(V)$ (vgl. Kap. \ref{subsec:edges}) \\
-	\item 2. im Graphen Menge aller Knoten suchen $ S_{target} $, die die sequenz $ s_{target} $ besitzen $ O(V) $\\
-	\item 3. im Graphen eine Kante suchen die einen der Knoten $v$ aus $ S_{source} $ mit einem der Knoten $w$ aus $ S_{target} $ verbindet. Falls eine solche Kanten existiert, dann werden die CIGAR-Tupel dieser Kanten sowie der boolsche Wert False zurückgegeben. $O(\min (d(v), d(w)))$, mit den Knotengraden $d(v) $von Knoten $v$ und $d(w) $ von Knoten $w$ ~\cite{docs_graph_tool}\\
-	\item 4. war die Suche aus 3. erfolglos, so wird eine Kante in Gegenrichtung gesucht, d.h. eine Kante die zwischen einem Knoten aus $ S_{target} $ zu einem Knoten aus $ S_{source} $ verläuft. Wurde eine solche Kanten gefunden, so werden ihre CIGAR-Tupel zusammen mit dem boolschen Wert True zurückgegeben $O(\min (d(v), d(w)))$.\\
-	\item 5. Existiert im gesamten Graphen keine Kante, die  $ s_{source} $ und $ s_{target} $ verbindet, so wird None zurückgegeben. O(1)\\
-	\item -> gesamt $ O(V+\min (d(v), d(w)+\min (d(v), d(w)) = O(V+\min (d(v), d(w))$	\\
-	\item -> pseudocode\\
-\end{itemize}
+Um eine passende Kante im Graphen zu finden, erstellt \lstinline|get_cigar_tuples()| zunächst eine Liste aller Knoten $ R_{source} = (v_{1}, \dots, v_{i})$, welche die Query-Sequenz $ s_{source} $ besitzen sowie eine Liste aller Knoten $ R_{target} = (w_{1}, \dots, w_{j}) $, die die Referenz-Sequenz $ s_{target} $ tragen. Hierfür werden für jede Sequenz alle Knoten des Graphen mit \lstinline|find_vertex()| aus graph-tool durchsucht. Nun wird nach einer Kante gesucht, die einen der Knoten aus $ R_{source} $ mit einem der Knoten aus $ R_{target} $ verbindet. Es erfolgt also ein Kantenaufruf für jeden Knoten aus $ R_{source} $ in Kombination mit jedem  Knoten aus $ R_{target} $. Der Kantenaufruf erfolgt sowohl für die angegebene Kantenrichtung und falls erfolglos auch für die entgegengesetzte Richtung. Existiert eine solche Kante, dann werden ihre CIGAR-Tupel sowie der boolsche Wert entsprechend der Kantenrichtung zurückgegeben. \\
+
+Zur Veranschaulichung ist der Algorithmus in \ref{alg:cig} zudem als Pseudocode dargestellt. Dabei sind $ C_{k} \in \{C_{1}, \dots ,C_{p}\} $ der Subgraph einer Zusammenhangskomponente, $ s_{query} $ die Query-Sequenz und $ s_{ref} $ die Referenz-Sequenz. Die Verwendung fester Knoten- oder Kanteneigenschaften ist durch eckige Klammern gekennzeichnet, so ruft beispielsweise $v_{i}[sequence]$ die Sequenz des Knotens $v_{i}$ aus den Knoteneigenschaften ab. \\
 
 \begin{algorithm}[H]
 	\caption{CIGAR-Tupel bestimmen}  \label{alg:cig}
 	\begin{algorithmic}[1]	
-		\Function{blub}{foo}
-		\State $42$
+		\Function{get\_cigar\_tuples}{$ C_{k} $, $ s_{query} $, $ s_{ref} $}
+		\State $ R_{source} \gets \{v_{i} \in C_{k} \wedge i,k \in \mathds{N} \; |\; v_{i}[sequence]= s_{query} \}$
+		\State $ R_{target} \gets \{w_{j} \in C_{k} \wedge j,k \in \mathds{N} \; |\; w_{j}[sequence]= s_{ref} \}$
+		\For{$ v_{i} \in R_{source} $}
+		    \For{$ w_{j} \in R_{target} $}
+		        \If{$ edge(v_{i}, w_{j})$ exists}
+		            \State \Return $ (\;edge(v_{i}, w_{j})[CIGAR-Tuples],\, False\;) $		    
+		        \EndIf
+		        \If{$ edge(w_{j}, v_{i})$ exists}
+		            \State \Return $ (\;edge(w_{j}, v_{i})[CIGAR-Tuples],\, True\;) $		
+		        \EndIf
+		    \EndFor
+		\EndFor
+		\State \Return $ None $
 		\EndFunction
 	\end{algorithmic}
 \end{algorithm}
 
-	%ToDo -> to pseudocode
-	%def get_cigar_tuples(comp, seq, allele):
-	%    source_nodes = [comp.vertex_index[node] for node in
-	%    find_vertex(comp, comp.vp["sequence"], seq)]
-	%    target_nodes = [comp.vertex_index[node] for node in find_vertex(comp, comp.vp["sequence"], allele)]
-	%    for node_s in source_nodes:
-	%        for node_t in target_nodes:
-	%            edge = comp.edge(node_s, node_t)
-	%            if edge:
-	%                return comp.edge_properties["cigar-tuples"][edge], False
-	%            rev_edge = comp.edge(node_t, node_s)
-	%            if rev_edge:
-	%                return comp.edge_properties["cigar-tuples"][rev_edge], True
-	%    return None
+Die hierfür erforderliche Laufzeit setzt sich zusammen aus den Suchvorgengen für die beiden Knotenmengen $ R_{source} $ und $ R_{target} $, diese ist in graph-tool in $O(V_{c} + V_{c}) = O(V_{c})$ durchführbar (Kap. \ref{subsec:edges}). Seien im Worst Case die Hälfte aller Knoten der Zusammenhangskomponente in $ R_{source} $ und die andere Hälfte in $ R_{target} $. Um die Eigenschaft der Zusammenhangskomponente zu gewährleisten muss daher eine Kante zwischen beiden Knotenmenge existieren. Sei dies zudem eine entgegen gerichtete Kante. Sind die beiden Knoten $ (v, w) $ dieser Kante allerdings jeweils an letzter Position in $ R_{source} $ und $ R_{target} $, so erfolgen für alle übrigen Knoten der Komponente Kantenaufrufe für die Hin- und Rückrichtung. Wie bereits oben beschrieben, benötigt ein Kantenaufruf eine Laufzeit von $ O(\min (d(v), d(w)))$, mit den Knotengraden $d(v) $ von Knoten $v \in R_{source}$ und $ d(w) $ von Knoten $ w \in R_{target} $ ~\cite{docs_graph_tool}. Seien nun außerdem $ v $ mit allen Knoten in $ R_{source} $ und $ w $ mit allen Knoten in $ R_{target} $ verbunden, so besitzt $v$ einen Knotengrad von $ d(v) = \frac{V_{c}-1}{2} $. Der Knoten $ w $ besitzt einen Knotengrad von $ d(w) = \frac{V_{c}}{2} $, da eine entgegen gerichtete Kante von $w$ zu $v$ verläuft. Dann ergibt sich nach \eqref{eqn:3-25} eine Gesamtlaufzeit für \lstinline|get_cigar_tuples()| von $ O(V_{c}^3) $. \\
+
+\begin{equation} \label{eqn:3-25}
+\tag{3-25}
+\begin{aligned}
+&\ {} O(V_{c}) + O(V_{c}^2 \, \cdotp \min (d(v), d(w)))  \\
+& \ = O\left( V_{c} + V_{c}^2 \, \cdotp \min \left( \frac{V_{c}-1}{2}\,, \frac{V_{c}}{2}\right) \right) \\
+&\ = O(V_{c} + V_{c}^2 \, \cdotp V_{c}) \\
+&\ = O(V_{c}^3) \\
+\end{aligned}
+\end{equation}
+
+
+\noindent======================= draft =======================\\
 
 
 2.2 Summe der Wslk über die Häufigkeiten aller Kandidatenallele in einer vaf-kombi für 1 read im Worst Case $O(n + \phi - (n \mod \phi))$ mit $n$ Anzahl der Allele und $\phi$ ploidie; Formel \eqref{eqn:2-xxx2} calc\_vafs\_likelihood\_read()\\ 
