@@ -400,37 +400,44 @@ Die hierfür erforderliche Laufzeit setzt sich zusammen aus den Suchvorgengen f�
 \end{aligned}
 \end{equation}
 
+In  \lstinline|get_allele_likelihood_read()| wurden also die Wahrscheinlichkeiten jedes Reads bestimmt, dass er von den verschiedenen Allele der Zusammenhangskomponente stammt (siehe oben). Die Wahrscheinlichkeiten im Bezug auf jedes Allel sollen nun in die zuvor bestimmten Kombinationen der Häufigkeitsverteilungen der Allele (siehe Kap. \ref{subsec:cand_allele}) nach Formel \eqref{eqn:2-xxx2} einbezogen werden. In der Funktion \lstinline|calc_vafs_likelihood_read()| aus dem Modul \lstinline|likelihood_operations.py| wird also für jeden Read die Wahrscheinlichkeit berechnet, diesen unter der gegebenen Allelfraktion zu beobachten. Dazu wird über die relativen Häufigkeiten jedes Allels einer gegebenen VAFs-Kombination iteriert und ihr Produkt mit der Readlikelihood aufsummiert. Da die Läge der Allelfraktion genau der Anzahl der Allele einer Zusammenhangskomponenten $ n_{observed} $ entspricht, erhöht sich hierdurch die Laufzeit um den Faktor $ O(n_{observed}) $. \\
 
-\noindent======================= draft =======================\\
+Aus dem Produkt über alle Reads wird anschließend für eine gegebene Allelfraktion nach Formel \eqref{eqn:2-xxx3} in \lstinline|calc_vafs_likelihood()| die Gesamtwahrscheinlichkeit errechnet. Dadurch wird dir Laufzeit zusätzlich um den Faktor der Anzahl der Reads der Zusammenhangskomponente $ O(V_{c}) $ erhöht.\\
 
+Auf diese Weise wird in \lstinline|noderad_main.py| für jede Allelfraktion die Gesamtwahrscheinlichkeit über alle Reads und alle relativen Häufigkeiten der Allele berechnet und in einer Liste abgelegt. Dazu muss über alle VAFs iteriert werden. Die Anzahl der VAFs entspricht dabei genau der Anzahl der Allelkombinationen. Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, kann diese hinsichtlich der Laufzeit mit $ O(e^n_{alleles}) $ abgeschätzt werden (Formel \eqref{eqn:3-20}). Da im Worst Case $n_{alleles} = n_{observed} + \phi - 1$, ergibt sich eine Laufzeit von $ O(e^{n_{observed} + \phi - 1}) \in O(e^{n_{observed}}) $. Um diesen Faktor erhöht sich also die Gesamtlaufzeit bei der Berechnung der Liste der Gesamtwahrscheinlichkeiten. \\
 
-2.2 Summe der Wslk über die Häufigkeiten aller Kandidatenallele in einer vaf-kombi für 1 read im Worst Case $O(n + \phi - (n \mod \phi))$ mit $n$ Anzahl der Allele und $\phi$ ploidie; Formel \eqref{eqn:2-xxx2} calc\_vafs\_likelihood\_read()\\ 
+Aus dieser Liste wird die Allelfraktion mit maximaler Likelihood als wahrscheinlichste Lösung gewählt und in Kap. \ref{sec:max_lh_loci} verwendet, um die wahrscheinlichsten Loci zu ermitteln, die diese Häufigkeitsverteilung der Allele erklären können. Hinsichtlich der Laufzeit muss jede Lösung der Liste betrachtet werden. Da die Länge der Liste der Anzahl der VAFs entspricht, kann die Laufzeit hierfür nach \eqref{eqn:3-20} auf maximal $ O(e^{n_{observed}}) $ geschätzt werden. \\
 
-2.3 Produkt für alle Reads $O(V)$; calc\_vafs\_likelihood(); Formel \eqref{eqn:2-xxx3}\\ 
+Als zusätzliche Statistiken werden in den Log-Dateien für jede Komponente die Anzahl der Allele, die Ploidie sowie die Häufigkeitsverteilung Allelfraktion mit der maximaler Likelihood und den dazugehörigen Allelsequenzen festgehalten.
 
-2.4 schritte 2.1 bis 2.3 für alle vafs/für alle Kombinationsmöglichkeiten der Allele bestimmen und daraus => Maximum \\
-Die Allelfraktion mit maximaler Likelihood wird anschließend in Kap. \ref{sec:max_lh_loci} verwendet, um die wahrscheinlichsten Loci zu ermitteln, die diese Verteilung erklären können.
+\subsubsection{Gesamtlaufzeit für die Bestimmung der Allelfraktion mit maximaler Likelihood}
+Die geschätzten Laufzeiten der einzelnen Schritte wurden bereits an entsprechender Stelle diskutiert und sollen hier noch einmal zusammenfassend aufgeführt werden. Zur übersichtlicheren Darstellung soll die Anzahl der Allele hier nur noch mit $n$ bezeichnet werden, dies entspricht der bisher verwendeten Variable $n_{observed}$. Für jede Zusammenhangskomponente werden vorab die Kandidatenallele bestimmt $ O(V_{c}) $, die Anzahl der tatsächlich zu erwartenden Allele berechnet $ O(V_{c}) $ und die Kombinationen möglicher Häufigkeitsverteilungen ermittelt $ O(e^{n} \, \cdotp n^2) $. Anschließend erfolgt die Likelihoodberechnung in $ O(V_{c}^3) $ über alle Allelfraktionen $ O(e^{n}) $, für alle Reads $ O(V_{c}) $ und im Vergleich jedes Reads zu allen Kandidatenallelen $ O(n) $. Aus den Lösungen wird im Anschluss das Maximum bestimmt $ O(e^{n}) $. Daraus ergibt sich nach \ref{eqn:3-26} eine Gesamtlaufzeit für die Bestimmung der Allelfraktion mit maximaler Likelihood von $ O(e^n \, \cdotp (n^2 + n \, \cdotp V_{c}^4)) $. 
+\begin{equation} \label{eqn:3-26}
+\tag{3-26}
+\begin{aligned}
+  O(V_{c}) +  O(V_{c}) &\ {} + O(e^n \, \cdotp n^2) + O(e^n) \, \cdotp O(V_{c}) \, \cdotp O(n) \, \cdotp O(V_{c}^3) + O(e^n)\\
+&\ =  O(2 V_{c} + e^n \, \cdotp n^2 + e^n + e^n \, \cdotp n \, \cdotp V_{c}^4)\\
+&\ = O(2 V_{c} + e^n \, \cdotp (n^2 + 1 + n \, \cdotp V_{c}^4))\\
+&\ = O(e^n \, \cdotp (n^2 + n \, \cdotp V_{c}^4)) \\
+\end{aligned}
+\end{equation}
 
-=> gesamtlaufzeit:\\
-\begin{itemize}
-	\item da jeder Schritt 2.1 bis 2.4 komponentenweise berechnet werden, d.h. jeder Knoten und jede Kante jeder Komponente betrachtet wird, entspricht dies allen Knoten und Kanten des Graphen, also wird die Laufzeitberechnung zusammenfassend auf allen Knoten und Kanten berechnet mit $O(\sum_{i=1}^{|C|} C_{i} \, \cdotp V_{c_{i}})=O(V) $ und $O(\sum_{i=1}^{|C|} C_{i} \, \cdotp E_{c_{i}})=O(E) $ mit $C$ Menge der Zusammenhangskomponenten, $C_{i}$ ist $i$-te Zusammenhangskomponenten, $V_{c_{i}}$ Anzahl der Knoten innerhalb der Komponente $C_{i}$ und $E_{c_{i}} $ Anzahl der Kanten innerhalb der Komponente  $C_{i}$
-	\item step 2.1: $O(V^2)$\\
-	\item step 2.2: im Worst Case hat jeder Knoten eine einzigartige sequenz, dann entspricht die Anzahl der Allele der Anzahl der Knoten, also $n = V$, die Laufzeit kann also maximal $O(n + \phi - (n \mod \phi) = O(V+\phi-1)= O(V+\phi)) = O(V)$ betragen, da $\phi = const$ gilt $ O(V+\phi)) = O(V) $
-	\item insgesamt ergibt sich also aus 2.1 bis 2.3 eine Laufzeit von:\\
-    \begin{equation} \label{eqn:3-xxx2}
-	\tag{3-xxx2}
-	\begin{aligned}
-	&\ {} O(V) \, \cdotp (O(V) + O(V^2)\\
-	&\ = O(V^2 + V^3) \\
-	&\ = O(V^3)\\
-	\end{aligned}
-	\end{equation}
-\end{itemize}
+Im Worst Case entspricht $ n $ genau der Anzahl der Reads in der Zusammenhangskomponente und es gilt $ n = n_{observed} = V_{c} $, so dass die Laufzeit dann auf $ O(e^{V_{c}} \, \cdotp V_{c}^5) $ geschätzt werden kann \eqref{eqn:3-27}.
+\begin{equation} \label{eqn:3-27}
+\tag{3-27}
+\begin{aligned}
+O(e^n \, \cdotp (n^2 + n \, \cdotp V_{c}^4))
+&\ {} = O(e^{V_{c}} \, \cdotp (V_{c}^2 + V_{c} \, \cdotp V_{c}^4))\\
+&\ = O(e^{V_{c}} \, \cdotp (V_{c}^2 + V_{c}^5))\\
+&\ = O(e^{V_{c}} \, \cdotp V_{c}^5) \\
+\end{aligned}
+\end{equation}
 
-in den log-files werden für jede Komponente die anzahl der allele, die ploidie und die Häufigkeitsverteilung aus der vaf mit der maximalen likelihood mit den dazugehörigen allelsequenzen festgehalten.
-
+Die Laufzeit wird also durch die Anzahl der VAFs dominiert und kann bei großen Clustern mit vielen Allelen problematisch werden. Die konfigurierbaren Schwellenwerte \lstinline|treshold-cluster-size| und \lstinline|treshold-seq-noise| ermöglichen eine Anpassung solcher großen Cluster, um die Anzahl der Kombinationen und damit den Rechenaufwand flexibel reduzieren zu können.
 
 \section{Bestimmung der maximalen Likelihood der Loci} \label{sec:max_lh_loci}
+
+\noindent======================= draft =======================\\
 Für jede Zusammenhangskomponente\\
 jede zusammenhangskomponente kann auch mehr als nur einen Locus beinhalten.\\
 \subsection{Bestimmung der möglichen Loci} \label{subsec:comb_loci}
