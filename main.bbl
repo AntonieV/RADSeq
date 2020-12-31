@@ -234,4 +234,9 @@
   $https://www2.informatik.uni-hamburg.de/fachschaft/wiki/images/3/3e/AD-Skript\_\%28WS16-17\%9.pdf$,
   pages 156-157.
 
+\bibitem{python-sort}
+{\sc Foundation, Python~Software} \btxandlong{}\ {\sc Daniel Stutzbach}: {\em
+  Python — timecomplexity of various operations}.
+\newblock https://wiki.python.org/moin/TimeComplexity.
+
 \end{thebibliography}

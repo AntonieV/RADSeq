@@ -276,7 +276,7 @@ Hinsichtlich der Allelkombinationen entspricht dies einer Zeit von $ O(e^{n_{all
 
 Für sehr große Cluster ist daher die Laufzeit problematisch. Ebenso kommt es zu einem hohen Bedarf an Arbeitsspeicher, aufgrund der großen Anzahl von Kombinationen die dabei erzeugt werden. Um dies bedingt kompensieren zu können, wurden die oben beschriebenen Schwellenwerte eingeführt, die ab einer festgelegten Clustergröße \lstinline|treshold-cluster-size| nur Allelkandidaten ab einer bestimmten Häufigkeit ihrere Sequenz in den Reads \linebreak \lstinline|treshold-seq-noise| berücksichtigen.\\
 
-Die Berechnung der Häufigkeitsverteilungen erfordert weitere Iterationen über die ermittelten Allelkombinationen, dabei werden sämtliche Allele für jede Kombination betrachtet. Dadurch erhöht sich die Laufzeit auf $ O(e^{n_{alleles}})\, \cdotp O(n_{alleles}) \, \cdotp O(n_{observed}) $. Den höchsten Wert nimmt $ n_{alleles} $ in dem Fall an, dass die Restdivision $ n_{observed} \mod \phi = 1 $, denn dann gilt  $ n_{alleles} = n_{observed} + \phi - 1 $. Da $\phi$ mit für alle Zusammenhangskomponenten den gleichen Wert besitzt, gilt $\phi = const$. Daraus ergibt sich nach \eqref{eqn:3-21} eine Laufzeit von $ O(e^{n_{observed}}\, \cdotp n_{observed}^2) $ für die Funktion  \lstinline|get_candidate_vafs()|.
+Die Berechnung der Häufigkeitsverteilungen erfordert weitere Iterationen über die ermittelten Allelkombinationen, dabei werden sämtliche Allele für jede Kombination betrachtet. Dadurch erhöht sich die Laufzeit auf $ O(e^{n_{alleles}})\, \cdotp O(n_{alleles}) \, \cdotp O(n_{observed}) $. Den höchsten Wert nimmt $ n_{alleles} $ in dem Fall an, dass die Restdivision $ n_{observed} \mod \phi = 1 $, denn dann gilt  $ n_{alleles} = n_{observed} + \phi - 1 $. Da $\phi$ für alle Zusammenhangskomponenten den gleichen Wert besitzt, gilt $\phi = const$. Daraus ergibt sich nach \eqref{eqn:3-21} eine Laufzeit von $ O(e^{n_{observed}}\, \cdotp n_{observed}^2) $ für die Funktion  \lstinline|get_candidate_vafs()|.
 \begin{equation} \label{eqn:3-21}
 \tag{3-21}
 \begin{aligned}
@@ -437,29 +437,62 @@ Die Laufzeit wird also durch die Anzahl der VAFs dominiert und kann bei großen 
 
 \section{Bestimmung der maximalen Likelihood der Loci} \label{sec:max_lh_loci}
 
-\noindent======================= draft =======================\\
-Für jede Zusammenhangskomponente\\
-jede zusammenhangskomponente kann auch mehr als nur einen Locus beinhalten.\\
+In Abhängigkeit von der Anzahl der Kandidatenallele und der Ploidie können die Zusammenhangskomponenten auch mehr als nur einen Locus beinhalten. Daher soll die in Kap. \ref{sec:max_lh_allele} identifizierte Allelfraktion mit maximaler Likelihood nun passenden Loci-Kombinationen zugeordnet werden. Unter Einbeziehung der Heterozygotiewahrscheinlichkeiten soll daraus die wahrscheinlichste Loci-Zuordnung ermittelt werden.
+
 \subsection{Bestimmung der möglichen Loci} \label{subsec:comb_loci}
-ermittlung der möglichen loci-Kombinationen erfolgt in der Funktion get\_candidate\_loci() analog zur Funktion get\_candidate\_vafs() (vgl. Kap \ref{subsec:cand_allele}):
-\begin{itemize}
-	\item auch hier ist die bereits beschriebene anzahl der tatsächlich zu erwartenden allele $n_{alleles}$ aus get\_max\_parsimony\_n\_alleles() grundlage für die berechnung der möglichen loci-Kombinationen 
-	\item anschließend auch hier durch combinations\_with\_replacement (python-library itertools) alle Kombinationen mit wiederholung für $n_{alleles} $ bestimmen -> mehrfaches vorkommen erlaubt, reihenfolge irrelevant 
-	\item die daraus resultierenden Allel-Kombinationen werden denn aber mit Hilfe der Funktion grouper (aus den itertools recipes der python-library itertools) zu gruppen entsprechend der in der Konfigurationsdatei angegebenen ploidie zusammengefasst.
-	\item dadurch entstehen verschiedene Kombinationen von möglichen loci als listen von Tupeln:\\
-		Bsp.: \\
-	    $ n_{alleles} = 2, ploidy = 2$: \\
-	    {[(0, 0)]}, {[(0, 1)]}, {[(1, 1)]} \\
-	\item falls aufgrund der erwarteten tatsächlichen anzahl der allele $n_{alleles} $ mehrere Loci möglich sind, resultieren Kombinationen von Loci:\\
-	    $ n_{alleles} = 3, ploidy = 2$: \\
-	    {[(0, 0), (0, 0)]}, {[(0, 0), (0, 1)]}, {[(0, 0), (0, 2)]}, {[(0, 0), (1, 1)]}, {[(0, 0), (1, 2)]}, {[(0, 0), (2, 2)]}, {[(0, 1), (1, 1)]}, {[(0, 1), (1, 2)]}, {[(0, 1), (2, 2)]}, {[(0, 2), (2, 2)]}, {[(1, 1), (1, 1)]}, {[(1, 1), (1, 2)]}, {[(1, 1), (2, 2)]}, {[(1, 2), (2, 2)]}, {[(2, 2), (2, 2)]} \\
-	\item jedes Tupel der Länge der ploidie entspricht also einem möglichen Locus
-\end{itemize}
 
-\subsection{Zuordnung der wahrscheinlichsten Allelverteilung zu passenden Loci} \label{subsec:lh_loci}
-Für jede mögliche Kombination der Loci  aus get\_candidate\_loci() wird zunächst durch die Indikatorfunktion indicator\_constrait() nach Formel \eqref{eqn:2-xxx4} geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten vaf mit maximaler Likelihood, also der wahrscheinlichsten Allelverteilung, zuordnen lassen. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Heterozygotiewahrscheinlichkeit für die allele der loci dieser Kombination berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben.
+Für die Zuordnung der Loci müssen zunächst die verschiedenen Kombinationen möglicher Allelverteilungen auf die Loci durch \lstinline|get_candidate_loci()| im Modul \linebreak \lstinline|likelihood_operations.py| erzeugt werden. Analog zu \lstinline|get_candidate_vafs()| (Kap. \ref{subsec:cand_allele}) werden aus der beobachteten $n_{observed} $ und der tatsächlich zu erwartenden Anzahl an Allelen $n_{alleles}$ alle Allelkombinationen mit Wiederholung und ohne Berücksichtigung der Reihenfolge  (vgl. Formel \eqref{eqn:3-12}) durch die Funktion \lstinline|combinations_with_replacement()| aus der Python-Library \lstinline|itertools| gebildet. Allerdings sollen nun die Allelkombinationen zu Tupeln entsprechend ihrer Ploidie zusammengefasst werden. Jedes Tupel repräsentiert einen möglichen Locus in der Kombination. Die Allelkombination durch \linebreak \lstinline|combinations_with_replacement()| sind lexikographisch sortiert. Für jede der Kombinationen muss nun aber die Reihenfolge so variiert werden, dass die Allele, falls mehrere Loci möglich sind, in verschiedenen Kombinationen den Loci zugeordnet werden. Hierfür wird aus \lstinline|itertools| die Funktion \lstinline|permutations| verwendet. Diese bildet aus $ n $ Elementen alle Kombinationen der Länge $ k $ mit Beachtung der Reihenfolge und ohne Wiederholungen. Auch wenn sich die Allele in den Allelkombinationen durchaus wiederholen können, so werde sie doch in \lstinline|permutations| als einzigartiges Element behandelt unabhängig von seinem Wert. Folglich entstehen durch die Bildung der Permutationen auch einige Duplikate. Die Anzahl der entstehenden Elemente wird für \lstinline|permutations| mit  $ \frac{n!}{(n-k)!} $ angegeben \cite{itertools}. Die Permuationen werden über jede Allelkombination in ihrer vollständigen Länge gebildet, so dass gilt $ n = k $, folglich werden insgesamt $ n! $ Elemente erzeugt \eqref{eqn:3-28}. 
+\begin{equation} \label{eqn:3-28}
+\tag{3-28}
+\frac{n!}{(n-k)!}=\frac{n!}{(n-n)!}=\frac{n!}{0!}=\frac{n!}{1}=n!
+\end{equation}
+Mit Hilfe der \lstinline|itertools|-Funktion \lstinline|grouper()| werden die Permutationen entsprechend der Ploidie in Tupel der Länge $\phi$ unterteilt. Es resultieren Tupel von $ \phi $-Tupeln, wobei die Anzahl der $phi$-Tupel der Anzahl möglicher Loci entspricht. Mehrere Loci in einer Zusammenhangskomponenten sind nach \lstinline|get_max_parsimony_n_alleles()| genau dann möglich, wenn gilt $n_{observed} > \phi $.\\
 
-Trifft die Bedingung der Indikatorfunktion zu, so folgt die Berechnung der wahrscheinlichsten Zuordnung der Loci zu den Allelen aus den max. Likelihood vafs. Dafür werden der Loci-Kombination zunächst die dazugehörigen allelsequenzen zugeordnet. Die allel-nummer in einer Loci-Kombination entspricht dabei dem index der liste der allelsequenzen der kandidaten-allele aus get\_candidate\_alleles() (siehe Kap. \ref{subsec:cand_allele}).
+Nach der Gruppierung werden die übergeordneten Tupel sowie die darin enthaltenen $\phi$-Tupel jeweils sortiert, um anschließend durch die Python-Funktion \lstinline|set()| die oben erwähnten Duplikate zu entfernen.
+
+	\fcolorbox{black}{light-gray}{
+	\parbox{\textwidth}{
+		\vspace{0.5cm}
+		\textbf{Beispiele möglicher Loci-Kombinationen:} \\	
+				
+		$ ploidy = 2, n_{observed} = 3, n_{alleles} = 4 $: \\
+		
+		\textbf{Kombinationen der Allele:}\\
+		{[(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 0, 2), (0, 0, 1, 1), (0, 0, 1, 2), (0, 0, 2, 2), (0, 1, 1, 1), (0, 1, 1, 2), (0, 1, 2, 2), (0, 2, 2, 2), (1, 1, 1, 1), (1, 1, 1, 2), (1, 1, 2, 2), (1, 2, 2, 2), (2, 2, 2, 2)]}\\
+		
+		\textbf{Permutationen:} \\
+		{\small (Zur anschaulicheren Darstellung wurden Duplikate entfernt, das geschieht eigentlich erst nach der Erzeugung und Sortierung der Tupel)\\}
+		(1, 2, 1, 1), (2, 1, 0, 0), (2, 1, 1, 1), (0, 1, 2, 1), (0, 1, 1, 2), (0, 1, 0, 0), (2, 2, 1, 0), (0, 2, 2, 1), (2, 2, 0, 1), (1, 0, 2, 2), (0, 2, 0, 1), (2, 0, 0, 1), (1, 0, 1, 0), (0, 2, 1, 2), (0, 0, 2, 0), (2, 2, 2, 1), (1, 1, 0, 1), (2, 0, 1, 1), (2, 0, 2, 0), (0, 0, 2, 2), (1, 1, 2, 0), (1, 2, 1, 0), (2, 0, 2, 2), (2, 1, 1, 0), (2, 1, 0, 2), (1, 2, 0, 1), (0, 1, 2, 0), (1, 2, 1, 2), (1, 2, 2, 1), (0, 1, 1, 1), (1, 1, 1, 0), (0, 0, 0, 0), (2, 1, 1, 2), (2, 1, 2, 1), (1, 0, 0, 1), (0, 1, 0, 2), (2, 2, 1, 2), (0, 2, 2, 0), (1, 0, 2, 1), (2, 0, 0, 0), (0, 2, 1, 1), (1, 1, 1, 2), (0, 0, 0, 2), (0, 0, 1, 1), (1, 0, 1, 2), (2, 0, 0, 2), (0, 0, 2, 1), (1, 1, 2, 2), (2, 1, 0, 1), (1, 2, 0, 0), (0, 1, 2, 2), (1, 2, 2, 0), (0, 1, 1, 0), (2, 2, 0, 0), (0, 2, 0, 0), (2, 1, 2, 0), (1, 0, 0, 0), (1, 2, 0, 2), (0, 1, 0, 1), (2, 2, 1, 1), (2, 2, 2, 0), (1, 1, 0, 0), (1, 0, 2, 0), (0, 2, 2, 2), (1, 2, 2, 2), (2, 2, 0, 2), (0, 2, 1, 0), (0, 2, 0, 2), (2, 0, 1, 0), (0, 0, 0, 1), (1, 1, 1, 1), (0, 0, 1, 0), (2, 1, 2, 2), (1, 0, 0, 2), (1, 0, 1, 1), (2, 2, 2, 2), (1, 1, 0, 2), (2, 0, 1, 2), (2, 0, 2, 1), (0, 0, 1, 2), (1, 1, 2, 1)\\	    
+		
+		\textbf{Loci}:\\
+		((0, 0), (0, 2)), ((1, 1), (1, 1)), ((0, 2), (0, 2)), ((1, 1), (2, 2)), ((0, 1), (0, 2)), ((1, 1), (1, 2)), ((1, 2), (2, 2)), ((1, 2), (1, 2)), ((0, 0), (1, 1)), ((0, 0), (2, 2)), ((0, 2), (1, 1)), ((0, 1), (1, 1)), ((0, 0), (0, 0)), ((0, 2), (2, 2)), ((0, 0), (1, 2)), ((0, 1), (2, 2)), ((2, 2), (2, 2)), ((0, 0), (0, 1)), ((0, 2), (1, 2)), ((0, 1), (1, 2)), ((0, 1), (0, 1)) \\
+}}\\
+
+Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, benötigt die Generierung aller Allelkombinationen eine Laufzeit von $ O(e^n) $, wobei $n = n_{observed}$ die Anzahl der beobachteten Allele der Zusammenhangskomponente ist. Für diese Kombinationen werden jeweils alle $n!$ Permutationen gebildet, also mit einer Laufzeit von $ O(n!) $. Für jede Permutation erfolgt über ihre jeweilige Länge die Gruppierung zu den Loci. Die Länge jeder Permutation kann wegen der Funktion \lstinline|get_max_parsimony_n_alleles()| (vgl. Kap. \ref{subsec:cand_allele}) maximal $ n_{alleles} = n_{observed} + \phi - 1 $ betragen. Wegen $\phi = const$ beträgt die Laufzeit hier also $O(n_{observed}) = O(n)$. Die Sortierung bei Python erfordert eine Laufzeit von $ O(n\, \cdotp log(n))$ \cite{python-sort}. Die beiden Sortiervorgänge erfolgen zum einen über jeden Locus mit der Länge $\phi$ entsprechend seiner Ploidie und über alle Loci innerhalb der Permutation. Die Anzahl der Loci entspricht $\frac{n}{\phi}$, dadurch ergeben sich für die Sortiervorgänge Laufzeiten von $ O(\phi\, \cdotp log(\phi)) $ bzw. $ O\left( \frac{n}{\phi}\, \cdotp log\left( \frac{n}{\phi}\right) \right) $. Unter Berücksichtigung, dass $\phi = const$ gilt, beträgt die Laufzeit für \lstinline|get_candidate_loci()| insgesamt $ O(e^n \, \cdotp n! \, \cdotp n^2 \, \cdotp log(n)) $.
+\begin{equation} \label{eqn:3-29}
+\tag{3-29}
+\begin{aligned}
+&\ {}O(e^n) \, \cdotp O(n!) \, \cdotp O(n) \, \cdotp O(\phi\, \cdotp log(\phi))\, \cdotp O\left( \frac{n}{\phi}\, \cdotp log\left( \frac{n}{\phi}\right) \right)  \\
+&\ =O\left( e^n \, \cdotp n! \, \cdotp n\, \cdotp \phi\, \cdotp log(\phi)\, \cdotp  \frac{n}{\phi}\, \cdotp log\left( \frac{n}{\phi} \right)\right)   \\
+&\ =O\left( e^n \, \cdotp n! \, \cdotp n^2 \, \cdotp log(\phi)\, \cdotp  log\left( \frac{n}{\phi} \right)\right)   \\
+&\ \in O(e^n \, \cdotp n! \, \cdotp n^2 \, \cdotp log(n))
+\end{aligned}
+\end{equation}
+\\
+Große Cluster sind hier also hinsichtlich der Laufzeit und des Speicherbedarfs noch problematischer als bei der Generierung der Allelkombinationen in der Funktion \linebreak \lstinline|get_candidate_vafs()| (Kap. \ref{subsubsec:cand_vafs}). Eine sinnvolle Anpassung der Grenzwerte \linebreak \lstinline|treshold-cluster-size| und   \lstinline|treshold-seq-noise| ermöglicht diesbezüglich eine Verbesserung. Allerdings ist an dieser Stelle ein effizienterer Ansatz zur Bestimmung der Loci-Kombinationen möglich, der in diesem Protoypen zwar keine Anwendung fand, aber für die spätere Implementierung in Rust von Bedeutung sein könnte. Dieser Ansatz wird im Ausblick in Kap. \ref{sec:ausblick} kurz beschrieben.
+
+\subsection{Zuordnung der Allelverteilung mit maximaler Likelihood zur wahrscheinlichsten Loci-Kombination} \label{subsec:lh_loci}
+
+In diesem Schritt sollen schließlich für die Allelfraktion mit maximaler Likelihood (Kap.\ref{subsec:lh_allele}) die ermittelten Kandidatenloci (Kap. \ref{subsec:comb_loci}) unter Berücksichtigung der Heterozygotie analysiert werden und die wahrscheinlichste Kombination der Loci ermittelt werden.\\
+
+Für jede mögliche Kombination der Loci aus \lstinline|get_candidate_loci()| wird zunächst durch eine Indikatorfunktion \lstinline|indicator_constrait()| im Modul \linebreak \lstinline|likelihood_operations.py| nach Formel \eqref{eqn:2-xxx4} geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten Allelfraktion mit maximaler Likelihood zuordnen lassen. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Likelihood der Loci-Kombination aus den Heterozygotiewahrscheinlichkeiten der darin enthaltenen Allele berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben.\\
+
+
+
+\noindent======================= draft =======================\\
+
+
+Bei erfüllter Bedingung der Indikatorfunktion, folgt also die Berechnung der wahrscheinlichsten Zuordnung der Loci zu den Allelen aus den max. Likelihood vafs. Dafür werden der Loci-Kombination zunächst die dazugehörigen allelsequenzen zugeordnet. Die allel-nummer in einer Loci-Kombination entspricht dabei dem index der liste der allelsequenzen der kandidaten-allele aus get\_candidate\_alleles() (siehe Kap. \ref{subsec:cand_allele}).
 
 Analog zur Likelihoodberechnung beim paarweisen Vergleich der Reads unter Berücksichtigung der Sequenzierfehlerwahrscheinlichkeit \ref{subsec:edges} erfolgt auch die Berechnung der Likelihood für eine bestimmte Loci-Kombination durch den paarweisen Vergleich der Allele im Sinne eines pair Hidden Markov Models $ pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}}) $ (vgl. Kap. ~\ref{subsec:sol_phmm}). Allerdings erfolgt nun der Vergleich unter Berücksichtigung der Heterozygotiewahrscheinlichkeit nach Formel \eqref{eqn:2-xxx5}. 
 
