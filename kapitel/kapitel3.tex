@@ -485,18 +485,76 @@ Große Cluster sind hier also hinsichtlich der Laufzeit und des Speicherbedarfs 
 
 In diesem Schritt sollen schließlich für die Allelfraktion mit maximaler Likelihood (Kap.\ref{subsec:lh_allele}) die ermittelten Kandidatenloci (Kap. \ref{subsec:comb_loci}) unter Berücksichtigung der Heterozygotie analysiert werden und die wahrscheinlichste Kombination der Loci ermittelt werden.\\
 
-Für jede mögliche Kombination der Loci aus \lstinline|get_candidate_loci()| wird zunächst durch eine Indikatorfunktion \lstinline|indicator_constrait()| im Modul \linebreak \lstinline|likelihood_operations.py| nach Formel \eqref{eqn:2-xxx4} geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten Allelfraktion mit maximaler Likelihood zuordnen lassen. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Likelihood der Loci-Kombination aus den Heterozygotiewahrscheinlichkeiten der darin enthaltenen Allele berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben.\\
+Für jede mögliche Kombination der Loci aus \lstinline|get_candidate_loci()| wird aus der Funktion \lstinline|calc_loci_likelihoods()| (in \lstinline|likelihood_operations.py|) heraus zunächst geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten Allelfraktion mit maximaler Likelihood zuordnen lassen. Dies geschieht mit Hilfe der Indikatorfunktion \lstinline|indicator_constrait()| nach Formel \eqref{eqn:2-xxx4}. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Likelihood der Loci-Kombination aus den Heterozygotiewahrscheinlichkeiten der darin enthaltenen Allele berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben.\\
 
+Für die Likelihoodberechnung bei erfüllter Indikatorbedingung müssen der Loci-Kombination zunächst die dazugehörigen Allelsequenzen zugeordnet werden. Die Allelnummer in einer Loci-Kombination entspricht dabei dem Index der entsprechenden Allelsequenz in der Liste der Kandidatenallele aus \lstinline|get_candidate_alleles()| (siehe Kap. \ref{subsec:cand_allele}). Es entstehen Listen von Sublisten, welche die Loci mit den Kandidatenallelsequenzen beinhalten. Diese sollen im Weiteren mit $ L_{alleles} $ bezeichnet werden. \\
 
+Analog zur Likelihoodberechnung beim paarweisen Vergleich der Reads unter Berücksichtigung der Sequenzierfehlerwahrscheinlichkeit \ref{subsec:edges} erfolgt auch die Berechnung der Likelihood für eine bestimmte Loci-Kombination durch den paarweisen Vergleich der Allele im Sinne eines pair Hidden Markov Models $ pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}}) $ (vgl. Kap. ~\ref{subsec:sol_phmm}). Allerdings werden nun die Heterozygotiewahrscheinlichkeiten zur Ermittlung der Liklihood nach Formel \eqref{eqn:2-xxx5} genutzt. Hierzu werden in \lstinline|get_allele_likelihood_alleles()| (Algorithmus \ref{alg:lh_loci}) auf $L_{alleles}$ für jeden Locus die darin enthaltenen Allelsequenzen paarweise mit einander kombiniert. Dies wird durch die Funktion \lstinline|combinations()| aus \lstinline|itertools| realisiert, welche Kombinationen ohne Wiederholung und ohne Beachtung der Reihenfolge erzeugt. Für jedes Allelpaar wird dann der CIGAR-String durch die in Kap. ~\ref{subsec:lh_allele} bereits beschriebene Funktion \lstinline|get_cigar_tuples()| ermittelt und daraus die Liklihood im Bezug auf die Heterozygotiewahrscheinlichkeiten $h_{sub}$, $h_{ins}$ und $h_{del}$ in \lstinline|get_heterozygosity()| (siehe Algorithmus \ref{alg:lh_het}) berechnet. 
+
+\begin{algorithm}[H]
+	\caption{Bestimmung der Likelihood der Allele innerhalb einer Loci-Kombination}  \label{alg:lh_loci}
+	\begin{algorithmic}[1]	
+		\Function{get\_allele\_likelihood\_alleles}{$ C_{k} $, $ L_{alleles} $}
+		\State $ likelihood \gets 1.0 $
+		\For{$ loc \in L_{alleles} $}
+		    \State $ pairs \gets \binom{loc}{2}$
+		    \For{$ (a_{i}, a_{j}) \in pairs $}
+		    \State $cigar \gets get\_cigar\_tuples(C_{k}, a_{i}, a_{j})$  \algorithmiccomment{Alg. \ref{alg:cig}}
+			    \If{$cigar$ exists}
+			        \State $cig \gets cigar[0]$
+			        \State $rev \gets cigar[1]$
+			        \State $ het_{rates} \gets C_{k}[h_{sub}, h_{ins}, h_{del}]$
+			        \State $probability \gets get\_heterozygosity(het_{rates}, cig, rev)$  \algorithmiccomment{Alg. \ref{alg:lh_het}}
+			    	\State $ likelihood \gets likelihood + log(probability)$    
+			    \EndIf
+			\EndFor
+		\EndFor
+		\State \Return $ e^{\;likelihood} $
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
+
+Heterozygotiewahrscheinlichkeiten $h_{sub}$, $h_{ins}$ und $h_{del}$
+
+\begin{algorithm}[H]
+	\caption{Bestimmung der Likelihood zwischen zwei Allelen hinsichtlich der Heterozygotiewahrscheinlichkeiten}  \label{alg:lh_het}
+	\begin{algorithmic}[1]	
+		\Function{get\_heterozygosity}{$h_{sub}$, $h_{ins}$, $h_{del}$, $ CIGAR-Tuples $, $ reverse $}
+		\State $likelihood \gets 1.0$
+		\If{reverse}
+		    \State swap values of $h_{ins}$ and $h_{del}$
+		\EndIf
+		\State $h_{all} \gets h_{sub}+h_{ins}+h_{del}$
+		\ForAll{$(operation, length) \in CIGAR-Tuples$}
+		    \If{$operation \in match$}
+		        \State $ likelihood \gets likelihood \, \cdotp (1 - h_{all})^{\;length} $
+		    \EndIf		    
+		    \If{$operation \in mismatch$}
+		        \State $ h_{factor} \gets 1.0$			    	
+			    \If{$operation \in substitution$}
+			        \State $h_{factor} \gets h_{sub}$
+			    \EndIf	
+			    \If{$operation \in insertion$}
+			        \State $h_{factor} \gets h_{ins}$
+			    \EndIf
+			    \If{$operation \in deletion$}
+			        \State $h_{factor} \gets h_{del}$
+			    \EndIf
+			    \State $ likelihood \gets likelihood \, \cdotp (h_{factor})^{length}$
+			\EndIf
+		\EndFor
+		\State \Return $ likelihood $
+		\EndFunction
+	\end{algorithmic}
+\end{algorithm}
 
 \noindent======================= draft =======================\\
 
 
-Bei erfüllter Bedingung der Indikatorfunktion, folgt also die Berechnung der wahrscheinlichsten Zuordnung der Loci zu den Allelen aus den max. Likelihood vafs. Dafür werden der Loci-Kombination zunächst die dazugehörigen allelsequenzen zugeordnet. Die allel-nummer in einer Loci-Kombination entspricht dabei dem index der liste der allelsequenzen der kandidaten-allele aus get\_candidate\_alleles() (siehe Kap. \ref{subsec:cand_allele}).
 
-Analog zur Likelihoodberechnung beim paarweisen Vergleich der Reads unter Berücksichtigung der Sequenzierfehlerwahrscheinlichkeit \ref{subsec:edges} erfolgt auch die Berechnung der Likelihood für eine bestimmte Loci-Kombination durch den paarweisen Vergleich der Allele im Sinne eines pair Hidden Markov Models $ pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}}) $ (vgl. Kap. ~\ref{subsec:sol_phmm}). Allerdings erfolgt nun der Vergleich unter Berücksichtigung der Heterozygotiewahrscheinlichkeit nach Formel \eqref{eqn:2-xxx5}. 
 
-Durch die Funktion get\_allel\_linkelihood\_allele() werden dabei die Allelsequenzen der Loci-Kombination paarweise miteinander verglichen. Hierfür wird für jedes Paar der CIGAR-String durch die in Kap. ~\ref{subsec:lh_allele} bereits beschriebene Funktion get\_cigar\_tuples() ermittelt.
+
+Durch die Funktion get\_allel\_linkelihood\_allele() werden dabei die Allelsequenzen der Loci-Kombination paarweise miteinander verglichen. 
 
 Der CIGAR-String wird anschließend dafür benötigt aus den paarweisen Kombinationen der Allelsequenzen innerhalb eines Locus die Likelihood im Hinblick auf die Heterozygotiewahrscheinlichkeit zu berechnen. Analog zum Algorithmus ~\ref{alg:lh_read} wird in der Funktion  get\_heterozygosity() die Likelihood über die Heterozygotiewahrscheinlichkeiten aller Matches und Mismatches berechnet.
 
