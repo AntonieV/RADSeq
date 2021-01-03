@@ -1,6 +1,11 @@
 % kapitel2.tex
 \chapter{Analyse von RAD-Seq-Daten} \label{chapter:kap2}
 \section{Problemstellung} \label{sec:probl}
+\section{Formale Definition} \label{sec:formal}
+
+\noindent======================= draft =======================\\
+
+
 gegeben: reads einer sample \\
 Ziel: Zuordnung der Reads zu loci -> Ausgabe: Sequenz der Loci \\
 es soll die Menge von Loci gefunden werden, die die Beobachtungen erklären können \\
@@ -8,7 +13,6 @@ Ergebnis: loci aus den beobachtungen der reads
 im Gegensatz zu Stacks ohne Vorwissen abschätzbar, Stacks berücksichtigt keine Ploidie und Heterozygotie \\
 
 
-\section{Formale Definition} \label{sec:formal}
 Problem wird aufgeteilt in Teilprobleme -> Zusammenhangskomponeneten \\
 für jede Komponente: Lösung finden für eine Komposition von Loci, die am besten die beobachteten Reads erklären können
 -> Berücksichtigung der Basenqualität $q_{r}$ => Sequenzierfehler fließen mit geringerer liklihood in die weitere Berechnung ein -> werden weniger berücksichtigt und kommen seltener vor, z.T als noise entfernt-> loci likelihood wird mit den sequenzen mit seq-fehlern geringer sein -> seq-fehler gefiltert, da es nicht möglich ist eine  bessere lh für z.B. 3 Allele zu bekommen (von denen eines aber auf einem seq-fehler beruht), wenn es nur 2 tatsächliche Allele in einer komp gibt, d.h. lh für 2 Allele ist in diesem fall höher als für 3 -> loci likelihood enthält mutationen \\

@@ -142,7 +142,7 @@ In der Log-Datei wird die Anzahl der Knoten aller Zusammenhangskomponenten als H
 
 Über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| können optional auch für die Zusammenhangskomponenten jeweils Visualisierungen und detaillierte Graphinformationen in den oben genannten Formaten (Kap. \ref{subsec:edges}) ausgegeben werden. Zudem kann optional auch der gesamte Graph mit den Komponentenindizes als Knoteneigenschaften gespeichert werden. In der visuellen Darstellung werden seine Knoten entsprechend der zugehörigen Zusammenhangskomponente eingefärbt, seine Kantenfärbung richtet sich weiterhin nach der aus \eqref{eqn:3-3} resultierenden Likelihood.
 
-\subsection{Laufzeitanalyse zur Konstruktion des Graphen} \label{subsec:runtime_graph}
+\subsection{Laufzeitanalyse zur Konstruktion des Graphen} \label{subsec:graph_compl}
 Wie an entsprechender Stelle bereits beschrieben, ist für die Erzeugung der Knoten eine Laufzeit von $ O(V^2) $ (Kap. \ref{subsec:nodes}) erforderlich, das Hinzufügen der Kanten kann in $ O(E\, \cdotp V) $ erfolgen. Somit wird für den vollständigen Aufbau des Graphen nach \eqref{eqn:3-10} eine Laufzeit von $ O(V \, \cdotp (V+E)) $ benötigt. \\
 \begin{equation} \label{eqn:3-10}
 \tag{3-10}
@@ -345,7 +345,7 @@ Im Hinblick auf \lstinline|get_allele_likelihood_read()| müssen im Worst Case a
 O(V_{c}) \, \cdotp (O(d(r_{i_{out}})) +  O(V_{c})) = O(V_{c} \, \cdotp ((V_{c}-1) + V_{c})  = O(V_{c}^2)
 \end{equation} 
 
-Die Suche bei (\ref{-2-}) erfolgt analog über alle eingehenden Nachbarn in $ O(V_{c}^2)$, allerdings mit zusätzlicher Likelihoodberechnung der rückläufigen Kante in $O(k)$. Daraus ergibt sich insgesamt eine Laufzeit von $ O(V_{c}^2 +k) = O(V_{c}^2)$, da $\overline{k}=const$ (siehe Kap. \ref{subsec:runtime_graph}).\\
+Die Suche bei (\ref{-2-}) erfolgt analog über alle eingehenden Nachbarn in $ O(V_{c}^2)$, allerdings mit zusätzlicher Likelihoodberechnung der rückläufigen Kante in $O(k)$. Daraus ergibt sich insgesamt eine Laufzeit von $ O(V_{c}^2 +k) = O(V_{c}^2)$, da $\overline{k}=const$ (siehe Kap. \ref{subsec:graph_compl}).\\
 
 Die Laufzeit für das Auffinden eine geeigneten CIGAR-Tupels (\ref{-3-}) kann in $O(V_{c}^3)$ erfolgen (siehe Formel \eqref{eqn:3-25}). Auch hier führt die Likelihoodberechnung einer einzelnen Kante zu keiner relevanten Änderung der Laufzeit.\\
 
@@ -410,7 +410,7 @@ Aus dieser Liste wird die Allelfraktion mit maximaler Likelihood als wahrscheinl
 
 Als zusätzliche Statistiken werden in den Log-Dateien für jede Komponente die Anzahl der Allele, die Ploidie sowie die Häufigkeitsverteilung Allelfraktion mit der maximaler Likelihood und den dazugehörigen Allelsequenzen festgehalten.
 
-\subsubsection{Gesamtlaufzeit für die Bestimmung der Allelfraktion mit maximaler Likelihood} \label{subsubsec:al_compl}
+\subsection{Laufzeitanalyse für die Bestimmung der Allelfraktion mit maximaler Likelihood} \label{subsec:al_compl}
 Die geschätzten Laufzeiten der einzelnen Schritte wurden bereits an entsprechender Stelle diskutiert und sollen hier noch einmal zusammenfassend aufgeführt werden. Zur übersichtlicheren Darstellung soll die Anzahl der Allele hier nur noch mit $n$ bezeichnet werden, dies entspricht der bisher verwendeten Variable $n_{observed}$. Für jede Zusammenhangskomponente werden vorab die Kandidatenallele bestimmt $ O(V_{c}) $, die Anzahl der tatsächlich zu erwartenden Allele berechnet $ O(V_{c}) $ und die Kombinationen möglicher Häufigkeitsverteilungen ermittelt $ O(e^{n} \, \cdotp n^2) $. Anschließend erfolgt die Likelihoodberechnung in $ O(V_{c}^3) $ über alle Allelfraktionen $ O(e^{n}) $, für alle Reads $ O(V_{c}) $ und im Vergleich jedes Reads zu allen Kandidatenallelen $ O(n) $. Aus den Lösungen wird im Anschluss das Maximum bestimmt $ O(e^{n}) $. Daraus ergibt sich nach \ref{eqn:3-26} eine Gesamtlaufzeit für die Bestimmung der Allelfraktion mit maximaler Likelihood von $ O(e^n \, \cdotp (n^2 + n \, \cdotp V_{c}^4)) $. 
 \begin{equation} \label{eqn:3-26}
 \tag{3-26}
@@ -573,7 +573,7 @@ In \lstinline|noderad_main.py| werden die beschriebenen Schritte zur Likelihoodb
 In den Log-Dateien werden zusätzlich einige Statistiken zur Berechnung der wahrscheinlichsten Loci-Verteilung eingetragen. Dazu gehören die ermittelten Likelihoods aller Permutationen sowie die Loci mit maximaler Likelihood. \\
  
 
-\subsubsection{Gesamtlaufzeit für die Bestimmung der Loci-Kombination mit maximaler Likelihood}
+\subsection{Laufzeitanalyse für die Bestimmung der Loci-Kombination mit maximaler Likelihood} \label{subsec:loc_compl}
 Die Gesamtlaufzeit ergibt sich wiederum aus den einzelnen Laufzeiten der oben beschriebenen Funktionen. Diese Funktionen werden über allen Permutationen der Allelkombinationen in \lstinline|noderad_main.py| aufgerufen, wodurch die Laufzeit um den Faktor $ O(e^n \, \cdotp n!)$ steigt (vgl. Kap. \ref{subsec:comb_loci}). Die Indikatorfunktion prüft die Bedingung über die gesamte Länge einer der Permutationen und benötigt somit eine Laufzeit von $ O(n) $. Anschließend wird in \lstinline|calc_loci_likelihoods()| über alle Loci einer Permutation in $ O(\frac{n}{\phi}) $ iteriert und die Funktion \lstinline|get_allele_likelihood_allele()| aufgerufen. Diese ermittelt bei jedem Locus in $O(\phi) $ die Kombinationen ohne Wiederholung und ohne Beachtung der Reihenfolge. Nach \eqref{eqn:3-13} und \eqref{eqn:3-20} erhöhen die Kombinationen dabei die Laufzeit um den Faktor $ O(\binom{n}{2}) \in O(e^n) $. Die Bestimmung der CIGAR-Tupel für jede Kombination vergrößert die Laufzeit zusätzlich um den Faktor $O(V_{c}^3)$ (siehe Kap. \ref{subsec:lh_allele}). Über die CIGAR-Tupel wird schließlich für jede Base die Likelihood aus den Heterozygotiewahrscheinlichkeiten berechnet, analog zur Likelihoodberechnung zweier Reads in Kap. \ref{subsec:edges} kann dies mit $O(\overline{k}) $ veranschlagt werden, wobei $\overline{k}=const$ gilt. Da für alle Permuationen der Kombinationen die Berechnung Likelihood erfolgt, wird die anschließende Maximumsbestimmung über deren Anzahl also in $O(e^n\, \cdotp n!) $ durchgeführt.\\
 
 Nach \eqref{eqn:3-33} ergibt sich damit für die Berechnung der wahrscheinlichsten Loci-Kombination insgesamt eine Laufzeit von $ O(e^n \, \cdotp n! \, \cdotp V_{c}^3)$.
@@ -590,7 +590,7 @@ Nach \eqref{eqn:3-33} ergibt sich damit für die Berechnung der wahrscheinlichst
 \end{aligned}
 \end{equation}
 
-Wie bereits in Kap. \ref{subsubsec:al_compl} durchgeführt, soll auch hier der Worst Case betrachtet werden, bei dem die Anzahl der Kandidatenallele genau der Anzahl der Reads in der Zusammenhangskomponente entspricht, also $ n = n_{observed} =V_{c} $. Dann ergibt sich für die Berechnung der wahrscheinlichsten Loci-Zuordnung nach \eqref{eqn:3-34} eine maximale Laufzeit von $ O(e^{V_{c}} \, \cdotp V_{c}!) $.
+Wie bereits in Kap. \ref{subsec:al_compl} durchgeführt, soll auch hier der Worst Case betrachtet werden, bei dem die Anzahl der Kandidatenallele genau der Anzahl der Reads in der Zusammenhangskomponente entspricht, also $ n = n_{observed} =V_{c} $. Dann ergibt sich für die Berechnung der wahrscheinlichsten Loci-Zuordnung nach \eqref{eqn:3-34} eine maximale Laufzeit von $ O(e^{V_{c}} \, \cdotp V_{c}!) $.
 \begin{equation} \label{eqn:3-34}
 \tag{3-34}
 \begin{aligned}
@@ -602,22 +602,34 @@ O(e^n \, \cdotp n! \, \cdotp V_{c}^3)
 \end{aligned}
 \end{equation}
 
-Die Anzahl der Permutationen dominiert durch $ O(V_{c}!) $ die Laufzeit noch stärker als bei der Ermittlung der Allelkombinationen in Kap. \ref{subsubsec:al_compl}. Dies ist für große Cluster sehr problematisch. Die Anpassung der Schwellenwerte \lstinline|treshold-cluster-size| und \linebreak \lstinline|threshold-seq-noise| können dies zwar in einem gewissen Rahmen für den Prototyp kompensieren. Bei der späteren Implementierung in Rust sollte hier jedoch ein effizienterer Ansatz gewählt werden. Eine effizientere Vorgehensweise diesbezüglich wird in Kap. \ref{sec:ausblick} vorgestellt.
+Die Anzahl der Permutationen dominiert durch $ O(V_{c}!) $ die Laufzeit noch stärker als bei der Ermittlung der Allelkombinationen in Kap. \ref{subsec:al_compl}. Dies ist für große Cluster sehr problematisch. Die Anpassung der Schwellenwerte \lstinline|treshold-cluster-size| und \linebreak \lstinline|threshold-seq-noise| können dies zwar in einem gewissen Rahmen für den Prototyp kompensieren. Bei der späteren Implementierung in Rust sollte hier jedoch ein effizienterer Ansatz gewählt werden. Eine effizientere Vorgehensweise diesbezüglich wird in Kap. \ref{sec:ausblick} vorgestellt.
  
-\noindent======================= draft =======================\\
+\section{Abschließende Laufzeitanalyse des gesamten Algorithmus}
 
+Für jeden Konstruktions- und Berechnungsschritt wurden die Laufzeiten bereits an entsprechender Stelle angesprochen. Zusammenfassend ergab sich dabei für die einmalige Konstruktion des Graphen und die Extraktion seiner Zusammenhangskomponenten $ C $ eine Laufzeit von $O(V \, \cdotp (V + E))$ (Kap. \ref{subsec:graph_compl}). Für jede Zusammenhangskomponente erfolgte die Berechnung der wahrscheinlichsten Allelkombination in $O(e^V_{c} \, \cdotp V_{c}^5)$ (Kap. \ref{subsec:al_compl}) und die Berechnung der wahrscheinlichsten Loci-Zuordnung in $ (e^V_{c} \, \cdotp V_{c}!) $ (Kap. \ref{subsec:loc_compl}). Die Laufzeiten können also wie folgt zusammengefasst werden:
+\begin{equation} \label{eqn:3-35}
+\tag{3-35}
+\begin{aligned}
+&\ {}O(V \, \cdotp (V + E)) + O\left( \sum_{c=1}^{|C|} (e^{V_{c}} \, \cdotp V_{c}^5 + e^{V_{c}} \, \cdotp V_{c}!)\right) \\
+&\ = O\left( V \, \cdotp (V + E) +  \sum_{c=1}^{|C|} (e^{V_{c}} \, \cdotp V_{c}^5) + \sum_{c=1}^{|C|} (e^{V_{c}} \, \cdotp V_{c}!)\right)\\
+&\ \in \left( O\sum_{c=1}^{|C|} (e^{V_{c}} \, \cdotp V_{c}!)\right)\\
+\end{aligned}
+\end{equation}
+
+Besitzt im Worst Case der Graph nur eine einzige Zusammenhangskomponente, welche alle Knoten des Graphen enthält, so dass gilt $ |C|=1 $ und $ V_{c} = V $ so würde sich hieraus eine maximale Laufzeit von $ O(e^V \, \cdotp V!) $ ergeben.
 
 \section{Ausgabe der wahrscheinlichsten Loci als VCF-Datei} \label{sec:vcf}
 
-Ausgabe im VCF-Format, tab-separierter body\\
-Als Header der Spalten: CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO, FORMA, <Name der sample>\\
-get\_sorted\_loci\_alleles(): lexikographisch sortierte Liste der Menge (d.h. ohne Duplikate) der Allelsequenzen der loci-Kombination mit max. Likelihood $A_{opt}$-> der erste Eintrag wird in die REF-Spalte des VCF-Files eingetragen, alle übrigen kommasepariert in die ALT-Spalte\\
+Die Loci-Kombinationen mit maximaler Likelihood $Loc_{max}$ aller Zusammenhangskomponenten werden für jedes Individuum jeweils in eine Datei im Variant Call Format (VCF, \cite{danecek_2011}) geschrieben. Wie für dieses Format üblich, gibt es acht notwendige tabulatorgetrennte Spalten: CHROM, POS, ID, REF, ALT, QUAL, FILTER, INFO. Außerdem wird hier die optionale Spalte FORMAT sowie eine Spalte zur Probe verwendet. \\
 
-Da die vollständige Sequenz der Allele angegeben wird ist immer POS=1
-CHROM wird für die Bennennung der Loci genutzt im Format LOC<ldf.-Nr>
-ID, QUAL, FILTER und INFO werden hier nicht genutzt und mit einem dot als Platzhalter bei allen Loci befüllt\\
-FORMAT für alle Loci wird der Genotype-Datentyp ''GT'' angegeben, dieser wird in der Spalte der sample spezifiziert. Da die Indizes der Loci der gesamten Liste der Kandidaten-Allele $A_{cand}$ zugeordnet sind, muss ihre Indizierung nun auf $A_{opt}$ angepasst werden.  Dafür werden in get\_alleles\_matched\_to\_loci() zunächst jedem Locus der max Likelihood Loci-Kombination die dazugehörigen Allelsequenzen zugeordnet. Diese werden anschließend in get\_gt\_indices() den Indizes der entsprechenden Sequenz aus $A_{opt}$ zugeordnet, so dass das lexikographisch erste Allel, also REF mit 0 im Genotyp indiziert ist, die Allele aus ALT entsprechend mit höheren Indizes entsprechend ihrer Sortierung in $A_{opt}$. Nun lässt sich der Genotyp im Bezug auf die Sequenzen in REF und ALT aus diesen Indizes und getrennt durch Slashes direkt angeben. Dies geschieht in der Funktion get\_genotype(), deren Ergebnis dann in das sample-Feld eingetragen wird.\\
+Die Spalte CHROM wird hier für die Bennennung der Loci genutzt. Die Bezeichnung jedes Locus wird dabei aus dem Präfix ''LOC'' in Kombination mit einer fortlaufenden Nummer gebildet. Die Spalten ID, QUAL, FILTER und INFO werden hier nicht genutzt und mit einem Punkt als Platzhalter bei allen Loci befüllt.\\
+
+In die Spalten REF und ALT sollen die Sequenzen der Allele aus $Loc_{max}$ lexikographisch sortiert geschrieben werden. Hierfür wird in der Funktion \lstinline|get_sorted_loci_alleles()| eine sortiere Liste der Allelsequenzen aus $Loc_{max}$ gebildet. Durch die Pythonfunktion \lstinline|set()| wird über dieser Liste die Menge der Allele extrahiert, so dass Duplikate herausgefiltert werden. Aus der so entstandenen Liste der Allelsequenzen $A_{res}$ wird der erste Eintrag in die Spalte REF eingetragen, die übrigen Einträge werden in die Spalte ALT geschrieben.\\
+
+Da jeweils die vollständige Sequenz der Allele für den Eintag in die VCF-Datei verwendet wird, wird für jeden Locus in der Spalte POS der Wert $1$ eingetragen. \\
+
+In der FORMAT-Spalte wird durch den Eintrag ''GT'' festgelegt, dass in der Probenspalte der Genotyp spezifiziert wird. Da die Indizes der Loci der Liste der Kandidatenallele zugeordnet sind, aber nicht alle Allele dieser Liste auch in $Loc_{max}$ vorkommen, muss ihre Indizierung nun auf die bereits erstellte Liste mit den zu $Loc_{max}$ gehörigen Allelsequenzen $A_{res}$ angepasst werden. \\
+
+Hierfür werden in der Funktion \lstinline|get_alleles_matched_to_loci()| zunächst jedem Locus aus $Loc_{max}$ die entsprechenden Sequenzen aus der Liste der Kandidatenallele zugeordnet. Anschließend werden diese Sequenzen in \lstinline|get_gt_indices()| den Indizes der passenden Sequenz aus $A_{res}$ zugeordnet. Dadurch wird das lexikographisch erste Allel, also REF mit 0 im Genotyp indiziert, die Allele aus ALT erhalten höhere Indizes entsprechend ihrer Sortierung in $A_{res}$. Nun lässt sich der Genotyp im Bezug auf die Sequenzen in REF und ALT aus diesen Indizes und getrennt durch Slashes direkt angeben. Dies geschieht in der Funktion \lstinline|get_genotype()|, deren Ergebnis dann in die Probenspalte eingetragen wird.\\
 
 
-
-komponentenweise mit $C = V$ im Worst Case (Kap. \ref{subsec:comp}) -> $O(V)$

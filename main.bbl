@@ -126,6 +126,12 @@
   {\em Single-cell genome sequencing: current state of the science.}
 \newblock Nature reviews. Genetics, 17:175--88, Mar 2016.
 
+\bibitem{catchen_2013}
+{\sc Catchen, Julian}, {\sc Paul~A. Hohenlohe}, {\sc Susan Bassham}, {\sc Angel
+  Amores}, \btxandlong{}\ {\sc William~A. Cresko}: {\em Stacks: an analysis
+  tool set for population genomics.}
+\newblock Molecular ecology, 22:3124--40, Jun 2013.
+
 \bibitem{koester_2012_1}
 {\sc Köster, Johannes} \btxandlong{}\ {\sc Sven Rahmann}: {\em {Snakemake—a
   scalable bioinformatics workflow engine}}.
@@ -238,5 +244,13 @@
 {\sc Foundation, Python~Software} \btxandlong{}\ {\sc Daniel Stutzbach}: {\em
   Python — timecomplexity of various operations}.
 \newblock https://wiki.python.org/moin/TimeComplexity.
+
+\bibitem{danecek_2011}
+{\sc Danecek, Petr}, {\sc Adam Auton}, {\sc Goncalo Abecasis}, {\sc Cornelis~A.
+  Albers}, {\sc Eric Banks}, {\sc Mark~A. DePristo}, {\sc Robert~E. Handsaker},
+  {\sc Gerton Lunter}, {\sc Gabor~T. Marth}, {\sc Stephen~T. Sherry}, {\sc
+  Gilean McVean}, \btxandlong{}\ {\sc Richard Durbin}: {\em The variant call
+  format and vcftools.}
+\newblock Bioinformatics (Oxford, England), 27:2156--8, Aug 2011.
 
 \end{thebibliography}

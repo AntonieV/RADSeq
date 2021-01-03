@@ -1,0 +1,85 @@
+
+PMID- 23701397
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20140108
+LR  - 20181202
+IS  - 1365-294X (Electronic)
+IS  - 0962-1083 (Linking)
+VI  - 22
+IP  - 11
+DP  - 2013 Jun
+TI  - Stacks: an analysis tool set for population genomics.
+PG  - 3124-40
+LID - 10.1111/mec.12354 [doi]
+AB  - Massively parallel short-read sequencing technologies, coupled with powerful
+      software platforms, are enabling investigators to analyse tens of thousands of
+      genetic markers. This wealth of data is rapidly expanding and allowing biological
+      questions to be addressed with unprecedented scope and precision. The sizes of
+      the data sets are now posing significant data processing and analysis challenges.
+      Here we describe an extension of the Stacks software package to efficiently use
+      genotype-by-sequencing data for studies of populations of organisms. Stacks now
+      produces core population genomic summary statistics and SNP-by-SNP statistical
+      tests. These statistics can be analysed across a reference genome using a
+      smoothed sliding window. Stacks also now provides several output formats for
+      several commonly used downstream analysis packages. The expanded population
+      genomics functions in Stacks will make it a useful tool to harness the newest
+      generation of massively parallel genotyping data for ecological and evolutionary 
+      genetics.
+CI  - (c) 2013 John Wiley & Sons Ltd.
+FAU - Catchen, Julian
+AU  - Catchen J
+AD  - Institute of Ecology and Evolution, University of Oregon, Eugene, OR 97403-5289, 
+      USA.
+FAU - Hohenlohe, Paul A
+AU  - Hohenlohe PA
+FAU - Bassham, Susan
+AU  - Bassham S
+FAU - Amores, Angel
+AU  - Amores A
+FAU - Cresko, William A
+AU  - Cresko WA
+LA  - eng
+GR  - P20 RR016448/RR/NCRR NIH HHS/United States
+GR  - F32 GM095213/GM/NIGMS NIH HHS/United States
+GR  - P30 GM103324/GM/NIGMS NIH HHS/United States
+GR  - R24 OD011199/OD/NIH HHS/United States
+GR  - R24 GM079486/GM/NIGMS NIH HHS/United States
+GR  - P20RR16448/RR/NCRR NIH HHS/United States
+GR  - R24 RR032670/RR/NCRR NIH HHS/United States
+GR  - 1R24GM079486-01A1/GM/NIGMS NIH HHS/United States
+GR  - F32GM095213-01/GM/NIGMS NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, N.I.H., Extramural
+PT  - Research Support, U.S. Gov't, Non-P.H.S.
+PT  - Research Support, U.S. Gov't, P.H.S.
+DEP - 20130524
+PL  - England
+TA  - Mol Ecol
+JT  - Molecular ecology
+JID - 9214478
+RN  - 0 (Genetic Markers)
+SB  - IM
+MH  - Databases, Nucleic Acid
+MH  - Electronic Data Processing/*methods
+MH  - Genetic Markers
+MH  - Genotype
+MH  - High-Throughput Nucleotide Sequencing/*methods
+MH  - Metagenomics/*methods
+MH  - Polymorphism, Single Nucleotide
+MH  - Sequence Analysis, DNA
+MH  - Software
+PMC - PMC3936987
+MID - NIHMS554474
+EDAT- 2013/05/25 06:00
+MHDA- 2014/01/09 06:00
+CRDT- 2013/05/25 06:00
+PHST- 2012/11/19 00:00 [received]
+PHST- 2013/04/16 00:00 [revised]
+PHST- 2013/04/16 00:00 [accepted]
+PHST- 2013/05/25 06:00 [entrez]
+PHST- 2013/05/25 06:00 [pubmed]
+PHST- 2014/01/09 06:00 [medline]
+AID - 10.1111/mec.12354 [doi]
+PST - ppublish
+SO  - Mol Ecol. 2013 Jun;22(11):3124-40. doi: 10.1111/mec.12354. Epub 2013 May 24.
