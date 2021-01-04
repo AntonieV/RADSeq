@@ -289,7 +289,7 @@ O(e^{n_{alleles}} \, \cdotp n_{alleles} \, \cdotp n_{observed})
 
 \subsection{Berechnung der Likelihoods der Allele anhand der möglichen Häufigkeitsverteilungen} \label{subsec:lh_allele}
 
-Nun soll nach \eqref{eqn:2-xxx1} die Wahrscheinlichkeit ermittelt werden, einen Read anhand der gegebenen Allelfraktion zu beobachten (vgl. Kap. \ref{subsec:sol_allele_lh}). Dies geschieht in der Funktion \lstinline|get_allele_likelihood_read()| aus dem Modul \lstinline|likelihood_operations.py|). Für jeden Read wird dabei zunächst die Wahrscheinlichkeit bestimmt, dass der Read durch Sequenzierfehler aus einem der Kandidatenallele entstanden ist. Hierzu wird für jeden Read $ r_{i} $ jeweils eine ausgehende Kante zu jedem Kandidatenallel $ a_{j} $ gesucht und die nach \eqref{eqn:3-2} berechnete Likelihood aus den Eigenschaften dieser Kante zurückgegeben.\\
+Nun soll nach \eqref{eqn:2-3} die Wahrscheinlichkeit ermittelt werden, einen Read anhand der gegebenen Allelfraktion zu beobachten (vgl. Kap. \ref{subsec:sol_allele_lh}). Dies geschieht in der Funktion \lstinline|get_allele_likelihood_read()| aus dem Modul \lstinline|likelihood_operations.py|). Für jeden Read wird dabei zunächst die Wahrscheinlichkeit bestimmt, dass der Read durch Sequenzierfehler aus einem der Kandidatenallele entstanden ist. Hierzu wird für jeden Read $ r_{i} $ jeweils eine ausgehende Kante zu jedem Kandidatenallel $ a_{j} $ gesucht und die nach \eqref{eqn:3-2} berechnete Likelihood aus den Eigenschaften dieser Kante zurückgegeben.\\
 
 Geordnet nach dem Laufzeitaufwand werden für das Auffinden einer solchen Kante verschiedene Möglichkeiten geprüft:
 \begin{enumerate}

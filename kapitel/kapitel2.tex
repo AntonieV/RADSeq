@@ -1,31 +1,75 @@
 % kapitel2.tex
 \chapter{Analyse von RAD-Seq-Daten} \label{chapter:kap2}
 \section{Problemstellung} \label{sec:probl}
-\section{Formale Definition} \label{sec:formal}
+
+Ausgangsmaterial für RAD-Seq-Analysen sind in der Regel gepoolte Probengemische bestehend aus multiplen DNA-Fragmenten mehrerer Individuen. Diese DNA-Fragmentsequenzen stammen aus der RAD-Sequenzierung und werden auch als Reads bezeichnet. Durch Barcodemarkierungen können die Reads den zugehörigen Individuen zugeordnet werden. Neben der Kosteneffizienz durch die Verwendung gepoolter Probengemische besteht ein großer Vorteil des Verfahrens darin, die Reads ohne Kenntnis eines Referenzgenoms möglichen Loci zuordnen zu können. Auch die Loci und ihre Sequenz sind somit anfangs unbekannt und werden erst durch die Analyse ermittelt.\\
+
+Das RAD-Sequencing-Verfahren bedingt, dass die DNA nur in den für die verwendeten Restriktionsenzyme spezifischen Sequenzen geschnitten wird und dass durch PCR und Sequenzierung mehrere Reads erzeugt werden, die jeweils vom gleichen Locus stammen. Das hier implementierte Tool NodeRAD stellt einen Prototypen dar, der im Gegensatz zu derzeit etablierten RADSeq-Tools, wie beispielsweise das Tool Stacks \cite{catchen_2013}, mit Hilfe von nur zwei Parametern diese Zuordnung realisiert. Das Clustering der Reads und die Identifizierung und Zuordnung der Loci soll dabei unter Berücksichtigung der Ploidie ohne weiteres Vorwissen allein auf Grundlage der Mutationsraten und  Heterozygotiewahrscheinlichkeiten erfolgen. Die dabei ermittelten Likelihoods stehen zudem für anschließende Diversitätsanalysen zur Verfügung.
+
+\section{Formale Definition der Problemstellung} \label{sec:formal}
+
+Gegeben sei eine Menge von Reads eines Individuums $ D = (s_{1}, \dots , s_{m}) \in \{A,\,C,\,G,\,T,\}^{k^m}$ mit der Readlänge $k$. In den Reads sind zudem für jede Base Informationen zur Qualität der Sequenzierung $ Q = (q_{1}, \dots , q_{m}) \in {[0,\,1]}^{k^m}$ enthalten. Weiterhin seien für Substitutionen, Insertionen und Deletionen Angaben zu den Mutationsraten $M=(m_{sub},\, m_{ins},\, m_{del})$ und Heterozygotiewahrscheinlichkeiten $\eta = (\eta_{sub},\, \eta_{ins},\, \eta_{del}) $ gegeben. Ebenso ist die Ploidie $\phi$ des untersuchten Organismus bekannt. \\
+
+Ziel ist die Zuordnung der Reads zu den Loci unter Berücksichtigung von $M$ und $\eta$ und die Ausgabe der Sequenz der ermittelten Loci. Dabei soll die Menge von Loci gefunden werden, welche die beobachteten Reads am besten erklären kann, das heißt welche die höchste Wahrscheinlichkeit in Zusammenschau mit $M$ und $\eta$ erreicht. \\
+
+\section{Lösungsansatz} \label{sec:solution}
+
+Das Problem wird als gerichteter Graph betrachtet (siehe Kap. \ref{subsec:sol_graph}), dessen Knoten die einzelnen Reads beinhaltet und dessen Kanten die Wahrscheinlichkeiten repräsentieren, dass der Read des Knotens, von dem die Kante ausgeht (Source-Knoten), vom dem Read stammt, auf den die Kanten gerichtet ist (Target-Knoten). \\
+
+Für die Zuordnung der Reads soll das Problem in Teilprobleme aufgeteilt werden, für jedes Teilproblem soll dann eine Lösung ermittelt werden. Der Graph wird daher entsprechend seiner Zusammenhangskomponenten partitioniert. Für jede Zusammenhangskomponente werden alle Reads mit einander verglichen und diejenigen Allele identifiziert, von denen die übrigen Reads der Komponente am wahrscheinlichsten durch Sequenzierfehler entstanden sind (Kap. \ref{subsec:sol_allele_lh}). Hierzu werden Basenqualität und Mutatationsraten berücksichtigt, so dass die Sequenzierfehlerrate die Likelihoodberechnung bestimmt. \\
+
+Die Allelkombination mit der höchsten Wahrscheinlichkeit soll anschließend für die Zuordnung der Loci verwendet werden (Kap. \ref{subsec:sol_loci_lh}). Auch hierfür wird die Likelihood für alle Loci-Kombinationen bestimmt, wobei nun die Heterozygotiewahrscheinlichkeiten einbezogen werden. Die Loci-Kombination mit der größten Likelihood wird schließlich als Lösung der betreffenden Zusammenhangskomponente ausgegeben (Kap. \ref{subsec:sol_vcf}).\\
+
+Für jede Zusammenhangskomponente wird auf diese Weise also die wahrscheinlichste Lösung ermittelt, deren Komposition von Loci die beobachteten Reads innerhalb der Zusammenhangskomponente am besten erklären kann. \\
+
+
+\subsection{Graph und Zusammenhangskomponenten} \label{subsec:sol_graph}
+
+Im Preprocessing wird aus den Reads zunächst ein Alignment mit Hilfe des Tools Minimap2  erzeugt ~\cite{li_2018}. Hierbei werden alle Reads mit einander verglichen und bei ausreichender Ähnlichkeit ihrer Sequenzen zu Paaren zusammengefasst. Zudem werden durch Minimap2 die Edit-Distanzen zwischen den jeweils verglichenen Readsequenzen bestimmt. \\
+
+Wie bereits einleitend erwähnt, wird das Problem als gerichteter Graph $G=(V, \, E)$ mit der Knotenmenge $V$ und der Kantenmenge $E$ betrachtet. Die Knoten repräsentieren dabei die einzelnen Reads. Entsprechend dem von Minimap2 erzeugtem Sequenzalignment werden die Knoten der Reads durch Kanten verbunden. Die Kanten des Graphen repräsentieren also den Vergleich der Sequenzen der beiden angrenzenden Reads.\\
+
+Initial basieren die Kantengewichtungen auf den durch Minimap2 bestimmten Edit-Distanzen zwischen den Reads. Die Edit-Distanz gibt dabei die minimale Anzahl von Ersetzungs-, Einfügungs- und Löschungsoperationen an, um die Sequenz des Source-Knotens in die Sequenz des Target-Knotens zu überführen. Die Editieroperationen entsprechen somit unmittelbar den möglichen Mismatches der DNA-Sequenzen der Reads, also den Substitutionen, Insertionen und Deletionen. Um die Anzahl der Kanten im Graph in einem überschaubaren Rahmen zu halten, sollen nur Kanten eingefügt werden, die einen festgelegten Schwellenwert hinsichtlich der Edit-Distanz nicht überschreiten. Das Problem wird durch diesen Filtervorgang verkleinert, so dass die eigentliche Likelihoodberechnung der paarweisen Vergleiche der Reads über ein pair hidden Markov Model (Kap. \ref{subsec:sol_phmm}) effizienter erfolgen kann. \\
+
+Da nur Reads mit einander verbunden werden, deren Sequenzen also eine gewisse Ähnlichkeit zu einander aufweisen, ist der Graph in Abhängigkeit vom festgelegten Schwellenwert nicht zusammenhängend und besitzt mehrere Zusammenhangskomponenten. Dies ermöglicht eine Unterteilung des Gesamtproblems in kleinere Teilprobleme, indem für die einzelnen Zusammenhangskomponenten des Graphen jeweils Lösungen ermittelt werden. Da der Grenzwert ein gewählter und konfigurierbarer Wert ist, entsprechen die so entstandenen Zusammenhangskomponenten nicht unbedingt Clustern von Reads die nur einem einzelnen Locus zuzuordnen sind. Vielmehr können die Zusammenhangskomponenten auch jeweils mehrere Loci beinhalten. 
+
+\subsection{Pair hidden Markov Model} \label{subsec:sol_phmm}
+
+\noindent====================== draft begin ======================\\
+
+-> Berücksichtigung der Basenqualität $q_{r}$ => Sequenzierfehler fließen mit geringerer liklihood in die weitere Berechnung ein -> werden weniger berücksichtigt und kommen seltener vor, z.T als noise entfernt-> loci likelihood wird mit den sequenzen mit seq-fehlern geringer sein -> seq-fehler gefiltert, da es nicht möglich ist eine  bessere lh für z.B. 3 Allele zu bekommen (von denen eines aber auf einem seq-fehler beruht), wenn es nur 2 tatsächliche Allele in einer komp gibt, d.h. lh für 2 Allele ist in diesem fall höher als für 3 -> loci likelihood enthält mutationen \\
+paarweises Alignment aus Minimap2 als Teilproblem -> fast jede Beobachtung wird berücksichtigt\\
+Bewertung/wslk ob ein read aus einem anderen read entstanden ist\\
+
+\noindent======================= draft end =======================\\
+
+Das Sequenzalignment der Reads aus Minimap2 repräsentiert bereits den wahrscheinlichsten Pfad in der pairHMM-Matrix, so dass über diesen Pfad die Likelihoods der Allele (Kap. \ref{subsec:sol_allele_lh}) und der Loci (Kap. \ref{subsec:sol_loci_lh}) bestimmt werden können.
+
+\subsection{Die maximale Likelihood der Allele} \label{subsec:sol_allele_lh}
+
+Um die Allele zu identifizieren, von denen die beobachteten Reads einer Zusammenhangskomponente am wahrscheinlichsten stammen, muss zunächst die Menge der Kandidatenallele $A=(a_{1}, \dots, a_{n}) \in \{A,\,C,\,G,\,T,\}^{k^n}$ bestimmt werden. Bei größeren Clustern ist davon auszugehen, dass die Sequenzen solcher Kandidatenallele mehrfach in den Reads auftauchen. Um den Aufwand der Likelihoodberechnung bei größeren Cluster anpassen zu können, soll es möglich sein, selten auftretende Sequenzen herauszufiltern. Dies geschieht über zwei Grenzwerte, welche die Mindestgröße des Clusters und die Mindesthäufigkeit von Kandidatenallelsequenzen festlegen. Durch sie werden ab einer bestimmten Clustergröße nur diejenigen Sequenzen in die Auswahl der Kandidatenallele aufgenommen, die mit einer bestimmten Häufigkeit im Cluster vorkommen.\\
+
+Anschließend wird die Wahrscheinlichkeit bestimmt, dass ein Read mit der Readsequenz mit der Fehlerrate $\epsilon$ tatsächlich von einem bestimmten Allel stammt. Die Fehlerrate $\epsilon$ ergibt sich dabei aus der Qualität der einzelnen Basen eines Reads. Jede Base der Sequenz des Source-Knotens wird mit der Sequenz des Target-Knotens verglichen. Bei einem sogenannten Mismatch unterscheiden sich die verglichenen Basen durch Substitutionen, Insertionen oder Deletionen. Im Falle eines Matches sind beide Basen identisch. Bei einem Match ergibt sich die Wahrscheinlichkeit $L_{match}$, dass es sich dabei im Source-Knoten tatsächlich um die korrekte Base handelt allein aus der Fehlerrate:
+\begin{equation} \label{eqn:2-1}
+\tag{2-1}
+L_{match} = 1 - \epsilon
+\end{equation}
+
+Bei einem Mismatch $L_{mismatch}$ müssen die Wahrscheinlichkeiten für Sequenzierfehler $L_{sequerr}$ (vgl. Formel \eqref{eqn:3-5}) und Mutationen $L_{mut}$ (vgl. Formel \eqref{eqn:3-4}) sowie die Mutationsrate selbst $m_{rate}$ mit einbezogen werden: 
+\begin{equation} \label{eqn:2-2}
+\tag{2-2}
+L_{mismatch} = (1 - m_{rate}) \, \cdotp L_{sequerr} \, \cdotp L_{mut}
+\end{equation}
+
+Die genaue Berechnung der Likelihood der einzelnen Basen wird an späterer Stelle in Kap. \ref{subsec:edges} ausführlicher besprochen. Das Produkt aller Wahrscheinlichkeiten der einzelnen Basen ergibt schließlich die Likelihood für den paarweisen Vergleich zweier Reads im Sinne des pairHMM. Bei paarweisen Vergleich eines Allels $a_{i} \in A $ mit einem Read mit der Sequenz $s_{r}$ lässt sich die Likelihoodberechnung also wie folgt formulieren:
+\begin{equation} \label{eqn:2-3}
+\tag{2-3}
+Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) = pairHMM_{\epsilon,q_{r}}(a_{i}, s_{r})
+\end{equation}
+
 
 \noindent======================= draft =======================\\
 
-
-gegeben: reads einer sample \\
-Ziel: Zuordnung der Reads zu loci -> Ausgabe: Sequenz der Loci \\
-es soll die Menge von Loci gefunden werden, die die Beobachtungen erklären können \\
-Ergebnis: loci aus den beobachtungen der reads
-im Gegensatz zu Stacks ohne Vorwissen abschätzbar, Stacks berücksichtigt keine Ploidie und Heterozygotie \\
-
-
-Problem wird aufgeteilt in Teilprobleme -> Zusammenhangskomponeneten \\
-für jede Komponente: Lösung finden für eine Komposition von Loci, die am besten die beobachteten Reads erklären können
--> Berücksichtigung der Basenqualität $q_{r}$ => Sequenzierfehler fließen mit geringerer liklihood in die weitere Berechnung ein -> werden weniger berücksichtigt und kommen seltener vor, z.T als noise entfernt-> loci likelihood wird mit den sequenzen mit seq-fehlern geringer sein -> seq-fehler gefiltert, da es nicht möglich ist eine  bessere lh für z.B. 3 Allele zu bekommen (von denen eines aber auf einem seq-fehler beruht), wenn es nur 2 tatsächliche Allele in einer komp gibt, d.h. lh für 2 Allele ist in diesem fall höher als für 3 -> loci likelihood enthält mutationen \\
-
-\section{Lösungsansatz} \label{sec:solution}
-Defs von Sequ, Mutationsrate, ploidie, heterozyg
-\subsection{Graph und Zusammenhangskomponenten} \label{subsec:sol_graph}
-Graph als Gesamtproblem -> Verkleinern durch Zerlegung in Teilprobleme -> Menge der conn comp\\
-unklar wie viele loci jede conn comp beinhaltet, jede conn comp kann auch mehr als einen locus enthalten\\
-\subsection{Pair Hidden Markov Model} \label{subsec:sol_phmm}
-paarweises Alignment aus Minimap2 als Teilproblem -> fast jede Beobachtung wird berücksichtigt\\
-Bewertung/wslk ob ein read aus einem anderen read entstanden ist\\
-\subsection{Die maximale Likelihood der Allele} \label{subsec:sol_allele_lh}
 \noindent0. noise nicht als Kandidaten-Allele -> liste lexicogra. sortierter Allele\\
 
 \noindent1. lh zwischen 1 read und 1 allel; likelihood im pair: Wslk, dasss von 1 bestimmten Allel $a_{i}$ mit Fehlerrate $\epsilon$ tatsächlich die readsequenz $s_{r}$ stammt \\
@@ -60,7 +104,7 @@ $m$ ist Anzahl der Reads, $L \in \{l_{i} \in \mathds{N}_{\leq n}^\phi \, | \, i=
 L(\Theta=\theta_{1},\dots,\theta_{n} \, | \, D) = Pr(D \, | \, \Theta=\theta_{1},\dots,\theta_{n}) = \prod_{r=1}^{m}Pr (s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n})
 \end{equation}
 für jede vaf wurde also liklihood über alle reads bestimmt -> Maximum 
-\subsection{Die maximale Likelihood der Loci}
+\subsection{Die maximale Likelihood der Loci} \label{subsec:sol_loci_lh}
 connected comp in loci aufsplitten\\
 Zuordnung zu loci, also welche genomischen loci stecken dahinter, wie werden die allele den loci zugeordnet -> max parximony, prinzip der einfachsen möglichen lösung \\
 -> ploidy als eingabeparam -> zuordnung der candidaten allele zu loci\\
@@ -89,6 +133,6 @@ Pr(\Theta,A \, | \, L=\{l_{j}\, |\, j=1,\dots,g\})=z_{l} \, \cdotp \prod_{j=1}^{
 \end{equation}
 
 => maximum der loci Likelihoods wählen
-\subsection{Varianten und Genotyp}
+\subsection{Varianten und Genotyp} \label{subsec:sol_vcf}
 mit den allelen $A = (a_{1}, \dots, a_{n})$ jedes locus $L \in \{l_{j} \in \mathds{N}_{\leq n}^\phi \, | \, j=1, \dots, g\}$, allelsequenz, genotyp\\
 Menge von Loci, die die Beobachtungen erklären
