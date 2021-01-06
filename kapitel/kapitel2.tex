@@ -10,7 +10,7 @@ Das RAD-Sequencing-Verfahren bedingt, dass die DNA nur in den für die verwendet
 
 Gegeben sei eine Menge von Reads eines Individuums $ D = (s_{1}, \dots , s_{m}) \in \{A,\,C,\,G,\,T,\}^{k^m}$ mit der Readlänge $k$. In den Reads sind zudem für jede Base Informationen zur Qualität der Sequenzierung $ Q = (q_{1}, \dots , q_{m}) \in {[0,\,1]}^{k^m}$ enthalten. Weiterhin seien für Substitutionen, Insertionen und Deletionen Angaben zu den Mutationsraten $M=(m_{sub},\, m_{ins},\, m_{del})$ und Heterozygotiewahrscheinlichkeiten $\eta = (\eta_{sub},\, \eta_{ins},\, \eta_{del}) $ gegeben. Ebenso ist die Ploidie $\phi$ des untersuchten Organismus bekannt. \\
 
-Ziel ist die Zuordnung der Reads zu den Loci unter Berücksichtigung von $M$ und $\eta$ und die Ausgabe der Sequenz der ermittelten Loci. Dabei soll die Menge von Loci gefunden werden, welche die beobachteten Reads am besten erklären kann, das heißt welche die höchste Wahrscheinlichkeit in Zusammenschau mit $M$ und $\eta$ erreicht. \\
+Ziel ist die Zuordnung der Reads zu den Loci unter Berücksichtigung von $M$ und $\eta$ sowie die Ausgabe der Menge der ermittelten Loci mit den Sequenzen der in ihnen enthaltenen Allele. Dabei soll die Menge von Loci gefunden werden, welche die beobachteten Reads am besten erklären kann, das heißt welche die höchste Wahrscheinlichkeit in Zusammenschau mit $M$ und $\eta$ besitzt. \\
 
 \section{Lösungsansatz} \label{sec:solution}
 
@@ -29,7 +29,7 @@ Im Preprocessing wird aus den Reads zunächst ein Alignment mit Hilfe des Tools 
 
 Wie bereits einleitend erwähnt, wird das Problem als gerichteter Graph $G=(V, \, E)$ mit der Knotenmenge $V$ und der Kantenmenge $E$ betrachtet. Die Knoten repräsentieren dabei die einzelnen Reads. Entsprechend dem von Minimap2 erzeugtem Sequenzalignment werden die Knoten der Reads durch Kanten verbunden. Die Kanten des Graphen repräsentieren also den Vergleich der Sequenzen der beiden angrenzenden Reads.\\
 
-Initial basieren die Kantengewichtungen auf den durch Minimap2 bestimmten Edit-Distanzen zwischen den Reads. Die Edit-Distanz gibt dabei die minimale Anzahl von Ersetzungs-, Einfügungs- und Löschungsoperationen an, um die Sequenz des Source-Knotens in die Sequenz des Target-Knotens zu überführen. Die Editieroperationen entsprechen somit unmittelbar den möglichen Mismatches der DNA-Sequenzen der Reads, also den Substitutionen, Insertionen und Deletionen. Um die Anzahl der Kanten im Graph in einem überschaubaren Rahmen zu halten, sollen nur Kanten eingefügt werden, die einen festgelegten Schwellenwert hinsichtlich der Edit-Distanz nicht überschreiten. Das Problem wird durch diesen Filtervorgang verkleinert, so dass die eigentliche Likelihoodberechnung der paarweisen Vergleiche der Reads über ein pair hidden Markov Model (Kap. \ref{subsec:sol_phmm}) effizienter erfolgen kann. \\
+Initial basieren die Kantengewichtungen auf den durch Minimap2 bestimmten Edit-Distanzen zwischen den Reads. Um die Anzahl der Kanten im Graph in einem überschaubaren Rahmen zu halten, sollen nur Kanten eingefügt werden, die einen festgelegten Schwellenwert hinsichtlich der Edit-Distanz nicht überschreiten. Das Problem wird durch diesen Filtervorgang verkleinert, so dass die eigentliche Likelihoodberechnung der paarweisen Vergleiche der Reads über ein pair hidden Markov Model (Kap. \ref{subsec:sol_phmm}) effizienter erfolgen kann. \\
 
 Da nur Reads mit einander verbunden werden, deren Sequenzen also eine gewisse Ähnlichkeit zu einander aufweisen, ist der Graph in Abhängigkeit vom festgelegten Schwellenwert nicht zusammenhängend und besitzt mehrere Zusammenhangskomponenten. Dies ermöglicht eine Unterteilung des Gesamtproblems in kleinere Teilprobleme, indem für die einzelnen Zusammenhangskomponenten des Graphen jeweils Lösungen ermittelt werden. Da der Grenzwert ein gewählter und konfigurierbarer Wert ist, entsprechen die so entstandenen Zusammenhangskomponenten nicht unbedingt Clustern von Reads die nur einem einzelnen Locus zuzuordnen sind. Vielmehr können die Zusammenhangskomponenten auch jeweils mehrere Loci beinhalten. 
 
@@ -45,7 +45,7 @@ Bewertung/wslk ob ein read aus einem anderen read entstanden ist\\
 
 Das Sequenzalignment der Reads aus Minimap2 repräsentiert bereits den wahrscheinlichsten Pfad in der pairHMM-Matrix, so dass über diesen Pfad die Likelihoods der Allele (Kap. \ref{subsec:sol_allele_lh}) und der Loci (Kap. \ref{subsec:sol_loci_lh}) bestimmt werden können.
 
-\subsection{Die maximale Likelihood der Allele} \label{subsec:sol_allele_lh}
+\subsection{Allele-Fractions mit maximaler Likelihood} \label{subsec:sol_allele_lh}
 
 Um die Allele zu identifizieren, von denen die beobachteten Reads einer Zusammenhangskomponente am wahrscheinlichsten stammen, muss zunächst die Menge der Kandidatenallele $A=(a_{1}, \dots, a_{n}) \in \{A,\,C,\,G,\,T,\}^{k^n}$ bestimmt werden. Bei größeren Clustern ist davon auszugehen, dass die Sequenzen solcher Kandidatenallele mehrfach in den Reads auftauchen. Um den Aufwand der Likelihoodberechnung bei größeren Cluster anpassen zu können, soll es möglich sein, selten auftretende Sequenzen herauszufiltern. Dies geschieht über zwei Grenzwerte, welche die Mindestgröße des Clusters und die Mindesthäufigkeit von Kandidatenallelsequenzen festlegen. Durch sie werden ab einer bestimmten Clustergröße nur diejenigen Sequenzen in die Auswahl der Kandidatenallele aufgenommen, die mit einer bestimmten Häufigkeit im Cluster vorkommen.\\
 
@@ -104,7 +104,7 @@ $m$ ist Anzahl der Reads, $L \in \{l_{i} \in \mathds{N}_{\leq n}^\phi \, | \, i=
 L(\Theta=\theta_{1},\dots,\theta_{n} \, | \, D) = Pr(D \, | \, \Theta=\theta_{1},\dots,\theta_{n}) = \prod_{r=1}^{m}Pr (s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n})
 \end{equation}
 für jede vaf wurde also liklihood über alle reads bestimmt -> Maximum 
-\subsection{Die maximale Likelihood der Loci} \label{subsec:sol_loci_lh}
+\subsection{Locuszuordnung mit maximaler Likelihood} \label{subsec:sol_loci_lh}
 connected comp in loci aufsplitten\\
 Zuordnung zu loci, also welche genomischen loci stecken dahinter, wie werden die allele den loci zugeordnet -> max parximony, prinzip der einfachsen möglichen lösung \\
 -> ploidy als eingabeparam -> zuordnung der candidaten allele zu loci\\

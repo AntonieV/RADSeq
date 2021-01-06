@@ -1,5 +1,5 @@
-\contentsline {algorithm}{\numberline {3.1}{\ignorespaces Berechnung der Likelihood zwischen zwei Reads\relax }}{22}{algorithm.3.1}%
-\contentsline {algorithm}{\numberline {3.2}{\ignorespaces Bestimmung der Likelihood zwischen einem Read und einem Kandidatenallel\relax }}{32}{algorithm.3.2}%
-\contentsline {algorithm}{\numberline {3.3}{\ignorespaces CIGAR-Tupel bestimmen\relax }}{35}{algorithm.3.3}%
-\contentsline {algorithm}{\numberline {3.4}{\ignorespaces Bestimmung der Likelihood der Allele innerhalb einer Loci-Kombination\relax }}{41}{algorithm.3.4}%
-\contentsline {algorithm}{\numberline {3.5}{\ignorespaces Bestimmung der Likelihood zwischen zwei Allelen hinsichtlich der Heterozygotiewahrscheinlichkeiten\relax }}{42}{algorithm.3.5}%
+\contentsline {algorithm}{\numberline {3.1}{\ignorespaces Berechnung der Likelihood zwischen zwei Reads\relax }}{24}{algorithm.3.1}%
+\contentsline {algorithm}{\numberline {3.2}{\ignorespaces Bestimmung der Likelihood zwischen einem Read und einem Kandidatenallel\relax }}{30}{algorithm.3.2}%
+\contentsline {algorithm}{\numberline {3.3}{\ignorespaces CIGAR-Tupel bestimmen\relax }}{32}{algorithm.3.3}%
+\contentsline {algorithm}{\numberline {3.4}{\ignorespaces Bestimmung der Likelihood der Allele innerhalb einer Loci-Kombination\relax }}{36}{algorithm.3.4}%
+\contentsline {algorithm}{\numberline {3.5}{\ignorespaces Bestimmung der Likelihood zwischen zwei Allelen hinsichtlich der Heterozygotiewahrscheinlichkeiten\relax }}{37}{algorithm.3.5}%
