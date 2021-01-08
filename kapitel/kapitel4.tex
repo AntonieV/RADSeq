@@ -66,7 +66,7 @@ Die Anpassung der Anzahl der Allele kann für jede Komponente aus der Menge der 
 
 Funktion \lstinline|get_candidate_vafs()| \label{subsubsec:cand_vafs}
 %\subsubsection{Abschätzung der oberenen Laufzeitschranke bei Kombinationen mit %Wiederholung und Laufzeit der Funktion \lstinline|get_candidate_vafs()|} 
-Kombinationen mit Wiederholung werden sowohl für die Bestimmung der Allelkombinationen aus diesem Kapitel als auch später in Kap. \ref{subsec:comb_loci} für die Ermittlung möglicher Kombinationen von Loci genutzt. Hinsichtlich der Laufzeit und des Speicherplatzbedarfs kann diese Berechnung bei sehr großen Clustern zum dominierenden Faktor werden. Daher soll die Laufzeit an dieser Stelle genauer abgeschätzt werden. Seien dabei für eine bessere Übersichtlichkeit $ n_{alleles} $ als $ n $ und $ n_{observed} $ als $k$ bezeichnet und es gilt $n, k \in \mathds{N} $. Nach Formel \eqref{eqn:3-12} werden also $ \binom{n + k - 1}{k} $ Kombinationen jeweils in $O(1)$ erzeugt, d.h. in $ O(\binom{n + k - 1}{k}) $ für jede Zusammenhangskomponente. \\
+Kombinationen mit Wiederholung werden sowohl für die Bestimmung der Allelkombinationen aus diesem Kapitel als auch später in Kap. \ref{subsec:comb_loci} für die Ermittlung möglicher Kombinationen von Loci genutzt. Hinsichtlich der Laufzeit und des Speicherplatzbedarfs kann diese Berechnung bei sehr großen Clustern zum dominierenden Faktor werden. Daher soll die Laufzeit an dieser Stelle genauer abgeschätzt werden. Seien dabei für eine bessere Übersichtlichkeit $ n_{alleles} $ als $ n $ und $ n_{cand} $ als $k$ bezeichnet und es gilt $n, k \in \mathds{N} $. Nach Formel \eqref{eqn:3-12} werden also $ \binom{n + k - 1}{k} $ Kombinationen jeweils in $O(1)$ erzeugt, d.h. in $ O(\binom{n + k - 1}{k}) $ für jede Zusammenhangskomponente. \\
 
 Die Formel \eqref{eqn:3-12} ergibt sich aus der allgemeinen Formel des Binomialkoeffizienten \eqref{eqn:3-13}, durch den die Anzahl aller Kombinationen ohne Zurücklegen berechnet wird \cite{tb_stat}. 
 \begin{equation} \label{eqn:3-13}
@@ -129,14 +129,14 @@ Hinsichtlich der Allelkombinationen entspricht dies einer Zeit von $ O(e^{n_{all
 
 Für sehr große Cluster ist daher die Laufzeit problematisch. Ebenso kommt es zu einem hohen Bedarf an Arbeitsspeicher, aufgrund der großen Anzahl von Kombinationen die dabei erzeugt werden. Um dies bedingt kompensieren zu können, wurden die oben beschriebenen Schwellenwerte eingeführt, die ab einer festgelegten Clustergröße \lstinline|treshold-cluster-size| nur Allelkandidaten ab einer bestimmten Häufigkeit ihrere Sequenz in den Reads \linebreak \lstinline|treshold-seq-noise| berücksichtigen.\\
 
-Die Berechnung der Häufigkeitsverteilungen erfordert weitere Iterationen über die ermittelten Allelkombinationen, dabei werden sämtliche Allele für jede Kombination betrachtet. Dadurch erhöht sich die Laufzeit auf $ O(e^{n_{alleles}})\, \cdotp O(n_{alleles}) \, \cdotp O(n_{observed}) $. Den höchsten Wert nimmt $ n_{alleles} $ in dem Fall an, dass die Restdivision $ n_{observed} \mod \phi = 1 $, denn dann gilt  $ n_{alleles} = n_{observed} + \phi - 1 $. Da $\phi$ für alle Zusammenhangskomponenten den gleichen Wert besitzt, gilt $\phi = const$. Daraus ergibt sich nach \eqref{eqn:3-21} eine Laufzeit von $ O(e^{n_{observed}}\, \cdotp n_{observed}^2) $ für die Funktion  \lstinline|get_candidate_vafs()|.
+Die Berechnung der Häufigkeitsverteilungen erfordert weitere Iterationen über die ermittelten Allelkombinationen, dabei werden sämtliche Allele für jede Kombination betrachtet. Dadurch erhöht sich die Laufzeit auf $ O(e^{n_{alleles}})\, \cdotp O(n_{alleles}) \, \cdotp O(n_{cand}) $. Den höchsten Wert nimmt $ n_{alleles} $ in dem Fall an, dass die Restdivision $ n_{cand} \mod \phi = 1 $, denn dann gilt  $ n_{alleles} = n_{cand} + \phi - 1 $. Da $\phi$ für alle Zusammenhangskomponenten den gleichen Wert besitzt, gilt $\phi = const$. Daraus ergibt sich nach \eqref{eqn:3-21} eine Laufzeit von $ O(e^{n_{cand}}\, \cdotp n_{cand}^2) $ für die Funktion  \lstinline|get_candidate_vafs()|.
 \begin{equation} \label{eqn:3-21}
 \tag{3-21}
 \begin{aligned}
-O(e^{n_{alleles}} \, \cdotp n_{alleles} \, \cdotp n_{observed}) 
-&\ {}= O(e^{n_{observed} + \phi - 1} \, \cdotp (n_{observed} + \phi - 1) \, \cdotp n_{observed})\\
-&\ = O(e^{n_{observed} + \phi}\, \cdotp n_{observed}^2) \, \cdotp \phi\\
-&\ = O(e^{n_{observed}}\, \cdotp n_{observed}^2)\\
+O(e^{n_{alleles}} \, \cdotp n_{alleles} \, \cdotp n_{cand}) 
+&\ {}= O(e^{n_{cand} + \phi - 1} \, \cdotp (n_{cand} + \phi - 1) \, \cdotp n_{cand})\\
+&\ = O(e^{n_{cand} + \phi}\, \cdotp n_{cand}^2) \, \cdotp \phi\\
+&\ = O(e^{n_{cand}}\, \cdotp n_{cand}^2)\\
 \end{aligned}
 \end{equation} 
 
@@ -188,20 +188,20 @@ Die hierfür erforderliche Laufzeit setzt sich zusammen aus den Suchvorgengen f�
 
 Funktion \lstinline|calc_vafs_likelihood_read()| Formel \eqref{eqn:2-xxx2} 
 
-Es über die relativen Häufigkeiten jedes Allels einer Allele-Fraction iteriert und ihr Produkt mit der Readlikelihood aufsummiert. Da die Läge der Allelfraktion genau der Anzahl der Allele einer Zusammenhangskomponenten $ n_{observed} $ entspricht, erhöht sich hierdurch die Laufzeit um den Faktor $ O(n_{observed}) $.
+Es über die relativen Häufigkeiten jedes Allels einer Allele-Fraction iteriert und ihr Produkt mit der Readlikelihood aufsummiert. Da die Läge der Allelfraktion genau der Anzahl der Allele einer Zusammenhangskomponenten $ n_{cand} $ entspricht, erhöht sich hierdurch die Laufzeit um den Faktor $ O(n_{cand}) $.
 
 Funktion \lstinline|calc_vafs_likelihood()| Formel \eqref{eqn:2-xxx3}
 Dadurch wird dir Laufzeit zusätzlich um den Faktor der Anzahl der Reads der Zusammenhangskomponente $ O(V_{c}) $ erhöht.
 
 in \lstinline|noderad_main.py| für alle Allele-Fractions
-Dazu muss über alle VAFs iteriert werden. Die Anzahl der VAFs entspricht dabei genau der Anzahl der Allelkombinationen. Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, kann diese hinsichtlich der Laufzeit mit $ O(e^n_{alleles}) $ abgeschätzt werden (Formel \eqref{eqn:3-20}). Da im Worst Case $n_{alleles} = n_{observed} + \phi - 1$, ergibt sich eine Laufzeit von $ O(e^{n_{observed} + \phi - 1}) \in O(e^{n_{observed}}) $. Um diesen Faktor erhöht sich also die Gesamtlaufzeit bei der Berechnung der Liste der Gesamtwahrscheinlichkeiten.
+Dazu muss über alle VAFs iteriert werden. Die Anzahl der VAFs entspricht dabei genau der Anzahl der Allelkombinationen. Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, kann diese hinsichtlich der Laufzeit mit $ O(e^n_{alleles}) $ abgeschätzt werden (Formel \eqref{eqn:3-20}). Da im Worst Case $n_{alleles} = n_{cand} + \phi - 1$, ergibt sich eine Laufzeit von $ O(e^{n_{cand} + \phi - 1}) \in O(e^{n_{cand}}) $. Um diesen Faktor erhöht sich also die Gesamtlaufzeit bei der Berechnung der Liste der Gesamtwahrscheinlichkeiten.
 
 Maximumsbestimmung: 
-Hinsichtlich der Laufzeit muss jede Lösung der Liste betrachtet werden. Da die Länge der Liste der Anzahl der VAFs entspricht, kann die Laufzeit hierfür nach \eqref{eqn:3-20} auf maximal $ O(e^{n_{observed}}) $ geschätzt werden.
+Hinsichtlich der Laufzeit muss jede Lösung der Liste betrachtet werden. Da die Länge der Liste der Anzahl der VAFs entspricht, kann die Laufzeit hierfür nach \eqref{eqn:3-20} auf maximal $ O(e^{n_{cand}}) $ geschätzt werden.
 
 
 \subsection{Gesamtlaufzeit zur Bestimmung der Allele-Fractions mit maximaler Likelihood} \label{subsec:al_compl}
-Die geschätzten Laufzeiten der einzelnen Schritte wurden bereits an entsprechender Stelle diskutiert und sollen hier noch einmal zusammenfassend aufgeführt werden. Zur übersichtlicheren Darstellung soll die Anzahl der Allele hier nur noch mit $n$ bezeichnet werden, dies entspricht der bisher verwendeten Variable $n_{observed}$. Für jede Zusammenhangskomponente werden vorab die Kandidatenallele bestimmt $ O(V_{c}) $, die Anzahl der tatsächlich zu erwartenden Allele berechnet $ O(V_{c}) $ und die Kombinationen möglicher Häufigkeitsverteilungen ermittelt $ O(e^{n} \, \cdotp n^2) $. Anschließend erfolgt die Likelihoodberechnung in $ O(V_{c}^3) $ über alle Allelfraktionen $ O(e^{n}) $, für alle Reads $ O(V_{c}) $ und im Vergleich jedes Reads zu allen Kandidatenallelen $ O(n) $. Aus den Lösungen wird im Anschluss das Maximum bestimmt $ O(e^{n}) $. Daraus ergibt sich nach \ref{eqn:3-26} eine Gesamtlaufzeit für die Bestimmung der Allelfraktion mit maximaler Likelihood von $ O(e^n \, \cdotp (n^2 + n \, \cdotp V_{c}^4)) $. 
+Die geschätzten Laufzeiten der einzelnen Schritte wurden bereits an entsprechender Stelle diskutiert und sollen hier noch einmal zusammenfassend aufgeführt werden. Zur übersichtlicheren Darstellung soll die Anzahl der Allele hier nur noch mit $n$ bezeichnet werden, dies entspricht der bisher verwendeten Variable $n_{cand}$. Für jede Zusammenhangskomponente werden vorab die Kandidatenallele bestimmt $ O(V_{c}) $, die Anzahl der tatsächlich zu erwartenden Allele berechnet $ O(V_{c}) $ und die Kombinationen möglicher Häufigkeitsverteilungen ermittelt $ O(e^{n} \, \cdotp n^2) $. Anschließend erfolgt die Likelihoodberechnung in $ O(V_{c}^3) $ über alle Allelfraktionen $ O(e^{n}) $, für alle Reads $ O(V_{c}) $ und im Vergleich jedes Reads zu allen Kandidatenallelen $ O(n) $. Aus den Lösungen wird im Anschluss das Maximum bestimmt $ O(e^{n}) $. Daraus ergibt sich nach \ref{eqn:3-26} eine Gesamtlaufzeit für die Bestimmung der Allelfraktion mit maximaler Likelihood von $ O(e^n \, \cdotp (n^2 + n \, \cdotp V_{c}^4)) $. 
 \begin{equation} \label{eqn:3-26}
 \tag{3-26}
 \begin{aligned}
@@ -212,7 +212,7 @@ O(V_{c}) +  O(V_{c}) &\ {} + O(e^n \, \cdotp n^2) + O(e^n) \, \cdotp O(V_{c}) \,
 \end{aligned}
 \end{equation}
 
-Im Worst Case entspricht $ n $ genau der Anzahl der Reads in der Zusammenhangskomponente und es gilt $ n = n_{observed} = V_{c} $, so dass die Laufzeit dann auf $ O(e^{V_{c}} \, \cdotp V_{c}^5) $ geschätzt werden kann \eqref{eqn:3-27}.
+Im Worst Case entspricht $ n $ genau der Anzahl der Reads in der Zusammenhangskomponente und es gilt $ n = n_{cand} = V_{c} $, so dass die Laufzeit dann auf $ O(e^{V_{c}} \, \cdotp V_{c}^5) $ geschätzt werden kann \eqref{eqn:3-27}.
 \begin{equation} \label{eqn:3-27}
 \tag{3-27}
 \begin{aligned}
@@ -230,7 +230,7 @@ Die Laufzeit wird also durch die Anzahl der VAFs dominiert und kann bei großen 
 
 \subsection{Laufzeit zur Bestimmung der möglicher Loci-Kombinationen}
 
-Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, benötigt die Generierung aller Allelkombinationen eine Laufzeit von $ O(e^n) $, wobei $n = n_{observed}$ die Anzahl der beobachteten Allele der Zusammenhangskomponente ist. Für diese Kombinationen werden jeweils alle $n!$ Permutationen gebildet, also mit einer Laufzeit von $ O(n!) $. Für jede Permutation erfolgt über ihre jeweilige Länge die Gruppierung zu den Loci. Die Länge jeder Permutation kann wegen der Funktion \lstinline|get_max_parsimony_n_alleles()| (vgl. Kap. \ref{subsec:cand_allele}) maximal $ n_{alleles} = n_{observed} + \phi - 1 $ betragen. Wegen $\phi = const$ beträgt die Laufzeit hier also $O(n_{observed}) = O(n)$. Die Sortierung bei Python erfordert eine Laufzeit von $ O(n\, \cdotp log(n))$ \cite{python-sort}. Die beiden Sortiervorgänge erfolgen zum einen über jeden Locus mit der Länge $\phi$ entsprechend seiner Ploidie und über alle Loci innerhalb der Permutation. Die Anzahl der Loci entspricht $\frac{n}{\phi}$, dadurch ergeben sich für die Sortiervorgänge Laufzeiten von $ O(\phi\, \cdotp log(\phi)) $ bzw. $ O\left( \frac{n}{\phi}\, \cdotp log\left( \frac{n}{\phi}\right) \right) $. Unter Berücksichtigung, dass $\phi = const$ gilt, beträgt die Laufzeit für \lstinline|get_candidate_loci()| insgesamt $ O(e^n \, \cdotp n! \, \cdotp n^2 \, \cdotp log(n)) $.
+Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, benötigt die Generierung aller Allelkombinationen eine Laufzeit von $ O(e^n) $, wobei $n = n_{cand}$ die Anzahl der beobachteten Allele der Zusammenhangskomponente ist. Für diese Kombinationen werden jeweils alle $n!$ Permutationen gebildet, also mit einer Laufzeit von $ O(n!) $. Für jede Permutation erfolgt über ihre jeweilige Länge die Gruppierung zu den Loci. Die Länge jeder Permutation kann wegen der Funktion \lstinline|get_max_parsimony_n_alleles()| (vgl. Kap. \ref{subsec:cand_allele}) maximal $ n_{alleles} = n_{cand} + \phi - 1 $ betragen. Wegen $\phi = const$ beträgt die Laufzeit hier also $O(n_{cand}) = O(n)$. Die Sortierung bei Python erfordert eine Laufzeit von $ O(n\, \cdotp log(n))$ \cite{python-sort}. Die beiden Sortiervorgänge erfolgen zum einen über jeden Locus mit der Länge $\phi$ entsprechend seiner Ploidie und über alle Loci innerhalb der Permutation. Die Anzahl der Loci entspricht $\frac{n}{\phi}$, dadurch ergeben sich für die Sortiervorgänge Laufzeiten von $ O(\phi\, \cdotp log(\phi)) $ bzw. $ O\left( \frac{n}{\phi}\, \cdotp log\left( \frac{n}{\phi}\right) \right) $. Unter Berücksichtigung, dass $\phi = const$ gilt, beträgt die Laufzeit für \lstinline|get_candidate_loci()| insgesamt $ O(e^n \, \cdotp n! \, \cdotp n^2 \, \cdotp log(n)) $.
 \begin{equation} \label{eqn:3-29}
 \tag{3-29}
 \begin{aligned}
@@ -260,7 +260,7 @@ Nach \eqref{eqn:3-33} ergibt sich damit für die Berechnung der wahrscheinlichst
 \end{aligned}
 \end{equation}
 
-Wie bereits in Kap. \ref{subsec:al_compl} durchgeführt, soll auch hier der Worst Case betrachtet werden, bei dem die Anzahl der Kandidatenallele genau der Anzahl der Reads in der Zusammenhangskomponente entspricht, also $ n = n_{observed} =V_{c} $. Dann ergibt sich für die Berechnung der wahrscheinlichsten Loci-Zuordnung nach \eqref{eqn:3-34} eine maximale Laufzeit von $ O(e^{V_{c}} \, \cdotp V_{c}!) $.
+Wie bereits in Kap. \ref{subsec:al_compl} durchgeführt, soll auch hier der Worst Case betrachtet werden, bei dem die Anzahl der Kandidatenallele genau der Anzahl der Reads in der Zusammenhangskomponente entspricht, also $ n = n_{cand} =V_{c} $. Dann ergibt sich für die Berechnung der wahrscheinlichsten Loci-Zuordnung nach \eqref{eqn:3-34} eine maximale Laufzeit von $ O(e^{V_{c}} \, \cdotp V_{c}!) $.
 \begin{equation} \label{eqn:3-34}
 \tag{3-34}
 \begin{aligned}

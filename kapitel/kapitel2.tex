@@ -42,6 +42,41 @@ paarweises Alignment aus Minimap2 als Teilproblem -> fast jede Beobachtung wird 
 Bewertung/wslk ob ein read aus einem anderen read entstanden ist\\
 
 \noindent======================= draft end =======================\\
+\subsection{Approximation von PairHMM mittels Minimap2-Alignments} \label{phmm_minimap}
+
+%Die Berechnung der Likelihoods für die Vergleiche der Reads mit den Kandidatenallelen basiert auf dem in Kap. ~\ref{subsec:sol_phmm} beschriebenen pair Hidden Markov Model.
+ Hierbei repräsentiert das durch Minimap2 bestimmte Sequenzalignment bereits den wahrscheinlichsten Pfad durch die pairHMM-Matrix. Da dieser Pfad ohnehin die Wahrscheinlichkeit des pairHMM dominieren würde, wird zugunsten der Laufzeit direkt auf das Alignment von Minimap2 zurückgegriffen, um die Likelihoods zwischen den Readsequenzen zu bestimmen. Dabei werden die Sequenzierfehlerrate $ \epsilon $ und Basenqualität $ q_{query} $ durch die bereits zuvor ermittelte geschätzte Fehlerrate $ p_{query} $ berücksichtigt. Die Likelihood $ pairHMM_{\epsilon, q_{query}} \;(s_{ref}\;|\; s_{query}) $, dass der Queryread aus dem Referenzread allein durch Sequenzierfehler und Mutationen entstanden ist, errechnet sich schließlich aus dem Produkt der Likelihoods $ L_{i} $ für jede Base $ b $ an jeder Position $ i $ innerhalb der Sequenz $ s $ des Queryreads $ s_{query} $ im Vergleich zum Referenzread $ s_{ref} $.
+\begin{equation} \label{eqn:3-2}
+\tag{3-2}
+pairHMM_{\epsilon, q_{query}} \;(s_{query}\;|\; s_{ref}) = \prod_{i=1}^{k}L_{i}
+\end{equation}
+
+Jede Base $ b $ an Position $ i $ einer Readsequenz $ s $ der Länge $ k $ lässt sich also definieren als $ b \in \{\,b_{i}\in \{A,C,G,T\}^k\;,\; b_{i} \in s \;|\; i = 1, \dotsb, k \,\}$. Seien $ b_{i\,_{ref}} $ und $ b_{i\,_{query}} $ die Basen der Query- und der Referenzsequenzen an Position $ i $ einer Sequenz und $  p_{i\,_{query}} $ die geschätzte Fehlerrate von $ b_{i\,_{query}} $, die sich aus dem Phred Quality Score $ Q $ nach  \eqref{eqn:3-1} ergibt. Seien zudem $ m_{sub} $, $ m_{ins} $ und $ m_{del} $ die über die Konfigurationsdatei festgelegten Mutationsraten für Substitutionen, Insertionen und Deletionen. Dann errechnet sich die Likelihood $ L_{i} = Pr(b_{i\,_{ref}}\;|\; b_{i\,_{query}})$ an der Position $ i $ im Falle eine Matches unter Berücksichtigung der geschätzten Fehlerrate durch:
+\begin{equation} \label{eqn:3-3}
+\tag{3-3}
+L_{i\,_{match}} = 1 - p_{i\,_{query}}
+\end{equation}
+
+Bei einem Mismatch dagegen müssen die Wahrscheinlichkeiten von Mutationen und Sequenzierfehlern berücksichtigt werden. Im Falle einer Mutation muss in die Wahrscheinlichkeit eines Matches auch die Mutationsrate des aufgetretenen Mismatches $ m_{rate} \in \{\,m_{sub},\,  m_{ins},\, m_{del}\,\} $ einbezogen werden:
+\begin{equation} \label{eqn:3-4}
+\tag{3-4}
+L_{i\,_{mut}} = m_{rate}\; \cdotp \;(1 - p_{i\,_{query}})
+\end{equation}
+
+Die Wahrscheinlichkeit eines Sequenzierfehlers, also dass anstelle der sequenzierten Base tatsächlich eine der drei anderen Basen vorliegt, entspricht $ 1/3 $ der geschätzten Fehlerrate des Phred Quality Scores:
+\begin{equation} \label{eqn:3-5}
+\tag{3-5}
+L_{i\,_{seqerr}} = \frac{1}{3} \; \cdotp \; p_{i\,_{query}}
+\end{equation}
+
+Aus \eqref{eqn:3-4} und \eqref{eqn:3-5} errechnet sich also die Likelihood bei einem Mismatch durch:
+\begin{equation} \label{eqn:3-6}
+\tag{3-6}
+L_{i\,_{mismatch}} = (1-m_{rate}) \; \cdotp \; L_{seqerr} \; \cdotp \; L_{mut}
+\end{equation}
+
+Aus den Liklihoods von Matches \eqref{eqn:3-3} und Mismatches \eqref{eqn:3-4} kann somit schließlich nach \eqref{eqn:3-2} die Likelihood zwischen den Reads paarweise bestimmt werden.\\
+
 
 Das Sequenzalignment der Reads aus Minimap2 repräsentiert bereits den wahrscheinlichsten Pfad in der pairHMM-Matrix, so dass über diesen Pfad die Likelihoods der Allele (Kap. \ref{subsec:sol_allele_lh}) und der Loci (Kap. \ref{subsec:sol_loci_lh}) bestimmt werden können.
 
