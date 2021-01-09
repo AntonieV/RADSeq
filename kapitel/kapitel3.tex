@@ -91,7 +91,8 @@ Für jedes Allel $a_{i}$ können im Anschluss aus seinen absoluten Häufigkeiten
 \tag{3-13}
 h_{a_{i}} = \frac{H_{a_{i}}} {n_{alleles}}
 \end{equation}
-\\		
+
+\begin{center}	
 \fcolorbox{black}{light-gray}{
 	\parbox{\textwidth}{
 		\vspace{0.5cm}
@@ -104,7 +105,7 @@ h_{a_{i}} = \frac{H_{a_{i}}} {n_{alleles}}
 		{[1.0, 0.0, 0.0]}, {[0.75, 0.25, 0.0]}, {[0.75, 0.0, 0.25]}, {[0.5, 0.5, 0.0]}, {[0.5, 0.25, 0.25]}, {[0.5, 0.0, 0.5]}, {[0.25, 0.75, 0.0]}, {[0.25, 0.5, 0.25]}, {[0.25, 0.25, 0.5]}, {[0.25, 0.0, 0.75]}, {[0.0, 1.0, 0.0]}, {[0.0, 0.75, 0.25]}, {[0.0, 0.5, 0.5]}, {[0.0, 0.25, 0.75]}, {[0.0, 0.0, 1.0]}
 		\\
 }}
-\linebreak 
+\end{center}
 
 \subsection{Berechnung der Likelihoods der Allele anhand der Allele-Fractions} \label{subsec:lh_allele}
 
@@ -169,7 +170,7 @@ Im Anschluss wird aus den p-Werten der Basenqualität für jede Base des Reads d
 Bei Bedarf kann die Methode \lstinline|get_alignment_likelihood()| auch  die Likelihood der entgegengesetzt gerichteten Kante bestimmen. Dabei wird die Querysequenz als Referenzsequenz betrachtet und umgekehrt. Dies ist über das boolesche Argument \lstinline|reverse| steuerbar. Gilt \lstinline|reverse = True|, so werden für die übergebenen CIGAR-Tupel Insertionen zu Deletionen und Deletionen zu Insertionen umgewandelt.\\
 
 Zur Veranschaulichung ist die Methode in Algorithmus \ref{alg:lh_read} zusätzlich als Pseudocode verfasst. Die Mutationsraten für Substitutionen, Insertionen bzw. Deletionen aus den Grapheigenschaften werden dort mit $ m_{sub} $, $ m_{ins} $ bzw. $ m_{del} $ bezeichnet, der Vektor der Phred Quality Scores der Querysequenz mit $q_query$
-
+\newpage
 \begin{algorithm}[H]
 	\caption{Berechnung der Likelihood zwischen Read und Kandidatenallel}  \label{alg:lh_read}
 	\begin{algorithmic}[1]	
@@ -222,16 +223,18 @@ Aus dieser Liste wird die Allele-Fraction mit maximaler Likelihood als wahrschei
 
 Als zusätzliche Statistiken werden in den Log-Dateien für jede Komponente die Anzahl der Allele, die Ploidie sowie Allele-Fraction mit der maximaler Likelihood und den dazugehörigen Allelsequenzen festgehalten.
 
-
-\noindent======================= draft =======================\\
-
 \section{Bestimmung der maximalen Likelihood der Loci} \label{sec:max_lh_loci}
 
 In Abhängigkeit von der Anzahl der Kandidatenallele und der Ploidie können die Zusammenhangskomponenten auch mehr als nur einen Locus beinhalten. Daher soll die in Kap. \ref{sec:max_lh_allele} identifizierte Allelfraktion mit maximaler Likelihood nun passenden Loci-Kombinationen zugeordnet werden. Unter Einbeziehung der Heterozygotiewahrscheinlichkeiten soll daraus die wahrscheinlichste Loci-Zuordnung ermittelt werden.
 
 \subsection{Bestimmung der möglichen Loci} \label{subsec:comb_loci}
 
-Für die Zuordnung der Loci müssen zunächst die verschiedenen Kombinationen möglicher Allelverteilungen auf die Loci durch \lstinline|get_candidate_loci()| im Modul \linebreak \lstinline|likelihood_operations.py| erzeugt werden. Analog zu \lstinline|get_candidate_vafs()| (Kap. \ref{subsec:cand_allele}) werden aus der beobachteten $n_{cand} $ und der tatsächlich zu erwartenden Anzahl an Allelen $n_{alleles}$ alle Allelkombinationen mit Wiederholung und ohne Berücksichtigung der Reihenfolge  (vgl. Formel \eqref{eqn:3-12}) durch die Funktion \lstinline|combinations_with_replacement()| aus der Python-Library \lstinline|itertools| gebildet. Allerdings sollen nun die Allelkombinationen zu Tupeln entsprechend ihrer Ploidie zusammengefasst werden. Jedes Tupel repräsentiert einen möglichen Locus in der Kombination. Die Allelkombination durch \linebreak \lstinline|combinations_with_replacement()| sind lexikographisch sortiert. Für jede der Kombinationen muss nun aber die Reihenfolge so variiert werden, dass die Allele, falls mehrere Loci möglich sind, in verschiedenen Kombinationen den Loci zugeordnet werden. Hierfür wird aus \lstinline|itertools| die Funktion \lstinline|permutations| verwendet. Diese bildet aus $ n $ Elementen alle Kombinationen der Länge $ k $ mit Beachtung der Reihenfolge und ohne Wiederholungen. Auch wenn sich die Allele in den Allelkombinationen durchaus wiederholen können, so werden sie doch in \lstinline|permutations| als einzigartiges Element behandelt unabhängig von jeweiligen Wert. Folglich entstehen durch die Bildung der Permutationen auch einige Duplikate. Die Anzahl der entstehenden Elemente wird für \lstinline|permutations| mit  $ \frac{n!}{(n-k)!} $ angegeben \cite{itertools}. Die Permuationen werden über jede Allelkombination in ihrer vollständigen Länge gebildet, so dass gilt $ n = k $, folglich werden insgesamt $ n! $ Elemente erzeugt \eqref{eqn:3-28}. 
+Für die Zuordnung der Loci müssen zunächst aus der Allele-Fraction mit maximaler Likelihood die  verschiedenen Kombinationen möglicher Loci durch \lstinline|get_candidate_loci()| erzeugt werden.
+Die Funktion ist bereits in einer effizienteren Form implementiert und die zugrundeliegenden Verbindungen zum Model sind dadurch nicht direkt erkennbar. Aus diesem Grund sollen an dieser Stelle zunächst die Überlegungen aufgezeigt werden, auf denen die effizientere Implementierung basiert, im Anschluss werden die Änderungen zur Effizienzverbesserung aufgezeigt. \\
+
+Analog zu \lstinline|get_candidate_vafs()| (Kap. \ref{subsec:cand_allele}) sollen aus der beobachteten $n_{cand} $ und der tatsächlich zu erwartenden Anzahl von Allelen $n_{alleles}$ alle Allelkombinationen mit Wiederholung und ohne Berücksichtigung der Reihenfolge  (vgl. Formel \eqref{eqn:3-12}) durch die Funktion \lstinline|combinations_with_replacement()| aus der Python-Library \lstinline|itertools| gebildet. Allerdings sollen nun die Allelkombinationen zu Tupeln entsprechend ihrer Ploidie zusammengefasst werden. Jedes Tupel repräsentiert einen möglichen Locus in der Kombination. Die Allelkombinationen durch \lstinline|combinations_with_replacement()| sind lexikographisch sortiert. Für jede der Kombinationen muss nun aber die Reihenfolge so variiert werden, dass die Allele, falls mehrere Loci möglich sind, in verschiedenen Kombinationen den Loci zugeordnet werden. Hierfür wird aus \lstinline|itertools| die Funktion \lstinline|permutations()| verwendet. Diese bildet aus $ n $ Elementen alle Kombinationen der Länge $ k $ mit Beachtung der Reihenfolge und ohne Wiederholungen.
+
+Auch wenn sich die Allele in den Allelkombinationen durchaus wiederholen können, so werden sie doch in \lstinline|permutations()| als einzigartiges Element behandelt unabhängig von jeweiligen Wert. Folglich entstehen durch die Bildung der Permutationen auch einige Duplikate. Die Anzahl der entstehenden Elemente wird für \lstinline|permutations()| mit  $ \frac{n!}{(n-k)!} $ angegeben \cite{itertools}. Die Permutationen werden über jede Allelkombination in ihrer vollständigen Länge gebildet, so dass gilt $ n = k $, folglich werden insgesamt $ n! $ Elemente erzeugt \eqref{eqn:3-28}. 
 \begin{equation} \label{eqn:3-28}
 \tag{3-28}
 \frac{n!}{(n-k)!}=\frac{n!}{(n-n)!}=\frac{n!}{0!}=\frac{n!}{1}=n!
@@ -239,7 +242,7 @@ Für die Zuordnung der Loci müssen zunächst die verschiedenen Kombinationen m�
 Mit Hilfe der \lstinline|itertools|-Funktion \lstinline|grouper()| werden die Permutationen entsprechend der Ploidie in Tupel der Länge $\phi$ unterteilt. Es resultieren Tupel von $ \phi $-Tupeln, wobei die Anzahl der $phi$-Tupel der Anzahl möglicher Loci entspricht. Mehrere Loci in einer Zusammenhangskomponenten sind nach \lstinline|get_max_parsimony_n_alleles()| genau dann möglich, wenn gilt $n_{cand} > \phi $.\\
 
 Nach der Gruppierung werden die übergeordneten Tupel sowie die darin enthaltenen $\phi$-Tupel jeweils sortiert, um anschließend durch die Python-Funktion \lstinline|set()| die oben erwähnten Duplikate zu entfernen.
-
+\begin{center}
 	\fcolorbox{black}{light-gray}{
 	\parbox{\textwidth}{
 		\vspace{0.5cm}
@@ -250,15 +253,92 @@ Nach der Gruppierung werden die übergeordneten Tupel sowie die darin enthaltene
 		\textbf{Kombinationen der Allele:}\\
 		{[(0, 0, 0, 0), (0, 0, 0, 1), (0, 0, 0, 2), (0, 0, 1, 1), (0, 0, 1, 2), (0, 0, 2, 2), (0, 1, 1, 1), (0, 1, 1, 2), (0, 1, 2, 2), (0, 2, 2, 2), (1, 1, 1, 1), (1, 1, 1, 2), (1, 1, 2, 2), (1, 2, 2, 2), (2, 2, 2, 2)]}\\
 		
-		\textbf{Permutationen:} \\
+		\textbf{Permutationen der Allele:} \\
 		{\small (Zur anschaulicheren Darstellung wurden Duplikate entfernt, das geschieht eigentlich erst nach der Erzeugung und Sortierung der Tupel)\\}
 		(1, 2, 1, 1), (2, 1, 0, 0), (2, 1, 1, 1), (0, 1, 2, 1), (0, 1, 1, 2), (0, 1, 0, 0), (2, 2, 1, 0), (0, 2, 2, 1), (2, 2, 0, 1), (1, 0, 2, 2), (0, 2, 0, 1), (2, 0, 0, 1), (1, 0, 1, 0), (0, 2, 1, 2), (0, 0, 2, 0), (2, 2, 2, 1), (1, 1, 0, 1), (2, 0, 1, 1), (2, 0, 2, 0), (0, 0, 2, 2), (1, 1, 2, 0), (1, 2, 1, 0), (2, 0, 2, 2), (2, 1, 1, 0), (2, 1, 0, 2), (1, 2, 0, 1), (0, 1, 2, 0), (1, 2, 1, 2), (1, 2, 2, 1), (0, 1, 1, 1), (1, 1, 1, 0), (0, 0, 0, 0), (2, 1, 1, 2), (2, 1, 2, 1), (1, 0, 0, 1), (0, 1, 0, 2), (2, 2, 1, 2), (0, 2, 2, 0), (1, 0, 2, 1), (2, 0, 0, 0), (0, 2, 1, 1), (1, 1, 1, 2), (0, 0, 0, 2), (0, 0, 1, 1), (1, 0, 1, 2), (2, 0, 0, 2), (0, 0, 2, 1), (1, 1, 2, 2), (2, 1, 0, 1), (1, 2, 0, 0), (0, 1, 2, 2), (1, 2, 2, 0), (0, 1, 1, 0), (2, 2, 0, 0), (0, 2, 0, 0), (2, 1, 2, 0), (1, 0, 0, 0), (1, 2, 0, 2), (0, 1, 0, 1), (2, 2, 1, 1), (2, 2, 2, 0), (1, 1, 0, 0), (1, 0, 2, 0), (0, 2, 2, 2), (1, 2, 2, 2), (2, 2, 0, 2), (0, 2, 1, 0), (0, 2, 0, 2), (2, 0, 1, 0), (0, 0, 0, 1), (1, 1, 1, 1), (0, 0, 1, 0), (2, 1, 2, 2), (1, 0, 0, 2), (1, 0, 1, 1), (2, 2, 2, 2), (1, 1, 0, 2), (2, 0, 1, 2), (2, 0, 2, 1), (0, 0, 1, 2), (1, 1, 2, 1)\\	    
 		
-		\textbf{Loci}:\\
+		\textbf{Mögliche Loci-Kombinationen}:\\
 		((0, 0), (0, 2)), ((1, 1), (1, 1)), ((0, 2), (0, 2)), ((1, 1), (2, 2)), ((0, 1), (0, 2)), ((1, 1), (1, 2)), ((1, 2), (2, 2)), ((1, 2), (1, 2)), ((0, 0), (1, 1)), ((0, 0), (2, 2)), ((0, 2), (1, 1)), ((0, 1), (1, 1)), ((0, 0), (0, 0)), ((0, 2), (2, 2)), ((0, 0), (1, 2)), ((0, 1), (2, 2)), ((2, 2), (2, 2)), ((0, 0), (0, 1)), ((0, 2), (1, 2)), ((0, 1), (1, 2)), ((0, 1), (0, 1)) \\
 }}\\
+\end{center}
+Für jede Loci-Kombination wird später in Kap. \ref{subsec:lh_loci} durch die Indikatorfunktion nach Formel \eqref{eqn:2-xxx4} geprüft, ob sie die Allele-Fraction mit maximaler Likelihood $\Theta_{max\_lh}$ überhaupt repräsentieren kann. Das heißt die Häufigkeit jedes Allels über alle Loci einer gegebenen Loci-Kombination muss unter Berücksichtigung der Ploidie und der zu erwartenden Anzahl der Allele $n_{alleles}$ die relativen Häufigkeiten der ermittelten Allele-Fraction mit maximaler Likelihood erklären können. \\
+
+Die hier zunächst vorgestellte Bildung von Permutationen über alle Allelkombinationen führt bei großen Clustern zu einer enormen Anzahl von Kombinationen. Da diese später ohnehin durch die Indikatorfunktion wieder reduziert werden, ermöglicht die direkte Erzeugung passender Loci-Kombinationen eine weitaus effizientere Implementierung. Im Hinblick auf die relativen Häufigkeiten in der Allel-Fraction mit maximaler Likelihood gibt es also eine feste Anzahl für jedes Allel, wie oft es über die Loci hinweg in einer Loci-Kombination auftreten darf. Diese Anzahl wird für jedes Allel durch die Indikatorfunktion getestet.\\
+
+Da \lstinline|combinations_with_replacement()| eine sortierte Ausgabe von Kombinationen ohne Beachtung der Reihenfolge erzeugt, erfüllt nur eine einzige der resultierenden Allelkombinationen tatsächlich die Bedingung der Indikatorfunktion (Satz ~\ref{thm:comb_indicator}) und es genügt, nur über dieser Kombination die Permutationen zu bilden. Es genügt also, aus der Allel-Fraction mit maximaler Likelihood, die absoluten Häufigkeiten der beteiligten Allele aus ihren relativen Häufigkeiten durch Umformung von Formel \eqref{eqn:3-13} zu bestimmen. Ein sortiertes Tupel der betreffenden Allele in der jeweils ermittelten Häufigkeit entspricht dann genau der einzigen gültigen Lösung für die Indikatorfunktion, die sich aus den Kombinationen bei Ausführung von \lstinline|combinations_with_replacement()| ergeben hätte.\\
+
+Durch die Umformung der Allel-Fraction mit maximaler Likelihood zu einer Allelkombination, müssen nun nur noch die Permutationen für diese Allelkombination bestimmt werden. Das unten stehenden Beispiel illustriert die Änderungen bei der effizienteren Implementierung. Nach anschließender Sortierung und Gruppierung zu Loci können die Duplikate entfernt werden. \\
+
+\begin{center}
+\fcolorbox{black}{light-gray}{
+	\parbox{\textwidth}{
+		\vspace{0.5cm}
+		\textbf{Beispiele möglicher Loci-Kombinationen bei effizienter Implementierung:} \\	
+				
+		$ ploidy = 2, n_{cand} = 3, n_{alleles} = 4 $: \\		
+		
+		\textbf{Errechnete Allel-Fraction mit maximaler Likelihood:}\\
+		{[0.25, 0.5, 0.25]}\\
+		
+		\textbf{Daraus resultierende sortierte Allelkombination:}\\
+		(0, 1, 1, 2)\\
+		
+		\textbf{Permutationen der resultierenden Allelkombination:} \\
+		{\small (Duplikate wurden auch hier bereits entfernt)\\}
+		(1, 0, 1, 2), (2, 1, 1, 0), (1, 1, 2, 0), (0, 1, 2, 1), (1, 0, 2, 1), (1, 2, 0, 1), (2, 1, 0, 1), (2, 0, 1, 1), (1, 1, 0, 2), (1, 2, 1, 0), (0, 2, 1, 1), (0, 1, 1, 2) \\	    
+		
+		\textbf{Mögliche Loci-Kombinationen}:\\
+		((0, 1), (1, 2)), ((0, 2), (1, 1)) \\
+		
+		\textbf{Indikatorfunktion:}\\
+		$ z_{l}=\prod_{i=1}^{3}1_{\sum_{j=1}^{g}\sum_{k=1}^{\phi}1_{l_{j,k}=i} = \theta_{i} \, \cdotp g \, \cdotp \phi} $\\
+		
+		$z_{((0, 1), (1, 2))}=\prod_{i=1}^{n}1_{\sum_{j=1}^{2}\sum_{k=1}^{2}1_{l_{j,k}=i} = \theta_{i} \, \cdotp 2 \, \cdotp 2} = 1_{(1=0.25 \, \cdotp 4)} \, \cdotp 1_{(2=0.5 \, \cdotp 4)}\, \cdotp 1_{(1=0.25 \, \cdotp 4)} = 1$\\
+		
+		$z_{((0, 2), (1, 1))}=\prod_{i=1}^{n}1_{\sum_{j=1}^{2}\sum_{k=1}^{2}1_{l_{j,k}=i} = \theta_{i} \, \cdotp 2 \, \cdotp 2} = 1_{(1=0.25 \, \cdotp 4)} \, \cdotp 1_{(2=0.5 \, \cdotp 4)}\, \cdotp 1_{(1=0.25 \, \cdotp 4)} = 1$\\
+		
+}}\\
+\end{center}
+
+
+Das Ergebnis der Indikatorfunktion hängt allein von der absoluten Häufigkeiten der Allele ab und wird durch die Reihenfolge ihres Auftretens in einer Allelkombination nicht beeinflusst. Alle resultierenden Loci-Kombinationen der Funktion \lstinline|get_candidate_loci()| erfüllen daher auch die Indikatorfunktion, da sie Permutationen einer Allelkombination sind, welche die Indikatorfunktion erfüllt. Daher müsste mit diesen Änderungen die Indikatorfunktion eigentlich nicht mehr geprüft werden. Sie wurde dennoch in der Implementierung belassen, um das Model besser zeigen zu können und wird an entsprechender Stelle noch einmal erwähnt.
+
+\begin{center}
+	\fcolorbox{black}{light-gray}{		
+		\parbox{\textwidth}{
+			\begin{satz*}[1]{Unter allen Allelkombinationen mit Wiederholung und ohne Beachtung der Reihenfolge gibt es nur eine Kombination, welche die Indikatorfunktion \eqref{eqn:2-xxx4} erfüllt.} \label{thm:comb_indicator}
+			\end{satz*}
+			\begin{beweis}
+				Für Kombinationen der Länge $p$ mit Wiederholung aber ohne Beachtung der Reihenfolge gilt, dass sich jedes Element bis zu $p$ Mal wiederholen kann. Da die Reihenfolge nicht beachtet werden soll, gilt außerdem dass jede Häufigkeitsverteilung der Elemente innerhalb einer Kombination in der Menge aller erzeugten Kombinationen nur genau einmal vorkommen darf. Andernfalls wäre dies eine Beachtung der Reihenfolge. Daraus kann abgeleitet werden:
+				\begin{enumerate}
+					\item Die absoluten Häufigkeiten einer Kombination sind in der Menge der erzeugten Kombinationen zu einer gegebenen Anzahl von Allelen und einer gegebenen Ploidie einzigartig.
+					\item Nach Formel \ref{eqn:3-13} sind somit auch die relativen Häufigkeiten einer Allel-Fraction in der Menge erzeugten Allele-Fractions zu einer gegebenen Anzahl von Allelen und einer gegebenen Ploidie einzigartig.
+				\end{enumerate}
+				Es bleibt also zu beweisen, dass die Bedingung der Indikatorfunktion für genau eine Allel-Fraction gilt:
+				\begin{equation} \label{}
+				\begin{aligned}
+				\notag
+				&\ {}z_{l}=\prod_{i=1}^{n}1_{\sum_{j=1}^{g}\sum_{k=1}^{\phi}1_{l_{j,k}=i} = \theta_{i} \, \cdotp g \, \cdotp \phi} \wedge \theta_{i} \in \Theta_{max\_lh} \\
+				&\ \Rightarrow z_{l} = 1 \Leftrightarrow \forall a_{i} \in A_{cand} : H_{a_{i}} = \theta_{a_{i}} \, \cdotp g \, \cdotp \phi \\
+				&\ \Rightarrow z_{l} = 1 \Leftrightarrow \forall a_{i} \in A_{cand} : H_{a_{i}} \stackrel{\ref{eqn:3-13}}{=}  \left( \frac{H_{a_{i}}}{n_{alleles}}\right)_{max\_lh}  \, \cdotp g \, \cdotp \phi \\
+				&\ \Rightarrow z_{l} = 1 \Leftrightarrow \forall a_{i} \in A_{cand} : H_{a_{i}} = \left( \frac{H_{a_{i}}}{n_{alleles}}\right)_{max\_lh}  \, \cdotp n_{alleles} \\
+				&\ \Rightarrow z_{l} = 1 \Leftrightarrow \forall a_{i} \in A_{cand} : H_{a_{i}} = (H_{a_{i}})_{max\_lh} \\
+				\end{aligned}
+				\end{equation}
+				Für die Indikatorfunktion gilt also, dass ihre Bedingung nur dann erfüllt wird, wenn die absoluten Häufigkeiten der Allele einer Allelkombination den relativen Häufigkeiten der Allel-Fraction mit maximaler Likelihood $ \Theta_{max\_lh} $ entsprechen. Da absolute und relative Häufigkeitsverteilungen jeweils nur genau einmal in Kombinationen mit Wiederholung und ohne Beachtung der Reihenfolge auftreten, gibt es auch nur eine Allelkombination, welche über die Indikatorfunktion die Häufigkeitsverteilung der Allel-Fraction mit maximaler Likelihood erfüllen kann.
+			\end{beweis}
+	}}
+\end{center}
+
+
 
 \subsection{Zuordnung der Allele-Fractions mit maximaler Likelihood zur wahrscheinlichsten Loci-Kombination} \label{subsec:lh_loci}
+
+
+
+\noindent======================= draft =======================\\
+
+
 
 In diesem Schritt sollen schließlich für die Allelfraktion mit maximaler Likelihood (Kap.\ref{subsec:lh_allele}) die ermittelten Kandidatenloci (Kap. \ref{subsec:comb_loci}) unter Berücksichtigung der Heterozygotie analysiert werden und die wahrscheinlichste Kombination der Loci ermittelt werden.\\
 
