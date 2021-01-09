@@ -6,21 +6,21 @@ Die Laufzeit für das Hinzufügen eines Knotens beträgt nach der Dokumentation 
 
 \subsection{Laufzeit für das Hinzufügen der Kanten des Graphen} \label{subsec:}
 
-Hinsichtlich der Laufzeit benötigt das Hinzufügen einer Kante nach Angaben der graph-tool Dokumentation ~\cite{docs_graph_tool} eine Laufzeit von $ O(1) $. Da aber die Query- und die Referenzreads den bereits zuvor angelegten Knoten zugeordnet werden müssen, erfordert dies eine Suche der betreffenden Knoten. Dabei durchsucht graph-tool mit seiner Funktion \lstinline|find_vertex()| allein die Knoten und prüft auf die gesuchte Read-ID aus den FASTQ-Daten. Die ein- und ausgehenden Kanten der Knoten werden nicht beachtet, so dass eine Tiefen- oder Breitensuche des Graphen nicht notwendig ist und die Suche in $ O(|V|) $ durchgeführt werden kann ~\cite{graph_tool_coplexity_find_vertex}. Die Zuweisung der Kanteneigenschaften erfolgt jeweils in $ O(1) $, da diese direkt bei der Erzeugung der Kante hinzugefügt werden und keine vorherige Suche der Kante erforderlich ist. Für die Berechnung der Likelihood wird die geschätzte Fehlerrate $ p_{query} $ jeder Base verwendet, so dass die Anzahl der Berechnungen für jede Kante der Länge der Readsequenz $ k $ entspricht. Die Laufzeit für das Hinzufügen einer Kante beträgt somit $ O(k) $. Für alle Kanten ergibt sich daraus eine Gesamtlaufzeit von $ O(|E|\, \cdotp (k + |V|)) $. Bei realen Datensätzen gilt in der Regel $ k << |V| $ und die Länge der Reads variiert nur in einem engen Bereich, so dass $ k $ als vernachlässigbar klein und als nahezu konstant betrachtet werden kann. Dann ergibt sich aus Formel \eqref{eqn:3-7} eine Laufzeit von $O(|E|\, \cdotp |V|) $. 
-\begin{equation} \label{eqn:3-7}
-\tag{3-7}
+Hinsichtlich der Laufzeit benötigt das Hinzufügen einer Kante nach Angaben der graph-tool Dokumentation ~\cite{docs_graph_tool} eine Laufzeit von $ O(1) $. Da aber die Query- und die Referenzreads den bereits zuvor angelegten Knoten zugeordnet werden müssen, erfordert dies eine Suche der betreffenden Knoten. Dabei durchsucht graph-tool mit seiner Funktion \lstinline|find_vertex()| allein die Knoten und prüft auf die gesuchte Read-ID aus den FASTQ-Daten. Die ein- und ausgehenden Kanten der Knoten werden nicht beachtet, so dass eine Tiefen- oder Breitensuche des Graphen nicht notwendig ist und die Suche in $ O(|V|) $ durchgeführt werden kann ~\cite{graph_tool_coplexity_find_vertex}. Die Zuweisung der Kanteneigenschaften erfolgt jeweils in $ O(1) $, da diese direkt bei der Erzeugung der Kante hinzugefügt werden und keine vorherige Suche der Kante erforderlich ist. Für die Berechnung der Likelihood wird die geschätzte Fehlerrate $ p_{query} $ jeder Base verwendet, so dass die Anzahl der Berechnungen für jede Kante der Länge der Readsequenz $ k $ entspricht. Die Laufzeit für das Hinzufügen einer Kante beträgt somit $ O(k) $. Für alle Kanten ergibt sich daraus eine Gesamtlaufzeit von $ O(|E|\, \cdotp (k + |V|)) $. Bei realen Datensätzen gilt in der Regel $ k << |V| $ und die Länge der Reads variiert nur in einem engen Bereich, so dass $ k $ als vernachlässigbar klein und als nahezu konstant betrachtet werden kann. Dann ergibt sich aus Formel \eqref{eqn:4-1} eine Laufzeit von $O(|E|\, \cdotp |V|) $. 
+\begin{equation} \label{eqn:4-1}
+\tag{4-1}
 O(|E|\, \cdotp (k + |V|)) = O(|E|\, \cdotp |V|)
 \end{equation}
 
-Sind bei kleinen Datensätzen nur wenige Reads vorhanden, so dass $ k \leq |V| $, dann ergibt sich unter zusätzlicher Berücksichtigung von $k$ im Worst Case mit $ k = |V| $ nach Formel \eqref{eqn:3-8} ebenfalls eine Laufzeit von $O(|E|\, \cdotp |V|) $.
-\begin{equation} \label{eqn:3-8}
-\tag{3-8}
+Sind bei kleinen Datensätzen nur wenige Reads vorhanden, so dass $ k \leq |V| $, dann ergibt sich unter zusätzlicher Berücksichtigung von $k$ im Worst Case mit $ k = |V| $ nach Formel \eqref{eqn:4-2} ebenfalls eine Laufzeit von $O(|E|\, \cdotp |V|) $.
+\begin{equation} \label{eqn:4-2}
+\tag{4-2}
 O(|E|\, \cdotp (k + |V|)) = O(|E|\, \cdotp (|V| + |V|)) = O(|E|\, \cdotp 2 \, \cdotp |V|) = O(|E|\, \cdotp |V|)
 \end{equation}
 
 Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige hundert Basenpaare zählt, tatsächlich die Anzahl der Reads übersteigt und somit $ k > |V| $ gilt, dann dominiert $k$ die Laufzeit. In diesem Fall wäre im Worst Case $k$ eine obere Schranke für $|V|$, so dass gilt:
-\begin{equation} \label{eqn:3-9}
-\tag{3-9}
+\begin{equation} \label{eqn:4-3}
+\tag{4-3}
 O(|E|\, \cdotp (k + |V|)) = O(|E|\, \cdotp (k + k)) = O(|E|\, \cdotp 2 \, \cdotp k) = O(|E|\, \cdotp k)
 \end{equation}
 
@@ -38,15 +38,15 @@ Das anschließende Löschen des ursprünglichen Graphen erfolgt in konstanter Ze
 Die Laufzeit für die Extraktion der Zusammenhangskomponenten wird also bestimmt durch Identifikation, Indexierung und Filterung der Komponenten mit $ O(|C| \, \cdotp |V|) + O(|V| + |E|) = O(|V| \, \cdotp (|C| + 1) +|E|)$. Bei realen Daten gibt es in der Regel deutlich mehr Knoten als Cluster bzw. Zusammenhangskomponenten, so dass gilt $ |C| < |V| $. Würde im Worst Case aber jede Zusammenhangskomponente aus nur einem Knoten bestehen, also $ |C| = |V| $, so kann die maximale Laufzeit auf $ O(|V| \, \cdotp (|C| + 1) +|E|) = O(|V| \, \cdotp (|V| + 1) + |E|) = O(|V|^2 + |E|) $ geschätzt werden kann.\\
 
 \subsection{Gesamtlaufzeit der Konstruktion des Graphen und der Zusammenhangskomponenten} \label{subsec:graph_compl}
-Wie an entsprechender Stelle bereits beschrieben, ist für die Erzeugung der Knoten eine Laufzeit von $ O(|V|^2) $ (Kap. \ref{subsec:nodes}) erforderlich, das Hinzufügen der Kanten kann in $ O(|E|\, \cdotp |V|) $ erfolgen. Somit wird für den vollständigen Aufbau des Graphen nach \eqref{eqn:3-10} eine Laufzeit von $ O(|V| \, \cdotp (|V|+|E|)) $ benötigt. \\
-\begin{equation} \label{eqn:3-10}
-\tag{3-10}
+Wie an entsprechender Stelle bereits beschrieben, ist für die Erzeugung der Knoten eine Laufzeit von $ O(|V|^2) $ (Kap. \ref{subsec:nodes}) erforderlich, das Hinzufügen der Kanten kann in $ O(|E|\, \cdotp |V|) $ erfolgen. Somit wird für den vollständigen Aufbau des Graphen nach \eqref{eqn:4-4} eine Laufzeit von $ O(|V| \, \cdotp (|V|+|E|)) $ benötigt. \\
+\begin{equation} \label{eqn:4-4}
+\tag{4-4}
 O(|V|^2) + O(|E|\, \cdotp |V|) = O(|V| \, \cdotp (|V|+|E|))
 \end{equation}
-In Zusammenschau mit der für die Extraktion der Zusammenhangskomponenten erforderliche Laufzeit von $ O(|V|^2 + |E|) $ (Kap. \ref{subsec:comp}) ergibt sich daraus nach  \eqref{eqn:3-11} eine Laufzeit von $ O(|V| \, \cdotp (|V| + |E|)) $. 
+In Zusammenschau mit der für die Extraktion der Zusammenhangskomponenten erforderliche Laufzeit von $ O(|V|^2 + |E|) $ (Kap. \ref{subsec:comp}) ergibt sich daraus nach  \eqref{eqn:4-5} eine Laufzeit von $ O(|V| \, \cdotp (|V| + |E|)) $. 
 
-\begin{equation} \label{eqn:3-11}
-\tag{3-11}
+\begin{equation} \label{eqn:4-5}
+\tag{4-5}
 \begin{aligned}
 &\ {} O(|V| \, \cdotp (|V|+|E|)) +O(|V|^2 + |E|) \\
 & \ = O(|V|^2 + |E| \, \cdotp |V| + |V|^2 + |E|)\\
@@ -66,57 +66,57 @@ Die Anpassung der Anzahl der Allele kann für jede Komponente aus der Menge der 
 
 Funktion \lstinline|get_candidate_vafs()| \label{subsubsec:cand_vafs}
 %\subsubsection{Abschätzung der oberenen Laufzeitschranke bei Kombinationen mit %Wiederholung und Laufzeit der Funktion \lstinline|get_candidate_vafs()|} 
-Kombinationen mit Wiederholung werden sowohl für die Bestimmung der Allelkombinationen aus diesem Kapitel als auch später in Kap. \ref{subsec:comb_loci} für die Ermittlung möglicher Kombinationen von Loci genutzt. Hinsichtlich der Laufzeit und des Speicherplatzbedarfs kann diese Berechnung bei sehr großen Clustern zum dominierenden Faktor werden. Daher soll die Laufzeit an dieser Stelle genauer abgeschätzt werden. Seien dabei für eine bessere Übersichtlichkeit $ n_{alleles} $ als $ n $ und $ n_{cand} $ als $k$ bezeichnet und es gilt $n, k \in \mathds{N} $. Nach Formel \eqref{eqn:3-12} werden also $ \binom{n + k - 1}{k} $ Kombinationen jeweils in $O(1)$ erzeugt, d.h. in $ O(\binom{n + k - 1}{k}) $ für jede Zusammenhangskomponente. \\
+Kombinationen mit Wiederholung werden sowohl für die Bestimmung der Allelkombinationen aus diesem Kapitel als auch später in Kap. \ref{subsec:comb_loci} für die Ermittlung möglicher Kombinationen von Loci genutzt. Hinsichtlich der Laufzeit und des Speicherplatzbedarfs kann diese Berechnung bei sehr großen Clustern zum dominierenden Faktor werden. Daher soll die Laufzeit an dieser Stelle genauer abgeschätzt werden. Seien dabei für eine bessere Übersichtlichkeit $ n_{alleles} $ als $ n $ und $ n_{cand} $ als $k$ bezeichnet und es gilt $n, k \in \mathds{N} $. Nach Formel \eqref{eqn:3-1} werden also $ \binom{n + k - 1}{k} $ Kombinationen jeweils in $O(1)$ erzeugt, d.h. in $ O(\binom{n + k - 1}{k}) $ für jede Zusammenhangskomponente. \\
 
-Die Formel \eqref{eqn:3-12} ergibt sich aus der allgemeinen Formel des Binomialkoeffizienten \eqref{eqn:3-xxx13}, durch den die Anzahl aller Kombinationen ohne Zurücklegen berechnet wird \cite{tb_stat}. 
-\begin{equation} \label{eqn:3-xxx13}
-\tag{3-xxx13}
+Die Formel \eqref{eqn:3-1} ergibt sich aus der allgemeinen Formel des Binomialkoeffizienten \eqref{eqn:4-6}, durch den die Anzahl aller Kombinationen ohne Zurücklegen berechnet wird \cite{tb_stat}. 
+\begin{equation} \label{eqn:4-6}
+\tag{4-6}
 \binom{n}{k} = \frac{n!}{(n-k)!\, \cdotp k!}
 \end{equation} 
-Mit anderen Worten, die Formel \eqref{eqn:3-12} kann auf zwei Arten interpretiert werden: es werden aus n Elementen $ k $ Elemente mit Zurücklegen gezogen oder es werden aus $ n + k - 1 $ Elementen $ k $ Elemente ohne Zurücklegen gezogen. Sei also  $ m = n + k - 1 $, dann gilt:
-\begin{equation} \label{eqn:3-xxx14}
-\tag{3-xxx14}
+Mit anderen Worten, die Formel \eqref{eqn:3-1} kann auf zwei Arten interpretiert werden: es werden aus n Elementen $ k $ Elemente mit Zurücklegen gezogen oder es werden aus $ n + k - 1 $ Elementen $ k $ Elemente ohne Zurücklegen gezogen. Sei also  $ m = n + k - 1 $, dann gilt:
+\begin{equation} \label{eqn:4-7}
+\tag{4-7}
 \binom{m}{k} = \frac{m!}{(m - k)!\, \cdotp k!} \leq m!
 \end{equation} 
 
 Daraus ergibt sich eine Laufzeit zunächst eine obere Schranke der Laufzeit von $ O(m!) = O((n + k)!) $. Hierfür soll nun eine kleinere obere Schranke gefunden werden. Um die Fakultät näherungsweise zu berechnen kann die Stirlingsche Formel \cite{bronst} verwendet werden:
-\begin{equation} \label{eqn:3-15}
-\tag{3-15}
+\begin{equation} \label{eqn:4-8}
+\tag{4-8}
 n! \approx \left( \frac{n}{e} \right) ^n \, \cdotp \sqrt{2 \, \cdotp \pi \, \cdotp n}
 \end{equation} 
 
-Somit gilt auch \eqref{eqn:3-16} und ist eine untere Schranke der Fakultät \cite{script_binom}.
-\begin{equation} \label{eqn:3-16}
-\tag{3-16}
+Somit gilt auch \eqref{eqn:4-9} und ist eine untere Schranke der Fakultät \cite{script_binom}.
+\begin{equation} \label{eqn:4-9}
+\tag{4-9}
 n! \geq \left( \frac{n}{e} \right) ^n 
 \end{equation} 
 
-Durch \eqref{eqn:3-12} und \eqref{eqn:3-16} lässt sich durch einige Umformungen die obere Schranke der Laufzeit von ursprünglich $ O(n!) $  auf $ O\left( \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k\right) $ eingrenzen:
-\begin{equation} \label{eqn:3-17}
-\tag{3-17}
+Durch \eqref{eqn:3-1} und \eqref{eqn:4-9} lässt sich durch einige Umformungen die obere Schranke der Laufzeit von ursprünglich $ O(n!) $  auf $ O\left( \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k\right) $ eingrenzen:
+\begin{equation} \label{eqn:4-10}
+\tag{4-10}
 \begin{aligned}
-\binom{n + k - 1}{k} &\ {} \overset{\eqref{eqn:3-12}}{=}  \frac{(n+k-1)!}{(n-1)!\, \cdotp k!} = \frac{\prod\limits_{i=1}^{n+k-1}i}{\prod\limits_{i=1}^{n-1}i \; \cdotp \, \prod\limits_{i=1}^{k}i}  \\
+\binom{n + k - 1}{k} &\ {} \overset{\eqref{eqn:3-1}}{=}  \frac{(n+k-1)!}{(n-1)!\, \cdotp k!} = \frac{\prod\limits_{i=1}^{n+k-1}i}{\prod\limits_{i=1}^{n-1}i \; \cdotp \, \prod\limits_{i=1}^{k}i}  \\
 &\ = \frac{\prod\limits_{i=n}^{n+k-1}i \; \cdotp \, \prod\limits_{i=1}^{n-1}i}{\prod\limits_{i=1}^{n-1}i \; \cdotp \, \prod\limits_{i=1}^{k}i} = \frac{\prod\limits_{i=n}^{n+k-1}i}{\prod\limits_{i=1}^{k}i}\\
 &\ = \frac{(n + k - 1) \, \cdotp (n + k - 2)\, \cdotp \; \dots \; \, \cdotp n}{k!} \\
 &\ \leq \frac{(n + k - 1)^k}{k!} \\
-&\ \overset{\eqref{eqn:3-16}}{\leq} \frac{(n + k - 1)^k}{\left( \frac{k}{e} \right) ^k} \\
+&\ \overset{\eqref{eqn:4-9}}{\leq} \frac{(n + k - 1)^k}{\left( \frac{k}{e} \right) ^k} \\
 &\ = \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k  \\
 \end{aligned}
 \end{equation} 
-Der Binomialkoeffizient verfügt über bestimmte Eigenschaften, insbesondere gelten der Symmetrie- \eqref{eqn:3-18} und der Additionssatz \eqref{eqn:3-19} , die sich auch in der Struktur des Pascalschen Dreiecks widerspiegeln \cite{bronst}. 
-\begin{equation} \label{eqn:3-18}
-\tag{3-18}
+Der Binomialkoeffizient verfügt über bestimmte Eigenschaften, insbesondere gelten der Symmetrie- \eqref{eqn:4-11} und der Additionssatz \eqref{eqn:4-12} , die sich auch in der Struktur des Pascalschen Dreiecks widerspiegeln \cite{bronst}. 
+\begin{equation} \label{eqn:4-11}
+\tag{4-11}
 \binom{n}{k} = \binom{n}{n - k}
 \end{equation} 
-\begin{equation} \label{eqn:3-19}
-\tag{3-19}
+\begin{equation} \label{eqn:4-12}
+\tag{4-12}
 \binom{n}{k} + \binom{n}{k + 1} = \binom{n + 1}{k + 1} 
 \end{equation} 
-Aufgrund der Symmetrie sind die Binomialkoeffizienten jeder Zeile des Dreiecks $\binom{n}{k_{i}}$ mit $ k_{i} \in 1, \dots n $ und $ i \in \mathds{N} $ symmetrisch im Bezug auf die Zeilenmitte. Und da nach \eqref{eqn:3-19} jeder Koeffizient aus der Summe der beiden darüber liegenden Koeffizienten entsteht, sind die Werte der Koeffizienten zu den Zeilenrändern hin abnehmend und weisen in der Zeilenmitte ihr Maximum auf. Ist $n$ gerade, so befindet sich die Zeilenmitte bei $ k = \frac{n}{2} $. Ist $n$ ungerade so befinden sich die Maxima bei $ k = \lceil \frac{n}{2} \rceil $ und $ k = \lfloor \frac{n}{2} \rfloor $ und besitzen aufgrund der Symmetrie den gleichen Wert. Vereinfacht gilt also für ein gegebenes $n$, dass der Binomialkoeffizient $\binom{n}{k_{i}}$ bei $ k = \frac{n}{2} $ maximal ist. \\
+Aufgrund der Symmetrie sind die Binomialkoeffizienten jeder Zeile des Dreiecks $\binom{n}{k_{i}}$ mit $ k_{i} \in 1, \dots n $ und $ i \in \mathds{N} $ symmetrisch im Bezug auf die Zeilenmitte. Und da nach \eqref{eqn:4-12} jeder Koeffizient aus der Summe der beiden darüber liegenden Koeffizienten entsteht, sind die Werte der Koeffizienten zu den Zeilenrändern hin abnehmend und weisen in der Zeilenmitte ihr Maximum auf. Ist $n$ gerade, so befindet sich die Zeilenmitte bei $ k = \frac{n}{2} $. Ist $n$ ungerade so befinden sich die Maxima bei $ k = \lceil \frac{n}{2} \rceil $ und $ k = \lfloor \frac{n}{2} \rfloor $ und besitzen aufgrund der Symmetrie den gleichen Wert. Vereinfacht gilt also für ein gegebenes $n$, dass der Binomialkoeffizient $\binom{n}{k_{i}}$ bei $ k = \frac{n}{2} $ maximal ist. \\
 
-Daher soll $ k = \frac{n}{2} $ als Worst Case angenommen werden, dann ergibt sich aus \eqref{eqn:3-17} eine Laufzeit von $ O(3e^{\frac{n}{2}} ) \in O(e^n) $. 
-\begin{equation} \label{eqn:3-20}
-\tag{3-20}
+Daher soll $ k = \frac{n}{2} $ als Worst Case angenommen werden, dann ergibt sich aus \eqref{eqn:4-10} eine Laufzeit von $ O(3e^{\frac{n}{2}} ) \in O(e^n) $. 
+\begin{equation} \label{eqn:4-13}
+\tag{4-13}
 \begin{aligned}
 \left( \frac{e \, \cdotp (n + k - 1)}{k}\right)^k &\ {} = \left( \frac{e \, \cdotp (n + \frac{n}{2} - 1)}{\frac{n}{2}}\right)^{\frac{n}{2}}  \\
 &\ = \left( \frac{\frac{3en - 2e}{2}} {\frac{n}{2}}\right)^{\frac{n}{2}} \\
@@ -129,9 +129,9 @@ Hinsichtlich der Allelkombinationen entspricht dies einer Zeit von $ O(e^{n_{all
 
 Für sehr große Cluster ist daher die Laufzeit problematisch. Ebenso kommt es zu einem hohen Bedarf an Arbeitsspeicher, aufgrund der großen Anzahl von Kombinationen die dabei erzeugt werden. Um dies bedingt kompensieren zu können, wurden die oben beschriebenen Schwellenwerte eingeführt, die ab einer festgelegten Clustergröße \lstinline|treshold-cluster-size| nur Allelkandidaten ab einer bestimmten Häufigkeit ihrere Sequenz in den Reads \linebreak \lstinline|treshold-seq-noise| berücksichtigen.\\
 
-Die Berechnung der Häufigkeitsverteilungen erfordert weitere Iterationen über die ermittelten Allelkombinationen, dabei werden sämtliche Allele für jede Kombination betrachtet. Dadurch erhöht sich die Laufzeit auf $ O(e^{n_{alleles}})\, \cdotp O(n_{alleles}) \, \cdotp O(n_{cand}) $. Den höchsten Wert nimmt $ n_{alleles} $ in dem Fall an, dass die Restdivision $ n_{cand} \mod \phi = 1 $, denn dann gilt  $ n_{alleles} = n_{cand} + \phi - 1 $. Da $\phi$ für alle Zusammenhangskomponenten den gleichen Wert besitzt, gilt $\phi = const$. Daraus ergibt sich nach \eqref{eqn:3-21} eine Laufzeit von $ O(e^{n_{cand}}\, \cdotp n_{cand}^2) $ für die Funktion  \lstinline|get_candidate_vafs()|.
-\begin{equation} \label{eqn:3-21}
-\tag{3-21}
+Die Berechnung der Häufigkeitsverteilungen erfordert weitere Iterationen über die ermittelten Allelkombinationen, dabei werden sämtliche Allele für jede Kombination betrachtet. Dadurch erhöht sich die Laufzeit auf $ O(e^{n_{alleles}})\, \cdotp O(n_{alleles}) \, \cdotp O(n_{cand}) $. Den höchsten Wert nimmt $ n_{alleles} $ in dem Fall an, dass die Restdivision $ n_{cand} \mod \phi = 1 $, denn dann gilt  $ n_{alleles} = n_{cand} + \phi - 1 $. Da $\phi$ für alle Zusammenhangskomponenten den gleichen Wert besitzt, gilt $\phi = const$. Daraus ergibt sich nach \eqref{eqn:4-14} eine Laufzeit von $ O(e^{n_{cand}}\, \cdotp n_{cand}^2) $ für die Funktion  \lstinline|get_candidate_vafs()|.
+\begin{equation} \label{eqn:4-14}
+\tag{4-14}
 \begin{aligned}
 O(e^{n_{alleles}} \, \cdotp n_{alleles} \, \cdotp n_{cand}) 
 &\ {}= O(e^{n_{cand} + \phi - 1} \, \cdotp (n_{cand} + \phi - 1) \, \cdotp n_{cand})\\
@@ -144,27 +144,27 @@ O(e^{n_{alleles}} \, \cdotp n_{alleles} \, \cdotp n_{cand})
 
 Funktion \lstinline|get_allele_likelihood_read()|
 
-Im folgenden soll nun die Laufzeit der verschiedenen Suchvorgänge in \linebreak \lstinline|get_allele_likelihood_read()| genauer betrachtet werden. Dabei ist zu berücksichtigen, dass im Allgemeinen der Aufruf einer Kante bei bekannten Source- und Target-Knoten von ihren Knotengraden abhängt. Im Bezug auf die Knotengrade des Readknotens $d(r_{i}) $  und des Kandidatenallels $d(a_{j}) $ ist eine solche Suche durch graph-tool in $O(\min (d(r_{i}), d(a_{j})))$ durchführbar ~\cite{docs_graph_tool}. Im Worst Case sind alle Knoten einer Zusammenhangskomponente mit den beiden Knoten $r_{i}$ und $a_{j}$ verbunden, so dass diese jeweils einen Knotengrad besitzen, welcher der Anzahl der Knoten der Komponente $V_{c}$ mit Ausnahme des Knotens selbst entspricht. In diesem Fall beträgt die Laufzeit für den Aufruf einer Kante im Graphen $ O(V_{c}) $ \eqref{eqn:3-22}.
-\begin{equation} \label{eqn:3-22}
-\tag{3-22}
+Im folgenden soll nun die Laufzeit der verschiedenen Suchvorgänge in \linebreak \lstinline|get_allele_likelihood_read()| genauer betrachtet werden. Dabei ist zu berücksichtigen, dass im Allgemeinen der Aufruf einer Kante bei bekannten Source- und Target-Knoten von ihren Knotengraden abhängt. Im Bezug auf die Knotengrade des Readknotens $d(r_{i}) $  und des Kandidatenallels $d(a_{j}) $ ist eine solche Suche durch graph-tool in $O(\min (d(r_{i}), d(a_{j})))$ durchführbar ~\cite{docs_graph_tool}. Im Worst Case sind alle Knoten einer Zusammenhangskomponente mit den beiden Knoten $r_{i}$ und $a_{j}$ verbunden, so dass diese jeweils einen Knotengrad besitzen, welcher der Anzahl der Knoten der Komponente $V_{c}$ mit Ausnahme des Knotens selbst entspricht. In diesem Fall beträgt die Laufzeit für den Aufruf einer Kante im Graphen $ O(V_{c}) $ \eqref{eqn:4-15}.
+\begin{equation} \label{eqn:4-15}
+\tag{4-15}
 O(\min (d(r_{i}), d(a_{j}))) =O(\min (d(V_{c}+1), d(V_{c}-1)))= O(V_{c})
 \end{equation} 
 
-Im Hinblick auf \lstinline|get_allele_likelihood_read()| müssen im Worst Case alle Schritte (\ref{-1-}) bis (\ref{-4-}) ausgeführt werden, so dass sich ihre Laufzeiten summieren. In der unter (\ref{-1-}) beschriebenen Suche, werden alle ausgehenden Nachbarn des Reads betrachtet, ihre Anzahl entspricht also dem ausgehenden Knotengrad des Readknotens $d(r_{i_{out}})$. War die Suche erfolgreich, so muss die Likelihood der betreffenden Kante aus den Kanteneigenschaften ausgegeben werden. Hierfür ist ein Kantenaufruf wie oben beschrieben in $ O(V_{c}) $ notwendig. Im ungünstigsten Fall hat jeder Knoten nur ausgehende Kanten und zwar zu allen anderen Knoten der Zusammenhangskomponente, dann beträgt die Laufzeit nach \eqref{eqn:3-23} für alle Reads der Komponente $ O(V_{c}^2)$.
-\begin{equation} \label{eqn:3-23}
-\tag{3-23}
+Im Hinblick auf \lstinline|get_allele_likelihood_read()| müssen im Worst Case alle Schritte (\ref{-1-}) bis (\ref{-4-}) ausgeführt werden, so dass sich ihre Laufzeiten summieren. In der unter (\ref{-1-}) beschriebenen Suche, werden alle ausgehenden Nachbarn des Reads betrachtet, ihre Anzahl entspricht also dem ausgehenden Knotengrad des Readknotens $d(r_{i_{out}})$. War die Suche erfolgreich, so muss die Likelihood der betreffenden Kante aus den Kanteneigenschaften ausgegeben werden. Hierfür ist ein Kantenaufruf wie oben beschrieben in $ O(V_{c}) $ notwendig. Im ungünstigsten Fall hat jeder Knoten nur ausgehende Kanten und zwar zu allen anderen Knoten der Zusammenhangskomponente, dann beträgt die Laufzeit nach \eqref{eqn:4-16} für alle Reads der Komponente $ O(V_{c}^2)$.
+\begin{equation} \label{eqn:4-16}
+\tag{4-16}
 O(V_{c}) \, \cdotp (O(d(r_{i_{out}})) +  O(V_{c})) = O(V_{c} \, \cdotp ((V_{c}-1) + V_{c})  = O(V_{c}^2)
 \end{equation} 
 
 Die Suche bei (\ref{-2-}) erfolgt analog über alle eingehenden Nachbarn in $ O(V_{c}^2)$, allerdings mit zusätzlicher Likelihoodberechnung der rückläufigen Kante in $O(k)$. Daraus ergibt sich insgesamt eine Laufzeit von $ O(V_{c}^2 +k) = O(V_{c}^2)$, da $\overline{k}=const$ (siehe Kap. \ref{subsec:graph_compl}).\\
 
-Die Laufzeit für das Auffinden eine geeigneten CIGAR-Tupels (\ref{-3-}) kann in $O(V_{c}^3)$ erfolgen (siehe Formel \eqref{eqn:3-25}). Auch hier führt die Likelihoodberechnung einer einzelnen Kante zu keiner relevanten Änderung der Laufzeit.\\
+Die Laufzeit für das Auffinden eine geeigneten CIGAR-Tupels (\ref{-3-}) kann in $O(V_{c}^3)$ erfolgen (siehe Formel \eqref{eqn:4-18}). Auch hier führt die Likelihoodberechnung einer einzelnen Kante zu keiner relevanten Änderung der Laufzeit.\\
 
 Die Rückgabe eines konstanten Wertes bei (\ref{-4-}) benötigt lediglich eine Laufzeit von $ O(1) $.\\
 
 Aus den insgesamt vier Schritten, die im ungünstigsten Fall alle ausgeführt werden ergibt sich für \lstinline|get_allele_likelihood_read()| eine Gesamtlaufzeit von $O(V_{c}^3)$. \\
-\begin{equation} \label{eqn:3-24}
-\tag{3-24}
+\begin{equation} \label{eqn:4-17}
+\tag{4-17}
 \begin{aligned}
 &\ {} O(V_{c}^2) + O(V_{c}^2) + O(V_{c}^3) + O(1))  \\
 & \ = O(2 \, \cdotp V_{c}^2 + V_{c}^3 )\\
@@ -174,10 +174,10 @@ Aus den insgesamt vier Schritten, die im ungünstigsten Fall alle ausgeführt we
 
 Funktion \lstinline|get_cigar_tuples()|
 
-Die hierfür erforderliche Laufzeit setzt sich zusammen aus den Suchvorgengen für die beiden Knotenmengen $ R_{source} $ und $ R_{target} $, diese ist in graph-tool in $O(V_{c} + V_{c}) = O(V_{c})$ durchführbar (Kap. \ref{subsec:edges}). Seien im Worst Case die Hälfte aller Knoten der Zusammenhangskomponente in $ R_{source} $ und die andere Hälfte in $ R_{target} $. Um die Eigenschaft der Zusammenhangskomponente zu gewährleisten muss daher eine Kante zwischen beiden Knotenmenge existieren. Sei dies zudem eine entgegen gerichtete Kante. Sind die beiden Knoten $ (v, w) $ dieser Kante allerdings jeweils an letzter Position in $ R_{source} $ und $ R_{target} $, so erfolgen für alle übrigen Knoten der Komponente Kantenaufrufe für die Hin- und Rückrichtung. Wie bereits oben beschrieben, benötigt ein Kantenaufruf eine Laufzeit von $ O(\min (d(v), d(w)))$, mit den Knotengraden $d(v) $ von Knoten $v \in R_{source}$ und $ d(w) $ von Knoten $ w \in R_{target} $ ~\cite{docs_graph_tool}. Seien nun außerdem $ v $ mit allen Knoten in $ R_{source} $ und $ w $ mit allen Knoten in $ R_{target} $ verbunden, so besitzt $v$ einen Knotengrad von $ d(v) = \frac{V_{c}-1}{2} $. Der Knoten $ w $ besitzt einen Knotengrad von $ d(w) = \frac{V_{c}}{2} $, da eine entgegen gerichtete Kante von $w$ zu $v$ verläuft. Dann ergibt sich nach \eqref{eqn:3-25} eine Gesamtlaufzeit für \lstinline|get_cigar_tuples()| von $ O(V_{c}^3) $. \\
+Die hierfür erforderliche Laufzeit setzt sich zusammen aus den Suchvorgengen für die beiden Knotenmengen $ R_{source} $ und $ R_{target} $, diese ist in graph-tool in $O(V_{c} + V_{c}) = O(V_{c})$ durchführbar (Kap. \ref{subsec:edges}). Seien im Worst Case die Hälfte aller Knoten der Zusammenhangskomponente in $ R_{source} $ und die andere Hälfte in $ R_{target} $. Um die Eigenschaft der Zusammenhangskomponente zu gewährleisten muss daher eine Kante zwischen beiden Knotenmenge existieren. Sei dies zudem eine entgegen gerichtete Kante. Sind die beiden Knoten $ (v, w) $ dieser Kante allerdings jeweils an letzter Position in $ R_{source} $ und $ R_{target} $, so erfolgen für alle übrigen Knoten der Komponente Kantenaufrufe für die Hin- und Rückrichtung. Wie bereits oben beschrieben, benötigt ein Kantenaufruf eine Laufzeit von $ O(\min (d(v), d(w)))$, mit den Knotengraden $d(v) $ von Knoten $v \in R_{source}$ und $ d(w) $ von Knoten $ w \in R_{target} $ ~\cite{docs_graph_tool}. Seien nun außerdem $ v $ mit allen Knoten in $ R_{source} $ und $ w $ mit allen Knoten in $ R_{target} $ verbunden, so besitzt $v$ einen Knotengrad von $ d(v) = \frac{V_{c}-1}{2} $. Der Knoten $ w $ besitzt einen Knotengrad von $ d(w) = \frac{V_{c}}{2} $, da eine entgegen gerichtete Kante von $w$ zu $v$ verläuft. Dann ergibt sich nach \eqref{eqn:4-18} eine Gesamtlaufzeit für \lstinline|get_cigar_tuples()| von $ O(V_{c}^3) $. \\
 
-\begin{equation} \label{eqn:3-25}
-\tag{3-25}
+\begin{equation} \label{eqn:4-18}
+\tag{4-18}
 \begin{aligned}
 &\ {} O(V_{c}) + O(V_{c}^2 \, \cdotp \min (d(v), d(w)))  \\
 & \ = O\left( V_{c} + V_{c}^2 \, \cdotp \min \left( \frac{V_{c}-1}{2}\,, \frac{V_{c}}{2}\right) \right) \\
@@ -186,24 +186,24 @@ Die hierfür erforderliche Laufzeit setzt sich zusammen aus den Suchvorgengen f�
 \end{aligned}
 \end{equation}
 
-Funktion \lstinline|calc_vafs_likelihood_read()| Formel \eqref{eqn:2-xxx2} 
+Funktion \lstinline|calc_vafs_likelihood_read()| Formel \eqref{eqn:2-17} 
 
 Es über die relativen Häufigkeiten jedes Allels einer Allele-Fraction iteriert und ihr Produkt mit der Readlikelihood aufsummiert. Da die Läge der Allelfraktion genau der Anzahl der Allele einer Zusammenhangskomponenten $ n_{cand} $ entspricht, erhöht sich hierdurch die Laufzeit um den Faktor $ O(n_{cand}) $.
 
-Funktion \lstinline|calc_vafs_likelihood()| Formel \eqref{eqn:2-xxx3}
+Funktion \lstinline|calc_vafs_likelihood()| Formel \eqref{eqn:2-18}
 Dadurch wird dir Laufzeit zusätzlich um den Faktor der Anzahl der Reads der Zusammenhangskomponente $ O(V_{c}) $ erhöht.
 
 in \lstinline|noderad_main.py| für alle Allele-Fractions
-Dazu muss über alle VAFs iteriert werden. Die Anzahl der VAFs entspricht dabei genau der Anzahl der Allelkombinationen. Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, kann diese hinsichtlich der Laufzeit mit $ O(e^n_{alleles}) $ abgeschätzt werden (Formel \eqref{eqn:3-20}). Da im Worst Case $n_{alleles} = n_{cand} + \phi - 1$, ergibt sich eine Laufzeit von $ O(e^{n_{cand} + \phi - 1}) \in O(e^{n_{cand}}) $. Um diesen Faktor erhöht sich also die Gesamtlaufzeit bei der Berechnung der Liste der Gesamtwahrscheinlichkeiten.
+Dazu muss über alle VAFs iteriert werden. Die Anzahl der VAFs entspricht dabei genau der Anzahl der Allelkombinationen. Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, kann diese hinsichtlich der Laufzeit mit $ O(e^n_{alleles}) $ abgeschätzt werden (Formel \eqref{eqn:4-13}). Da im Worst Case $n_{alleles} = n_{cand} + \phi - 1$, ergibt sich eine Laufzeit von $ O(e^{n_{cand} + \phi - 1}) \in O(e^{n_{cand}}) $. Um diesen Faktor erhöht sich also die Gesamtlaufzeit bei der Berechnung der Liste der Gesamtwahrscheinlichkeiten.
 
 Maximumsbestimmung: 
-Hinsichtlich der Laufzeit muss jede Lösung der Liste betrachtet werden. Da die Länge der Liste der Anzahl der VAFs entspricht, kann die Laufzeit hierfür nach \eqref{eqn:3-20} auf maximal $ O(e^{n_{cand}}) $ geschätzt werden.
+Hinsichtlich der Laufzeit muss jede Lösung der Liste betrachtet werden. Da die Länge der Liste der Anzahl der VAFs entspricht, kann die Laufzeit hierfür nach \eqref{eqn:4-13} auf maximal $ O(e^{n_{cand}}) $ geschätzt werden.
 
 
 \subsection{Gesamtlaufzeit zur Bestimmung der Allele-Fractions mit maximaler Likelihood} \label{subsec:al_compl}
-Die geschätzten Laufzeiten der einzelnen Schritte wurden bereits an entsprechender Stelle diskutiert und sollen hier noch einmal zusammenfassend aufgeführt werden. Zur übersichtlicheren Darstellung soll die Anzahl der Allele hier nur noch mit $n$ bezeichnet werden, dies entspricht der bisher verwendeten Variable $n_{cand}$. Für jede Zusammenhangskomponente werden vorab die Kandidatenallele bestimmt $ O(V_{c}) $, die Anzahl der tatsächlich zu erwartenden Allele berechnet $ O(V_{c}) $ und die Kombinationen möglicher Häufigkeitsverteilungen ermittelt $ O(e^{n} \, \cdotp n^2) $. Anschließend erfolgt die Likelihoodberechnung in $ O(V_{c}^3) $ über alle Allelfraktionen $ O(e^{n}) $, für alle Reads $ O(V_{c}) $ und im Vergleich jedes Reads zu allen Kandidatenallelen $ O(n) $. Aus den Lösungen wird im Anschluss das Maximum bestimmt $ O(e^{n}) $. Daraus ergibt sich nach \ref{eqn:3-26} eine Gesamtlaufzeit für die Bestimmung der Allelfraktion mit maximaler Likelihood von $ O(e^n \, \cdotp (n^2 + n \, \cdotp V_{c}^4)) $. 
-\begin{equation} \label{eqn:3-26}
-\tag{3-26}
+Die geschätzten Laufzeiten der einzelnen Schritte wurden bereits an entsprechender Stelle diskutiert und sollen hier noch einmal zusammenfassend aufgeführt werden. Zur übersichtlicheren Darstellung soll die Anzahl der Allele hier nur noch mit $n$ bezeichnet werden, dies entspricht der bisher verwendeten Variable $n_{cand}$. Für jede Zusammenhangskomponente werden vorab die Kandidatenallele bestimmt $ O(V_{c}) $, die Anzahl der tatsächlich zu erwartenden Allele berechnet $ O(V_{c}) $ und die Kombinationen möglicher Häufigkeitsverteilungen ermittelt $ O(e^{n} \, \cdotp n^2) $. Anschließend erfolgt die Likelihoodberechnung in $ O(V_{c}^3) $ über alle Allelfraktionen $ O(e^{n}) $, für alle Reads $ O(V_{c}) $ und im Vergleich jedes Reads zu allen Kandidatenallelen $ O(n) $. Aus den Lösungen wird im Anschluss das Maximum bestimmt $ O(e^{n}) $. Daraus ergibt sich nach \ref{eqn:4-19} eine Gesamtlaufzeit für die Bestimmung der Allelfraktion mit maximaler Likelihood von $ O(e^n \, \cdotp (n^2 + n \, \cdotp V_{c}^4)) $. 
+\begin{equation} \label{eqn:4-19}
+\tag{4-19}
 \begin{aligned}
 O(V_{c}) +  O(V_{c}) &\ {} + O(e^n \, \cdotp n^2) + O(e^n) \, \cdotp O(V_{c}) \, \cdotp O(n) \, \cdotp O(V_{c}^3) + O(e^n)\\
 &\ =  O(2 V_{c} + e^n \, \cdotp n^2 + e^n + e^n \, \cdotp n \, \cdotp V_{c}^4)\\
@@ -212,9 +212,9 @@ O(V_{c}) +  O(V_{c}) &\ {} + O(e^n \, \cdotp n^2) + O(e^n) \, \cdotp O(V_{c}) \,
 \end{aligned}
 \end{equation}
 
-Im Worst Case entspricht $ n $ genau der Anzahl der Reads in der Zusammenhangskomponente und es gilt $ n = n_{cand} = V_{c} $, so dass die Laufzeit dann auf $ O(e^{V_{c}} \, \cdotp V_{c}^5) $ geschätzt werden kann \eqref{eqn:3-27}.
-\begin{equation} \label{eqn:3-27}
-\tag{3-27}
+Im Worst Case entspricht $ n $ genau der Anzahl der Reads in der Zusammenhangskomponente und es gilt $ n = n_{cand} = V_{c} $, so dass die Laufzeit dann auf $ O(e^{V_{c}} \, \cdotp V_{c}^5) $ geschätzt werden kann \eqref{eqn:4-20}.
+\begin{equation} \label{eqn:4-20}
+\tag{4-20}
 \begin{aligned}
 O(e^n \, \cdotp (n^2 + n \, \cdotp V_{c}^4))
 &\ {} = O(e^{V_{c}} \, \cdotp (V_{c}^2 + V_{c} \, \cdotp V_{c}^4))\\
@@ -231,8 +231,8 @@ Die Laufzeit wird also durch die Anzahl der VAFs dominiert und kann bei großen 
 \subsection{Laufzeit zur Bestimmung der möglicher Loci-Kombinationen}
 
 Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, benötigt die Generierung aller Allelkombinationen eine Laufzeit von $ O(e^n) $, wobei $n = n_{cand}$ die Anzahl der beobachteten Allele der Zusammenhangskomponente ist. Für diese Kombinationen werden jeweils alle $n!$ Permutationen gebildet, also mit einer Laufzeit von $ O(n!) $. Für jede Permutation erfolgt über ihre jeweilige Länge die Gruppierung zu den Loci. Die Länge jeder Permutation kann wegen der Funktion \lstinline|get_max_parsimony_n_alleles()| (vgl. Kap. \ref{subsec:cand_allele}) maximal $ n_{alleles} = n_{cand} + \phi - 1 $ betragen. Wegen $\phi = const$ beträgt die Laufzeit hier also $O(n_{cand}) = O(n)$. Die Sortierung bei Python erfordert eine Laufzeit von $ O(n\, \cdotp log(n))$ \cite{python-sort}. Die beiden Sortiervorgänge erfolgen zum einen über jeden Locus mit der Länge $\phi$ entsprechend seiner Ploidie und über alle Loci innerhalb der Permutation. Die Anzahl der Loci entspricht $\frac{n}{\phi}$, dadurch ergeben sich für die Sortiervorgänge Laufzeiten von $ O(\phi\, \cdotp log(\phi)) $ bzw. $ O\left( \frac{n}{\phi}\, \cdotp log\left( \frac{n}{\phi}\right) \right) $. Unter Berücksichtigung, dass $\phi = const$ gilt, beträgt die Laufzeit für \lstinline|get_candidate_loci()| insgesamt $ O(e^n \, \cdotp n! \, \cdotp n^2 \, \cdotp log(n)) $.
-\begin{equation} \label{eqn:3-29}
-\tag{3-29}
+\begin{equation} \label{eqn:4-21}
+\tag{4-21}
 \begin{aligned}
 &\ {}O(e^n) \, \cdotp O(n!) \, \cdotp O(n) \, \cdotp O(\phi\, \cdotp log(\phi))\, \cdotp O\left( \frac{n}{\phi}\, \cdotp log\left( \frac{n}{\phi}\right) \right)  \\
 &\ =O\left( e^n \, \cdotp n! \, \cdotp n\, \cdotp \phi\, \cdotp log(\phi)\, \cdotp  \frac{n}{\phi}\, \cdotp log\left( \frac{n}{\phi} \right)\right)   \\
@@ -244,11 +244,11 @@ Wie bereits in Kap. \ref{subsubsec:cand_vafs} besprochen, benötigt die Generier
 Große Cluster sind hier also hinsichtlich der Laufzeit und des Speicherbedarfs noch problematischer als bei der Generierung der Allelkombinationen in der Funktion \linebreak \lstinline|get_candidate_vafs()| (Kap. \ref{subsubsec:cand_vafs}). Eine sinnvolle Anpassung der Grenzwerte \linebreak \lstinline|treshold-cluster-size| und   \lstinline|treshold-seq-noise| ermöglicht diesbezüglich eine Verbesserung. Allerdings ist an dieser Stelle ein effizienterer Ansatz zur Bestimmung der Loci-Kombinationen möglich, der in diesem Protoypen zwar keine Anwendung fand, aber für die spätere Implementierung in Rust von Bedeutung sein könnte. Dieser Ansatz wird im Ausblick in Kap. \ref{sec:ausblick} kurz beschrieben.
 
 \subsection{Laufzeit für die Bestimmung der Loci-Kombination mit maximaler Likelihood} \label{subsec:loc_compl}
-Die Gesamtlaufzeit ergibt sich wiederum aus den einzelnen Laufzeiten der oben beschriebenen Funktionen. Diese Funktionen werden über allen Permutationen der Allelkombinationen in \lstinline|noderad_main.py| aufgerufen, wodurch die Laufzeit um den Faktor $ O(e^n \, \cdotp n!)$ steigt (vgl. Kap. \ref{subsec:comb_loci}). Die Indikatorfunktion prüft die Bedingung über die gesamte Länge einer der Permutationen und benötigt somit eine Laufzeit von $ O(n) $. Anschließend wird in \lstinline|calc_loci_likelihoods()| über alle Loci einer Permutation in $ O(\frac{n}{\phi}) $ iteriert und die Funktion \lstinline|get_allele_likelihood_allele()| aufgerufen. Diese ermittelt bei jedem Locus in $O(\phi) $ die Kombinationen ohne Wiederholung und ohne Beachtung der Reihenfolge. Nach \eqref{eqn:3-xxx13} und \eqref{eqn:3-20} erhöhen die Kombinationen dabei die Laufzeit um den Faktor $ O(\binom{n}{2}) \in O(e^n) $. Die Bestimmung der CIGAR-Tupel für jede Kombination vergrößert die Laufzeit zusätzlich um den Faktor $O(V_{c}^3)$ (siehe Kap. \ref{subsec:lh_allele}). Über die CIGAR-Tupel wird schließlich für jede Base die Likelihood aus den Heterozygotiewahrscheinlichkeiten berechnet, analog zur Likelihoodberechnung zweier Reads in Kap. \ref{subsec:edges} kann dies mit $O(\overline{k}) $ veranschlagt werden, wobei $\overline{k}=const$ gilt. Da für alle Permuationen der Kombinationen die Berechnung Likelihood erfolgt, wird die anschließende Maximumsbestimmung über deren Anzahl also in $O(e^n\, \cdotp n!) $ durchgeführt.\\
+Die Gesamtlaufzeit ergibt sich wiederum aus den einzelnen Laufzeiten der oben beschriebenen Funktionen. Diese Funktionen werden über allen Permutationen der Allelkombinationen in \lstinline|noderad_main.py| aufgerufen, wodurch die Laufzeit um den Faktor $ O(e^n \, \cdotp n!)$ steigt (vgl. Kap. \ref{subsec:comb_loci}). Die Indikatorfunktion prüft die Bedingung über die gesamte Länge einer der Permutationen und benötigt somit eine Laufzeit von $ O(n) $. Anschließend wird in \lstinline|calc_loci_likelihoods()| über alle Loci einer Permutation in $ O(\frac{n}{\phi}) $ iteriert und die Funktion \lstinline|get_allele_likelihood_allele()| aufgerufen. Diese ermittelt bei jedem Locus in $O(\phi) $ die Kombinationen ohne Wiederholung und ohne Beachtung der Reihenfolge. Nach \eqref{eqn:3-2} und \eqref{eqn:4-13} erhöhen die Kombinationen dabei die Laufzeit um den Faktor $ O(\binom{n}{2}) \in O(e^n) $. Die Bestimmung der CIGAR-Tupel für jede Kombination vergrößert die Laufzeit zusätzlich um den Faktor $O(V_{c}^3)$ (siehe Kap. \ref{subsec:lh_allele}). Über die CIGAR-Tupel wird schließlich für jede Base die Likelihood aus den Heterozygotiewahrscheinlichkeiten berechnet, analog zur Likelihoodberechnung zweier Reads in Kap. \ref{subsec:edges} kann dies mit $O(\overline{k}) $ veranschlagt werden, wobei $\overline{k}=const$ gilt. Da für alle Permuationen der Kombinationen die Berechnung Likelihood erfolgt, wird die anschließende Maximumsbestimmung über deren Anzahl also in $O(e^n\, \cdotp n!) $ durchgeführt.\\
 
-Nach \eqref{eqn:3-33} ergibt sich damit für die Berechnung der wahrscheinlichsten Loci-Kombination insgesamt eine Laufzeit von $ O(e^n \, \cdotp n! \, \cdotp V_{c}^3)$.
-\begin{equation} \label{eqn:3-33}
-\tag{3-33}
+Nach \eqref{eqn:4-22} ergibt sich damit für die Berechnung der wahrscheinlichsten Loci-Kombination insgesamt eine Laufzeit von $ O(e^n \, \cdotp n! \, \cdotp V_{c}^3)$.
+\begin{equation} \label{eqn:4-22}
+\tag{4-22}
 \begin{aligned}
 &\ {}O(e^n \, \cdotp n!) \, \cdotp \left( O(n) + O\left( \frac{n}{\phi} \right) \, \cdotp O(\phi) \, \cdotp O(e^n)  \, \cdotp O(V_{c}^3) \, \cdotp O(\overline{k})\right) + O(e^n\, \cdotp n!) \\
 &\ =O(e^n \, \cdotp n! \, \cdotp(n + n \, \cdotp e^n \, \cdotp V_{c}^3)+ e^n\, \cdotp n!)  \\
@@ -260,9 +260,9 @@ Nach \eqref{eqn:3-33} ergibt sich damit für die Berechnung der wahrscheinlichst
 \end{aligned}
 \end{equation}
 
-Wie bereits in Kap. \ref{subsec:al_compl} durchgeführt, soll auch hier der Worst Case betrachtet werden, bei dem die Anzahl der Kandidatenallele genau der Anzahl der Reads in der Zusammenhangskomponente entspricht, also $ n = n_{cand} =V_{c} $. Dann ergibt sich für die Berechnung der wahrscheinlichsten Loci-Zuordnung nach \eqref{eqn:3-34} eine maximale Laufzeit von $ O(e^{V_{c}} \, \cdotp V_{c}!) $.
-\begin{equation} \label{eqn:3-34}
-\tag{3-34}
+Wie bereits in Kap. \ref{subsec:al_compl} durchgeführt, soll auch hier der Worst Case betrachtet werden, bei dem die Anzahl der Kandidatenallele genau der Anzahl der Reads in der Zusammenhangskomponente entspricht, also $ n = n_{cand} =V_{c} $. Dann ergibt sich für die Berechnung der wahrscheinlichsten Loci-Zuordnung nach \eqref{eqn:4-23} eine maximale Laufzeit von $ O(e^{V_{c}} \, \cdotp V_{c}!) $.
+\begin{equation} \label{eqn:4-23}
+\tag{4-23}
 \begin{aligned}
 O(e^n \, \cdotp n! \, \cdotp V_{c}^3)
 &\ {}=O(e^{V_{c}} \, \cdotp V_{c}! \, \cdotp V_{c}^3)\\
@@ -277,8 +277,8 @@ Die Anzahl der Permutationen dominiert durch $ O(V_{c}!) $ die Laufzeit noch st�
 \section{Abschließende Laufzeitanalyse des gesamten Algorithmus}
 
 Für jeden Konstruktions- und Berechnungsschritt wurden die Laufzeiten bereits an entsprechender Stelle angesprochen. Zusammenfassend ergab sich dabei für die einmalige Konstruktion des Graphen und die Extraktion seiner Zusammenhangskomponenten $ C $ eine Laufzeit von $O(V \, \cdotp (V + E))$ (Kap. \ref{subsec:graph_compl}). Für jede Zusammenhangskomponente erfolgte die Berechnung der wahrscheinlichsten Allelkombination in $O(e^V_{c} \, \cdotp V_{c}^5)$ (Kap. \ref{subsec:al_compl}) und die Berechnung der wahrscheinlichsten Loci-Zuordnung in $ (e^V_{c} \, \cdotp V_{c}!) $ (Kap. \ref{subsec:loc_compl}). Die Laufzeiten können also wie folgt zusammengefasst werden:
-\begin{equation} \label{eqn:3-35}
-\tag{3-35}
+\begin{equation} \label{eqn:4-24}
+\tag{4-24}
 \begin{aligned}
 &\ {}O(V \, \cdotp (V + E)) + O\left( \sum_{c=1}^{|C|} (e^{V_{c}} \, \cdotp V_{c}^5 + e^{V_{c}} \, \cdotp V_{c}!)\right) \\
 &\ = O\left( V \, \cdotp (V + E) +  \sum_{c=1}^{|C|} (e^{V_{c}} \, \cdotp V_{c}^5) + \sum_{c=1}^{|C|} (e^{V_{c}} \, \cdotp V_{c}!)\right)\\

@@ -46,59 +46,81 @@ Bewertung/wslk ob ein read aus einem anderen read entstanden ist\\
 
 %Die Berechnung der Likelihoods für die Vergleiche der Reads mit den Kandidatenallelen basiert auf dem in Kap. ~\ref{subsec:sol_phmm} beschriebenen pair Hidden Markov Model.
  Hierbei repräsentiert das durch Minimap2 bestimmte Sequenzalignment bereits den wahrscheinlichsten Pfad durch die pairHMM-Matrix. Da dieser Pfad ohnehin die Wahrscheinlichkeit des pairHMM dominieren würde, wird zugunsten der Laufzeit direkt auf das Alignment von Minimap2 zurückgegriffen, um die Likelihoods zwischen den Readsequenzen zu bestimmen. Dabei werden die Sequenzierfehlerrate $ \epsilon $ und Basenqualität $ q_{query} $ durch die bereits zuvor ermittelte geschätzte Fehlerrate $ p_{query} $ berücksichtigt. Die Likelihood $ pairHMM_{\epsilon, q_{query}} \;(s_{ref}\;|\; s_{query}) $, dass der Queryread aus dem Referenzread allein durch Sequenzierfehler und Mutationen entstanden ist, errechnet sich schließlich aus dem Produkt der Likelihoods $ L_{i} $ für jede Base $ b $ an jeder Position $ i $ innerhalb der Sequenz $ s $ des Queryreads $ s_{query} $ im Vergleich zum Referenzread $ s_{ref} $.
-\begin{equation} \label{eqn:3-2}
-\tag{3-2}
+\begin{equation} \label{eqn:2-5}
+\tag{2-5}
 pairHMM_{\epsilon, q_{query}} \;(s_{query}\;|\; s_{ref}) = \prod_{i=1}^{k}L_{i}
 \end{equation}
 
-Jede Base $ b $ an Position $ i $ einer Readsequenz $ s $ der Länge $ k $ lässt sich also definieren als $ b \in \{\,b_{i}\in \{A,C,G,T\}^k\;,\; b_{i} \in s \;|\; i = 1, \dotsb, k \,\}$. Seien $ b_{i\,_{ref}} $ und $ b_{i\,_{query}} $ die Basen der Query- und der Referenzsequenzen an Position $ i $ einer Sequenz und $  p_{i\,_{query}} $ die geschätzte Fehlerrate von $ b_{i\,_{query}} $, die sich aus dem Phred Quality Score $ Q $ nach  \eqref{eqn:3-1} ergibt. Seien zudem $ m_{sub} $, $ m_{ins} $ und $ m_{del} $ die über die Konfigurationsdatei festgelegten Mutationsraten für Substitutionen, Insertionen und Deletionen. Dann errechnet sich die Likelihood $ L_{i} = Pr(b_{i\,_{ref}}\;|\; b_{i\,_{query}})$ an der Position $ i $ im Falle eine Matches unter Berücksichtigung der geschätzten Fehlerrate durch:
-\begin{equation} \label{eqn:3-3}
-\tag{3-3}
+Jede Base $ b $ an Position $ i $ einer Readsequenz $ s $ der Länge $ k $ lässt sich also definieren als $ b \in \{\,b_{i}\in \{A,C,G,T\}^k\;,\; b_{i} \in s \;|\; i = 1, \dotsb, k \,\}$. Seien $ b_{i\,_{ref}} $ und $ b_{i\,_{query}} $ die Basen der Query- und der Referenzsequenzen an Position $ i $ einer Sequenz und $  p_{i\,_{query}} $ die geschätzte Fehlerrate von $ b_{i\,_{query}} $, die sich aus dem Phred Quality Score $ Q $ nach  \eqref{eqn:3-3} ergibt. Seien zudem $ m_{sub} $, $ m_{ins} $ und $ m_{del} $ die über die Konfigurationsdatei festgelegten Mutationsraten für Substitutionen, Insertionen und Deletionen. Dann errechnet sich die Likelihood $ L_{i} = Pr(b_{i\,_{ref}}\;|\; b_{i\,_{query}})$ an der Position $ i $ im Falle eine Matches unter Berücksichtigung der geschätzten Fehlerrate durch:
+\begin{equation} \label{eqn:2-6}
+\tag{2-6}
 L_{i\,_{match}} = 1 - p_{i\,_{query}}
 \end{equation}
 
 Bei einem Mismatch dagegen müssen die Wahrscheinlichkeiten von Mutationen und Sequenzierfehlern berücksichtigt werden. Im Falle einer Mutation muss in die Wahrscheinlichkeit eines Matches auch die Mutationsrate des aufgetretenen Mismatches $ m_{rate} \in \{\,m_{sub},\,  m_{ins},\, m_{del}\,\} $ einbezogen werden:
-\begin{equation} \label{eqn:3-4}
-\tag{3-4}
+\begin{equation} \label{eqn:2-7}
+\tag{2-7}
 L_{i\,_{mut}} = m_{rate}\; \cdotp \;(1 - p_{i\,_{query}})
 \end{equation}
 
 Die Wahrscheinlichkeit eines Sequenzierfehlers, also dass anstelle der sequenzierten Base tatsächlich eine der drei anderen Basen vorliegt, entspricht $ 1/3 $ der geschätzten Fehlerrate des Phred Quality Scores:
-\begin{equation} \label{eqn:3-5}
-\tag{3-5}
+\begin{equation} \label{eqn:2-8}
+\tag{2-8}
 L_{i\,_{seqerr}} = \frac{1}{3} \; \cdotp \; p_{i\,_{query}}
 \end{equation}
 
-Aus \eqref{eqn:3-4} und \eqref{eqn:3-5} errechnet sich also die Likelihood bei einem Mismatch durch:
-\begin{equation} \label{eqn:3-6}
-\tag{3-6}
+Aus \eqref{eqn:2-7} und \eqref{eqn:2-8} errechnet sich also die Likelihood bei einem Mismatch durch:
+\begin{equation} \label{eqn:2-9}
+\tag{2-9}
 L_{i\,_{mismatch}} = (1-m_{rate}) \; \cdotp \; L_{seqerr} \; \cdotp \; L_{mut}
 \end{equation}
 
-Aus den Liklihoods von Matches \eqref{eqn:3-3} und Mismatches \eqref{eqn:3-4} kann somit schließlich nach \eqref{eqn:3-2} die Likelihood zwischen den Reads paarweise bestimmt werden.\\
+Aus den Liklihoods von Matches \eqref{eqn:2-6} und Mismatches \eqref{eqn:2-7} kann somit schließlich nach \eqref{eqn:2-5} die Likelihood zwischen den Reads paarweise bestimmt werden.\\
 
+------------
+nur bei diploidie -> sonst multiples Sequenzalignment notwendig.
+
+(vgl. Kap. ~\ref{subsec:sol_phmm}). Allerdings werden nun die Heterozygotiewahrscheinlichkeiten $\eta_{sub}$, $\eta_{ins}$ und $\eta_{del}$ der Grapheigenschaften zur Ermittlung der Likelihood nach Formel \eqref{eqn:2-20} genutzt.  \\
 
 Das Sequenzalignment der Reads aus Minimap2 repräsentiert bereits den wahrscheinlichsten Pfad in der pairHMM-Matrix, so dass über diesen Pfad die Likelihoods der Allele (Kap. \ref{subsec:sol_allele_lh}) und der Loci (Kap. \ref{subsec:sol_loci_lh}) bestimmt werden können.
+
+Dabei entspricht im Falle eines Mismatches die Likelihood der in der Konfigurationsdatei angegebenen Heterozygotiewahrscheinlichkeit $ \eta $ für die betreffende Mutationsart, also $ \eta_{sub} $ für Substitutionen , $ \eta_{ins} $ für Insertionen bzw. $ \eta_{del} $ Deletionen. Sei $i$ der Index der betreffenden Base innerhalb der betrachteten Allelsequenz und $ \eta_{rate} \in \{\,\eta_{sub},\, \eta_{ins},\, \eta_{del}\,\}$, dann berechnet sich bei einem Mismatch die Likelihood $L_{i}$ der Base nach Formel \eqref{eqn:2-10}.
+\begin{equation} \label{eqn:2-10}
+\tag{2-10}
+L_{i\,_{mismatch}} = \eta_{rate}
+\end{equation}
+
+Im Falle eines Matches senkt die Möglichkeit eines Mismatches die Likelihood der betreffenden Base entsprechend um die Summe der Heterozygotiewahrscheinlichkeiten der genannten Mutationsarten (Formel \eqref{eqn:2-11}).
+\begin{equation} \label{eqn:2-11}
+\tag{2-11}
+L_{i\,_{match}} = 1 - (\eta_{sub} + \eta_{ins} + \eta_{del})
+\end{equation}
+
+Die Likelihood $ Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) $ des paarweisen Vergleichs der Allele $a_{l_{j,1}}$ und $a_{l_{j,2}}$ hinsichtlich der Zuordnung zu den Loci-Kombinationen errechnet sich schließlich aus dem Produkt der Wahrscheinlichkeiten der einzelnen Basen:
+\begin{equation} \label{eqn:2-12}
+\tag{2-12}
+Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) = pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}}) = \prod_{i=1}^{k}L_{i}
+\end{equation}
 
 \subsection{Allele-Fractions mit maximaler Likelihood} \label{subsec:sol_allele_lh}
 
 Um die Allele zu identifizieren, von denen die beobachteten Reads einer Zusammenhangskomponente am wahrscheinlichsten stammen, muss zunächst die Menge der Kandidatenallele $A=(a_{1}, \dots, a_{n}) \in \{A,\,C,\,G,\,T,\}^{k^n}$ bestimmt werden. Bei größeren Clustern ist davon auszugehen, dass die Sequenzen solcher Kandidatenallele mehrfach in den Reads auftauchen. Um den Aufwand der Likelihoodberechnung bei größeren Cluster anpassen zu können, soll es möglich sein, selten auftretende Sequenzen herauszufiltern. Dies geschieht über zwei Grenzwerte, welche die Mindestgröße des Clusters und die Mindesthäufigkeit von Kandidatenallelsequenzen festlegen. Durch sie werden ab einer bestimmten Clustergröße nur diejenigen Sequenzen in die Auswahl der Kandidatenallele aufgenommen, die mit einer bestimmten Häufigkeit im Cluster vorkommen.\\
 
 Anschließend wird die Wahrscheinlichkeit bestimmt, dass ein Read mit der Readsequenz mit der Fehlerrate $\epsilon$ tatsächlich von einem bestimmten Allel stammt. Die Fehlerrate $\epsilon$ ergibt sich dabei aus der Qualität der einzelnen Basen eines Reads. Jede Base der Sequenz des Source-Knotens wird mit der Sequenz des Target-Knotens verglichen. Bei einem sogenannten Mismatch unterscheiden sich die verglichenen Basen durch Substitutionen, Insertionen oder Deletionen. Im Falle eines Matches sind beide Basen identisch. Bei einem Match ergibt sich die Wahrscheinlichkeit $L_{match}$, dass es sich dabei im Source-Knoten tatsächlich um die korrekte Base handelt allein aus der Fehlerrate:
-\begin{equation} \label{eqn:2-1}
-\tag{2-1}
+\begin{equation} \label{eqn:2-13}
+\tag{2-13}
 L_{match} = 1 - \epsilon
 \end{equation}
 
-Bei einem Mismatch $L_{mismatch}$ müssen die Wahrscheinlichkeiten für Sequenzierfehler $L_{sequerr}$ (vgl. Formel \eqref{eqn:3-5}) und Mutationen $L_{mut}$ (vgl. Formel \eqref{eqn:3-4}) sowie die Mutationsrate selbst $m_{rate}$ mit einbezogen werden: 
-\begin{equation} \label{eqn:2-2}
-\tag{2-2}
+Bei einem Mismatch $L_{mismatch}$ müssen die Wahrscheinlichkeiten für Sequenzierfehler $L_{sequerr}$ (vgl. Formel \eqref{eqn:2-8}) und Mutationen $L_{mut}$ (vgl. Formel \eqref{eqn:2-7}) sowie die Mutationsrate selbst $m_{rate}$ mit einbezogen werden: 
+\begin{equation} \label{eqn:2-14}
+\tag{2-14}
 L_{mismatch} = (1 - m_{rate}) \, \cdotp L_{sequerr} \, \cdotp L_{mut}
 \end{equation}
 
 Die genaue Berechnung der Likelihood der einzelnen Basen wird an späterer Stelle in Kap. \ref{subsec:edges} ausführlicher besprochen. Das Produkt aller Wahrscheinlichkeiten der einzelnen Basen ergibt schließlich die Likelihood für den paarweisen Vergleich zweier Reads im Sinne des pairHMM. Bei paarweisen Vergleich eines Allels $a_{i} \in A $ mit einem Read mit der Sequenz $s_{r}$ lässt sich die Likelihoodberechnung also wie folgt formulieren:
-\begin{equation} \label{eqn:2-3}
-\tag{2-3}
+\begin{equation} \label{eqn:2-15}
+\tag{2-15}
 Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) = pairHMM_{\epsilon,q_{r}}(a_{i}, s_{r})
 \end{equation}
 
@@ -109,8 +131,8 @@ Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) = pairHMM_{\epsilon,q_{r}}(a_{i}, s_{r})
 
 \noindent1. lh zwischen 1 read und 1 allel; likelihood im pair: Wslk, dasss von 1 bestimmten Allel $a_{i}$ mit Fehlerrate $\epsilon$ tatsächlich die readsequenz $s_{r}$ stammt \\
 $s_{r}$ Sequenz von Read $r$, $q_{r}$ Basenqualität aller Basen von Read $r$, $a_{i}$ Allel $i$ aus der Menge der Kandidatenallele $A=(a_{1},\dots, a_{n})$ mit Anzahl $n$ und $\epsilon$ Sequenzierfehlerrate
-\begin{equation} \label{eqn:2-xxx1}
-\tag{2-xxx1}
+\begin{equation} \label{eqn:2-16}
+\tag{2-16}
 Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) = pairHMM_{\epsilon,q_{r}}(a_{i}, s_{r})
 \end{equation}
 
@@ -121,8 +143,8 @@ Urnenmodell: bsp. 2 farben in unterschiedl. Menge -> Wslk, wenn n Kugeln gezogen
 es gilt $\sum \Theta_{i} = 1$ => die mögliche Zuordnung entspricht der Häufigkeit die gezogen wurde $\Theta_{i}$ \\
 Wslk. $ s_{r} $ zu beobachten unter der gegebenen Verteilung aus den Fraktionen; Wslk read zu sehen gegeben das Allel, nur ausgehend von Sequenzierfehlern \\
 $\Theta=\theta_{1},\dots,\theta_{n}) \in [0,1]^n $ sind Allel-Fraktionen, $n$ ist Anzahl der Allele \\
-\begin{equation} \label{eqn:2-xxx2}
-\tag{2-xxx2}
+\begin{equation} \label{eqn:2-17}
+\tag{2-17}
 Pr(s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n}) = \sum_{i=1}^{n}\theta_{i} \, \cdotp Pr(T=s_{r} \, | \, S=a_{i}, \epsilon)
 \end{equation}
 \noindent3. Für alle Reads: \\
@@ -134,8 +156,8 @@ insgesamt:\\
 => $\Theta$ berechnen -> max lh aus allel-fractions\\
 => alles was an Unterschieden vorkommt, kann nur ein Sequenzierfehler sein\\
 $m$ ist Anzahl der Reads, $L \in \{l_{i} \in \mathds{N}_{\leq n}^\phi \, | \, i=1, \dots, g\}$ ist Menge der Loci, $D = (s_{1}, \dots, s_{m}) \in \{A,C, G, T\}^{k^m}$ ist Menge der Readsequenzen/der Reads,
-\begin{equation} \label{eqn:2-xxx3}
-\tag{2-xxx3}
+\begin{equation} \label{eqn:2-18}
+\tag{2-18}
 L(\Theta=\theta_{1},\dots,\theta_{n} \, | \, D) = Pr(D \, | \, \Theta=\theta_{1},\dots,\theta_{n}) = \prod_{r=1}^{m}Pr (s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n})
 \end{equation}
 für jede vaf wurde also liklihood über alle reads bestimmt -> Maximum 
@@ -150,20 +172,20 @@ Zuordnung von cand-Allelen zu den loci => die beobachteten max\_lh\_allel\_fract
 unter der annahme der loci-verteilung muss bestimmt werden ob sinnvoll, d.h allel-vafs müssen sich zu 1 summieren -> indikator-funktion: wenn 1, dann gilt Pr(T|S), d.h. Wslk, dass sich aus S die seq T gebildet hat\\
 
 indicator-function $z_{l} \in {[0,1]}$: wird 1, wenn anzahl des auftretens aller allele $A = (a_{1}, \dots, a_{n})$ in einer möglichen locus-verteilung $l = (l_{1}, \dots, l_{g \, \cdotp \phi})$ jeweils genau ihrer absoluten Häufigkeit aus der in Kap. \ref{subsec:sol_allele_lh} errechneten vaf mit maximaler Likelihood entspricht, also $\theta_{i} \, \cdotp g \, \cdotp \phi$ entsprechen, andernfalls gilt $ z_{l} = 0 $. Seien dabei  $\Theta=\theta_{1},\dots,\theta_{n}) \in [0,1]^n $ die vaf mit maximaler Likelihood, $ \phi $ die Ploidie und gilt für eine mögliche Locusverteilung $l$ außerdem $L \in \{l_{j} \in \mathds{N}_{\leq n}^\phi \, | \, j=1, \dots, g\}$, so lässt sich die Indikatorfunktion wie folgt definieren:
-\begin{equation} \label{eqn:2-xxx4}
-\tag{2-xxx4}
+\begin{equation} \label{eqn:2-19}
+\tag{2-19}
 z_{l}=\prod_{i=1}^{n}1_{\sum_{j=1}^{g}\sum_{k=1}^{\phi}1_{l_{j,k}=i} = \theta_{i} \, \cdotp g \, \cdotp \phi}
 \end{equation}
 
 pHMM: Wslk, dass allel 2 $ a_{l_{j,2}} $ aus allel 1 $ a_{l_{j,1}} $ entstanden ist -> heterozygotie $\eta$ (in conf konfigurierbar) =>$ match = 1 - (het_{sub} + het_{del} + het_{ins}) $
-\begin{equation} \label{eqn:2-xxx5}
-\tag{2-xxx5}
+\begin{equation} \label{eqn:2-20}
+\tag{2-20}
 Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) = pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}})
 \end{equation}
 
 Kombi von loci -> lh berechnen
-\begin{equation} \label{eqn:2-xxx6}
-\tag{2-xxx6}
+\begin{equation} \label{eqn:2-21}
+\tag{2-21}
 Pr(\Theta,A \, | \, L=\{l_{j}\, |\, j=1,\dots,g\})=z_{l} \, \cdotp \prod_{j=1}^{g}Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}})
 \end{equation}
 
