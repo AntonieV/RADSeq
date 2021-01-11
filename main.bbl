@@ -126,11 +126,40 @@
   {\em Single-cell genome sequencing: current state of the science.}
 \newblock Nature reviews. Genetics, 17:175--88, Mar 2016.
 
+\bibitem{li_2009}
+{\sc Li, Heng}, {\sc Bob Handsaker}, {\sc Alec Wysoker}, {\sc Tim Fennell},
+  {\sc Jue Ruan}, {\sc Nils Homer}, {\sc Gabor Marth}, {\sc Goncalo Abecasis},
+  \btxandlong{}\ {\sc Richard Durbin}: {\em The sequence alignment/map format
+  and samtools.}
+\newblock Bioinformatics (Oxford, England), 25:2078--9, Aug 2009.
+
+\bibitem{danecek_2011}
+{\sc Danecek, Petr}, {\sc Adam Auton}, {\sc Goncalo Abecasis}, {\sc Cornelis~A.
+  Albers}, {\sc Eric Banks}, {\sc Mark~A. DePristo}, {\sc Robert~E. Handsaker},
+  {\sc Gerton Lunter}, {\sc Gabor~T. Marth}, {\sc Stephen~T. Sherry}, {\sc
+  Gilean McVean}, \btxandlong{}\ {\sc Richard Durbin}: {\em The variant call
+  format and vcftools.}
+\newblock Bioinformatics (Oxford, England), 27:2156--8, Aug 2011.
+
 \bibitem{catchen_2013}
 {\sc Catchen, Julian}, {\sc Paul~A. Hohenlohe}, {\sc Susan Bassham}, {\sc Angel
   Amores}, \btxandlong{}\ {\sc William~A. Cresko}: {\em Stacks: an analysis
   tool set for population genomics.}
 \newblock Molecular ecology, 22:3124--40, Jun 2013.
+
+\bibitem{li_2018}
+{\sc Li, Heng}: {\em {Minimap2: pairwise alignment for nucleotide sequences}}.
+\newblock Bioinformatics, 34(18):3094--3100, 05 2018.
+
+\bibitem{yoon_2009}
+{\sc Yoon, Byung-Jun}: {\em Hidden markov models and their applications in
+  biological sequence analysis.}
+\newblock Current genomics, 10:402--15, Sep 2009.
+
+\bibitem{knudsen_2003}
+{\sc Knudsen, Bjarne} \btxandlong{}\ {\sc Michael~M. Miyamoto}: {\em Sequence
+  alignments and pair hidden markov models using evolutionary history.}
+\newblock Journal of molecular biology, 333:453--60, Oct 2003.
 
 \bibitem{koester_2012_1}
 {\sc Köster, Johannes} \btxandlong{}\ {\sc Sven Rahmann}: {\em {Snakemake—a
@@ -165,17 +194,6 @@
   for multiple tools and samples in a single report.}
 \newblock Bioinformatics (Oxford, England), 32:3047--8, Oct 2016.
 
-\bibitem{li_2018}
-{\sc Li, Heng}: {\em {Minimap2: pairwise alignment for nucleotide sequences}}.
-\newblock Bioinformatics, 34(18):3094--3100, 05 2018.
-
-\bibitem{li_2009}
-{\sc Li, Heng}, {\sc Bob Handsaker}, {\sc Alec Wysoker}, {\sc Tim Fennell},
-  {\sc Jue Ruan}, {\sc Nils Homer}, {\sc Gabor Marth}, {\sc Goncalo Abecasis},
-  \btxandlong{}\ {\sc Richard Durbin}: {\em The sequence alignment/map format
-  and samtools.}
-\newblock Bioinformatics (Oxford, England), 25:2078--9, Aug 2009.
-
 \bibitem{peixoto_2014}
 {\sc Peixoto, Tiago~P.}: {\em The graph-tool python library}.
 \newblock figshare, 2014.
@@ -196,26 +214,15 @@
   variants}}.
 \newblock Nucleic Acids Research, 38(6):1767--1771, 12 2009.
 
-\bibitem{ewing_1998}
-{\sc Ewing, B.} \btxandlong{}\ {\sc P.~Green}: {\em Base-calling of automated
-  sequencer traces using phred. ii. error probabilities.}
-\newblock Genome research, 8:186--94, Mar 1998.
-
-\bibitem{docs_graph_tool}
-{\sc Peixoto, Tiago de~Paula}: {\em graph-tool 2.35 documentation: graph\_tool
-  - efficient graph analysis and manipulation}.
-\newblock https://graph-tool.skewed.de/static/doc/graph\_tool.html.
-
 \bibitem{pysam}
 {\sc Heger, Andreas} \btxandlong{}\ {\sc Kevin Jacobs}: {\em {{FastQC}}}.
 \newblock source: https://github.com/pysam-developers/pysam, documentation:
   https://pysam.readthedocs.io/en/latest/index.html.
 
-\bibitem{graph_tool_coplexity_find_vertex}
-{\sc Paula~Peixoto, Tiago~de}: {\em {{Mail conversation[graph-tool]: problem
-  building weighted graph}}}, \btxmonseplong{} 2019.
-\newblock source:
-  https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html.
+\bibitem{docs_graph_tool}
+{\sc Peixoto, Tiago de~Paula}: {\em graph-tool 2.35 documentation: graph\_tool
+  - efficient graph analysis and manipulation}.
+\newblock https://graph-tool.skewed.de/static/doc/graph\_tool.html.
 
 \bibitem{tb_stat}
 {\sc Voß, W, Sauerbier~T}: {\em Taschenbuch der Statistik}, \btxchapterlong{}\
@@ -234,6 +241,17 @@
   functions creating iterators for efficient looping}.
 \newblock https://docs.python.org/3/library/itertools.html.
 
+\bibitem{ewing_1998}
+{\sc Ewing, B.} \btxandlong{}\ {\sc P.~Green}: {\em Base-calling of automated
+  sequencer traces using phred. ii. error probabilities.}
+\newblock Genome research, 8:186--94, Mar 1998.
+
+\bibitem{graph_tool_coplexity_find_vertex}
+{\sc Paula~Peixoto, Tiago~de}: {\em {{Mail conversation[graph-tool]: problem
+  building weighted graph}}}, \btxmonseplong{} 2019.
+\newblock source:
+  https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html.
+
 \bibitem{script_binom}
 {\sc Wittenburg, Kim}: {\em Algorithmen und datenstrukturen}, 2017.
 \newblock
@@ -245,12 +263,10 @@
   Python — timecomplexity of various operations}.
 \newblock https://wiki.python.org/moin/TimeComplexity.
 
-\bibitem{danecek_2011}
-{\sc Danecek, Petr}, {\sc Adam Auton}, {\sc Goncalo Abecasis}, {\sc Cornelis~A.
-  Albers}, {\sc Eric Banks}, {\sc Mark~A. DePristo}, {\sc Robert~E. Handsaker},
-  {\sc Gerton Lunter}, {\sc Gabor~T. Marth}, {\sc Stephen~T. Sherry}, {\sc
-  Gilean McVean}, \btxandlong{}\ {\sc Richard Durbin}: {\em The variant call
-  format and vcftools.}
-\newblock Bioinformatics (Oxford, England), 27:2156--8, Aug 2011.
+\bibitem{liu_2010}
+{\sc Liu, Yongchao}, {\sc Bertil Schmidt}, \btxandlong{}\ {\sc Douglas~L.
+  Maskell}: {\em Msaprobs: multiple sequence alignment based on pair hidden
+  markov models and partition function posterior probabilities.}
+\newblock Bioinformatics (Oxford, England), 26:1958--64, Aug 2010.
 
 \end{thebibliography}

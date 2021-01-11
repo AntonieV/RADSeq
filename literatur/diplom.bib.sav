@@ -1069,4 +1069,16 @@
   title-abbreviation = {J Mol Biol},
 }
 
+@InCollection{Durbin1998,
+  author    = {Durbin, Richard and Eddy, Sean R. and Krogh, Anders and Mitchison, Graeme},
+  title     = {Markov chains and hidden Markov models},
+  booktitle = {Biological Sequence Analysis: Probabilistic Models of Proteins and Nucleic Acids},
+  publisher = {Cambridge University Press},
+  year      = {1998},
+  pages     = {47-80},
+  doi       = {10.1017/CBO9780511790492.004},
+  language  = {english},
+  place     = {Cambridge},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}

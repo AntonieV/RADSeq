@@ -1,0 +1,51 @@
+PMID- 20190955
+OWN - NLM
+STAT- PubMed-not-MEDLINE
+DCOM- 20110714
+LR  - 20200929
+IS  - 1875-5488 (Electronic)
+IS  - 1389-2029 (Print)
+IS  - 1389-2029 (Linking)
+VI  - 10
+IP  - 6
+DP  - 2009 Sep
+TI  - Hidden Markov Models and their Applications in Biological Sequence Analysis.
+PG  - 402-15
+LID - 10.2174/138920209789177575 [doi]
+AB  - Hidden Markov models (HMMs) have been extensively used in biological sequence 
+      analysis. In this paper, we give a tutorial review of HMMs and their applications in 
+      a variety of problems in molecular biology. We especially focus on three types of 
+      HMMs: the profile-HMMs, pair-HMMs, and context-sensitive HMMs. We show how these 
+      HMMs can be used to solve various sequence analysis problems, such as pairwise and 
+      multiple sequence alignments, gene annotation, classification, similarity search, 
+      and many others.
+FAU - Yoon, Byung-Jun
+AU  - Yoon BJ
+AD  - Department of Electrical & Computer Engineering, Texas A&M University, College 
+      Station, TX 77843-3128, USA.
+LA  - eng
+PT  - Journal Article
+TA  - Curr Genomics
+JT  - Current genomics
+JID - 100960527
+PMC - PMC2766791
+OTO - NOTNLM
+OT  - Hidden Markov model (HMM)
+OT  - context-sensitive HMM (csHMM)
+OT  - pair-HMM
+OT  - profile-HMM
+OT  - profile-csHMM
+OT  - sequence analysis.
+EDAT- 2010/03/02 06:00
+MHDA- 2010/03/02 06:01
+CRDT- 2010/03/02 06:00
+PHST- 2008/12/04 00:00 [received]
+PHST- 2009/02/28 00:00 [revised]
+PHST- 2009/03/02 00:00 [accepted]
+PHST- 2010/03/02 06:00 [entrez]
+PHST- 2010/03/02 06:00 [pubmed]
+PHST- 2010/03/02 06:01 [medline]
+AID - CG-10-402 [pii]
+AID - 10.2174/138920209789177575 [doi]
+PST - ppublish
+SO  - Curr Genomics. 2009 Sep;10(6):402-15. doi: 10.2174/138920209789177575.

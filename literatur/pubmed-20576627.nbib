@@ -1,0 +1,65 @@
+PMID- 20576627
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20101007
+LR  - 20100806
+IS  - 1367-4811 (Electronic)
+IS  - 1367-4803 (Linking)
+VI  - 26
+IP  - 16
+DP  - 2010 Aug 15
+TI  - MSAProbs: multiple sequence alignment based on pair hidden Markov models and 
+      partition function posterior probabilities.
+PG  - 1958-64
+LID - 10.1093/bioinformatics/btq338 [doi]
+AB  - MOTIVATION: Multiple sequence alignment is of central importance to bioinformatics 
+      and computational biology. Although a large number of algorithms for computing a 
+      multiple sequence alignment have been designed, the efficient computation of highly 
+      accurate multiple alignments is still a challenge. RESULTS: We present MSAProbs, a 
+      new and practical multiple alignment algorithm for protein sequences. The design of 
+      MSAProbs is based on a combination of pair hidden Markov models and partition 
+      functions to calculate posterior probabilities. Furthermore, two critical 
+      bioinformatics techniques, namely weighted probabilistic consistency transformation 
+      and weighted profile-profile alignment, are incorporated to improve alignment 
+      accuracy. Assessed using the popular benchmarks: BAliBASE, PREFAB, SABmark and 
+      OXBENCH, MSAProbs achieves statistically significant accuracy improvements over the 
+      existing top performing aligners, including ClustalW, MAFFT, MUSCLE, ProbCons and 
+      Probalign. Furthermore, MSAProbs is optimized for multi-core CPUs by employing a 
+      multi-threaded design, leading to a competitive execution time compared to other 
+      aligners. AVAILABILITY: The source code of MSAProbs, written in C++, is freely and 
+      publicly available from http://msaprobs.sourceforge.net.
+FAU - Liu, Yongchao
+AU  - Liu Y
+AD  - School of Computer Engineering, Nanyang Technological University, Singapore. 
+      liuy0039@ntu.edu.sg
+FAU - Schmidt, Bertil
+AU  - Schmidt B
+FAU - Maskell, Douglas L
+AU  - Maskell DL
+LA  - eng
+PT  - Journal Article
+DEP - 20100623
+PL  - England
+TA  - Bioinformatics
+JT  - Bioinformatics (Oxford, England)
+JID - 9808944
+SB  - IM
+MH  - *Algorithms
+MH  - Amino Acid Sequence
+MH  - Computational Biology/methods
+MH  - Markov Chains
+MH  - Probability
+MH  - Sequence Alignment/*methods
+MH  - Sequence Analysis, Protein/*methods
+MH  - Software
+EDAT- 2010/06/26 06:00
+MHDA- 2010/10/12 06:00
+CRDT- 2010/06/26 06:00
+PHST- 2010/06/26 06:00 [entrez]
+PHST- 2010/06/26 06:00 [pubmed]
+PHST- 2010/10/12 06:00 [medline]
+AID - btq338 [pii]
+AID - 10.1093/bioinformatics/btq338 [doi]
+PST - ppublish
+SO  - Bioinformatics. 2010 Aug 15;26(16):1958-64. doi: 10.1093/bioinformatics/btq338. Epub 
+      2010 Jun 23.

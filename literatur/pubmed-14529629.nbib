@@ -1,0 +1,66 @@
+PMID- 14529629
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20031110
+LR  - 20190710
+IS  - 0022-2836 (Print)
+IS  - 0022-2836 (Linking)
+VI  - 333
+IP  - 2
+DP  - 2003 Oct 17
+TI  - Sequence alignments and pair hidden Markov models using evolutionary history.
+PG  - 453-60
+AB  - This work presents a novel pairwise statistical alignment method based on an 
+      explicit evolutionary model of insertions and deletions (indels). Indel events of 
+      any length are possible according to a geometric distribution. The geometric 
+      distribution parameter, the indel rate, and the evolutionary time are all maximum 
+      likelihood estimated from the sequences being aligned. Probability calculations are 
+      done using a pair hidden Markov model (HMM) with transition probabilities calculated 
+      from the indel parameters. Equations for the transition probabilities make the pair 
+      HMM closely approximate the specified indel model. The method provides an optimal 
+      alignment, its likelihood, the likelihood of all possible alignments, and the 
+      reliability of individual alignment regions. Human alpha and beta-hemoglobin 
+      sequences are aligned, as an illustration of the potential utility of this pair HMM 
+      approach.
+FAU - Knudsen, Bjarne
+AU  - Knudsen B
+AD  - Department of Zoology, Box 118525, University of Florida, Gainesville, FL 
+      32611-8525, USA. bk@birc.dk
+FAU - Miyamoto, Michael M
+AU  - Miyamoto MM
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PL  - England
+TA  - J Mol Biol
+JT  - Journal of molecular biology
+JID - 2985088R
+RN  - 0 (Hemoglobins)
+RN  - 9007-49-2 (DNA)
+SB  - IM
+MH  - Algorithms
+MH  - Amino Acid Sequence
+MH  - *Biological Evolution
+MH  - Computational Biology
+MH  - DNA/*genetics
+MH  - Genetic Variation
+MH  - Hemoglobins/genetics
+MH  - Humans
+MH  - Likelihood Functions
+MH  - *Markov Chains
+MH  - Models, Genetic
+MH  - Molecular Sequence Data
+MH  - Phylogeny
+MH  - *Recombination, Genetic
+MH  - Sequence Alignment/*statistics & numerical data
+MH  - Sequence Homology, Amino Acid
+EDAT- 2003/10/08 05:00
+MHDA- 2003/11/11 05:00
+CRDT- 2003/10/08 05:00
+PHST- 2003/10/08 05:00 [pubmed]
+PHST- 2003/11/11 05:00 [medline]
+PHST- 2003/10/08 05:00 [entrez]
+AID - S0022283603009987 [pii]
+AID - 10.1016/j.jmb.2003.08.015 [doi]
+PST - ppublish
+SO  - J Mol Biol. 2003 Oct 17;333(2):453-60. doi: 10.1016/j.jmb.2003.08.015.
