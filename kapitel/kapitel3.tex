@@ -2,39 +2,41 @@
 \chapter{Implementierung} \label{sec:alg}
 Für das in Python implementierte RAD-Sequencing-Tool, NodeRAD, wurde zur Workflowintegration das Workflow Management System Snakemake verwendet ~\cite{koester_2012_1, koester_2012_2}. Die einzelnen Analyseschritte werden dabei über Regeln abgebildet. Für jede Regel können neben dem zu verwendenden Script oder Shell-Kommando sowie den Pfadangaben für In- und Output auch zusätzliche Optionen festgelegt werden. Dazu gehören beispielsweise Angaben zu Parametern bzw. Argumenten für die verwendeten Tools, Pfadangaben für Log-Dateien oder die Anzahl der zu verwendenden Threads. \\
 
-Als Input benötigt der Workflow eine Datei im FASTQ-Format (siehe Kap. \ref{subsec:fastq}), welche die single-end Reads der verschiedenen Individuen mit ihren Identifikationsbezeichnungen, der Basensequenz und Angaben zur  Basenqualität enthält. Des Weiteren wird eine Tabelle im tsv-Format benötigt, in der die Zuordnung der Probennamen zu den Individuen und ihren Barcode-Sequenzen definiert ist. Nach dem Preprocessing, der Qualitätskontrolle der Reads und dem Sequenzalignment erfolgt die RAD-Seq-Analyse durch NodeRAD. Hierbei werden die Wahrscheinlichkeiten der Allele-Fractions und der möglichen Loci bestimmt. Die Loci mit der höchsten Wahrscheinlichkeit werden schließlich mit den Sequenzen ihrer Allele in einer Datei im Variant Call Format (VCF) ausgegeben.
+Als Input benötigt der Workflow eine Datei im FASTQ-Format (siehe Kap. \ref{subsec:fastq}), welche die single-end Reads der verschiedenen Individuen mit ihren IDs, der Basensequenz und Angaben zur Basenqualität enthält. Des Weiteren ist eine Tabelle im tsv-Format erforderlich, in der die Zuordnung der Probennamen zu den Individuen und ihren Barcode-Sequenzen definiert ist. Nach dem Preprocessing, der Qualitätskontrolle der Reads und dem Sequenzalignment erfolgt die RAD-Seq-Analyse durch NodeRAD. Hierbei werden die Wahrscheinlichkeiten der Allele-Fractions und der möglichen Loci bestimmt. Die Loci mit der höchsten Wahrscheinlichkeit werden schließlich mit den Sequenzen ihrer Allele in einer Datei im Variant Call Format (VCF) ausgegeben.
 
 \section{Preprocessing} \label{sec:preproc}
 
 Im Preprocessing werden durch das Tool Cutadapt ~\cite{martin_2011} die Reads jedes Individuums anhand ihrer Barcodesequenzen identifiziert und extrahiert (Demultiplexing). Hiernach werden die Barcodesequenzen entfernt (Trimming) und die Reads jedes Individuums in separaten Dateien im FASTQ Format abgelegt. \\
+
 Im Anschluss an das Trimming erfolgt eine Qualitätskontrolle durch das Tool FastQC  ~\cite{andrews_2012}. Dabei werden einige allgemeine Statistiken zu den Rohdaten der Reads generiert, wie beispielsweise zur Basenqualität, zum GC-Gehalt, dem Anteil an Duplikaten oder überrepräsentierten Sequenzen. Durch das Tool MultiQC ~\cite{ewels_2016} wird aus diesen Statistiken und den Log-Dateien von Cutadapt ein Report im HTML-Format mit diversen Plots zur Veranschaulichung erstellt.
 
 \section{Edit-Distanzen} \label{sec:edit}
 
-Für die spätere Konstruktion eines Graphen basierend auf den Edit-Distanzen zwischen den Readsequenzen wird für jedes Individuum zunächst ein Sequenzalignment (vgl. Kap. \ref {subsec:samformat}) mit Hilfe des Tools Minimap2 ~\cite{li_2018} erstellt. Hierbei werden alle Readsquenzen paarweise mit einander verglichen. Das Ergebnis des Mappings wird im SAM/BAM-Format ~\cite{li_2009} ausgegeben und enthält neben den Angaben zur Query- und Referenzsequenz auch den CIGAR-String sowie den NM-Tag mit den Edit-Distanzen. Der CIGAR-String und der NM-Tag definieren wichtige Kanteneigenschaften des späteren Graphen. \\
+Für die spätere Konstruktion eines Graphen basierend auf den Edit-Distanzen zwischen den Readsequenzen wird für jedes Individuum zunächst ein Sequenzalignment (vgl. Kap. \ref {subsec:samformat}) mit Hilfe des Tools Minimap2 ~\cite{li_2018} erstellt. Hierbei werden alle Readsquenzen paarweise mit einander verglichen. Das Ergebnis des Mappings wird anschließend durch Samtools-view ~\cite{li_2009} in das BAM-Format konvertiert und enthält neben den Angaben zur Query- und Referenzsequenz auch den CIGAR-String sowie den NM-Tag mit den Edit-Distanzen. Der CIGAR-String und der NM-Tag definieren wichtige Kanteneigenschaften des späteren Graphen. \\
 
 \section{Konstruktion des Graphen} \label{sec:graph}
+
+NodeRAD benötigt als Input zu jedem Individuum die getrimmten single-end Reads sowie das Sequenzalignment. Zur Konstruktion des Graphen wird die Python-Library graph-tool ~\cite{peixoto_2014} genutzt. Zunächst wird daraus für jedes Individuum ein eigener, gerichteter Graph $ G $ mit $ G = (V,E) $ erstellt. Seine Knoten, $ V $, werden durch die einzelnen Reads repräsentiert. Entsprechend ergeben sich die Knoteneigenschaften aus den Daten der Reads, diese werden den FASTQ-Dateien nach Ausführung von Cutadapt (siehe Kap. \ref{sec:preproc}) entnommen. Die Kanten, $ E $, zwischen den Knoten ergeben sich aus dem Vergleich ihrer Sequenzen im Rahmen des Sequenzalignments mittels Minimap2 (siehe Kap. \ref{sec:edit}).\\
+
+Zusätzlich entnimmt NodeRAD der Konfigurationsdatei des Workflows einige Konstanten und Grenzwerte für die späteren Berechnungen. Zu den Konstanten gehören die Sequenzierfehlerraten für Indels, die Heterozygotiewahrscheinlichkeiten für Substitutionen, Insertionen und Deletionen sowie die Ploidie des Chromosomensatzes der untersuchten Spezies. Diese werden im Script \lstinline|noderad_main.py| im Graphen als Grapheigenschaften abgelegt. Als konfigurierbare Grenzwerte gibt es für NodeRAD einen Schwellenwert \linebreak \lstinline|edit-distance-graph| für die maximal zulässige Edit-Distanz, bei der zwei Knoten noch durch eine Kante verbunden werden sowie Schwellenwerte zum Filtern selten vorkommender Sequenzen (\lstinline|treshold-seq-noise| für \lstinline|small-clusters| und \lstinline|large-clusters|) ober- und unterhalb einer bestimmten Clustergröße (\lstinline|treshold-cluster-size|), die als Hintergrundrauschen nicht in der Berechnung Berücksichtigung finden sollen. \\
+
 \subsection{Knoten des Graphen} \label{subsec:nodes}
-NodeRAD benötigt als Input zu jedem Individuum die getrimmten single-end Reads sowie das Sequenzalignment. Zunächst wird daraus für jedes Individuum ein eigener, gerichteter Graph $ G $ mit $ G = (V,E) $ erstellt. Seine Knoten, $ V $, werden durch die einzelnen Reads repräsentiert. Entsprechend ergeben sich die Knoteneigenschaften aus den Daten der Reads, diese werden den FASTQ-Dateien nach Ausführung von Cutadapt (siehe Kap. \ref{sec:preproc}) entnommen. Die Kanten, $ E $, zwischen den Knoten ergeben sich aus dem Vergleich ihrer Sequenzen im Rahmen des Sequenzalignments mittels Minimap2 (siehe Kap. \ref{sec:edit}).\\
 
-Zusätzlich entnimmt NodeRAD der Konfigurationsdatei des Workflows einige Konstanten und Grenzwerte für die späteren Berechnungen. Zu den Konstanten gehören die verschiedenen Mutationsraten und Heterozygotiewahrscheinlichkeiten für Substitutionen, Insertionen und Deletionen, die Ploidie des Chromosomensatzes der untersuchten Spezies. Diese werden im Script \lstinline|noderad_main.py| im Graphen als Grapheigenschaften abgelegt. Als konfigurierbare Grenzwerte gibt es für NodeRAD einen Schwellenwert \linebreak \lstinline|edit-distance-graph| für die maximal zulässige Edit-Distanz, bei der zwei Knoten noch durch eine Kante verbunden werden sowie Schwellenwerte zum Filtern selten vorkommender Sequenzen (\lstinline|treshold-seq-noise|) ab einer bestimmten Clustergröße \linebreak (\lstinline|treshold-cluster-size|), die als Hintergrundrauschen nicht in der Berechnung Berücksichtigung finden sollen. \\
-
-Zur Konstruktion des Graphen wird die Python-Library graph-tool ~\cite{peixoto_2014} genutzt. Die Knoten werden aus den FASTQ-Daten der getrimmten Reads mittels SeqIO aus der Library Biopython ~\cite{cock_2009_1} ausgelesen und im Graphen mit den Knoteneigenschaften ihrer Basensequenz, einer internen ID sowie Angaben zur Basenqualität abgelegt. Die Codierung des Qualitystrings der Reads variiert je nach verwendeter Plattform. Daher wird er durch SeqIO ausgelesen und für jede Base in ein einheitliches Maß, den Phred Quality Score, decodiert ~\cite{cock_2009_2}.
+Die Knoten werden aus den FASTQ-Daten der getrimmten Reads mittels SeqIO aus der Library Biopython ~\cite{cock_2009_1} ausgelesen und im Graphen mit den Knoteneigenschaften ihrer Basensequenz, einer internen ID sowie Angaben zur Basenqualität abgelegt. Die Codierung des Qualitystrings der Reads variiert je nach verwendeter Plattform. Daher wird er durch SeqIO ausgelesen und für jede Base in ein einheitliches Maß, den Phred Quality Score, decodiert ~\cite{cock_2009_2}.
 Für jeden Knoten werden die Vektoren mit den Phred Qualitiy Scores der Basen als Knoteneigenschaft gespeichert. \\
 
 \subsection{Kanten des Graphen} \label{subsec:edges}
-Die Kanten des Graphen definieren sich durch die mittels Minimap2 erzeugten Sequenzalignments (vgl. Kap. \ref{sec:edit}). Jedes Alignment zweier Reads entspricht im Graphen einer gerichteten Kante $e = (source,\; target)$, die den Vergleich der Query- zur Referenzsequenz repräsentiert. Sie verbindet somit zwei der zuvor aus der FASTQ-Daten erzeugten Knoten. Das Auslesen des SAM/BAM-Formats des Alignmentfiles erfolgt mit Hilfe der Python-Library pysam ~\cite{pysam}. Dabei werden die Edit-Distanzen aus dem NM-Tag genutzt, um nur Kanten in den Graphen aufzunehmen, die unterhalb des durch die Konfigurationsdatei festgelegten Grenzwertes \lstinline|threshold_max_edit_distance| liegen. Neben den Edit-Distanzen wird als weitere Kanteneigenschaft der zu Tupeln decodierte CIGAR-String hinzugefügt. Zusätzlich kann zur Kontrolle oder für eine spätere Verwendung auch der cs-Tag (Kap. \ref{subsec:samformat}) als Kanteneigenschaft gespeichert werden, falls bei Minimap2 die Option zur Erzeugung des cs-Tags aktiviert wurde. Die CIGAR-Tupel werden durch pysam aus dem CIGAR-String (Kap. \ref{subsec:samformat}) geparsed. Hierbei handelt es sich um eine Liste von Tupeln, die jeweils aus Integer-Wertepaaren bestehen. Der erste Wert jedes Tupels gibt die spezifische Operation des Matches oder Mismatches an. So entspricht beispielsweise ein Wert von $ 7 $ oder $ 0 $ einem Match und ein Wert von $ 2 $ einer Deletion. Der zweite Werte jedes Tupels gibt die Anzahl der Basen an, die von der entsprechenden Operation betroffen sind. Die CIGAR-Tupel werden für die Berechnung der Likelihood zwischen zwei Knoten benötigt (Kap. \ref{subsec:phmm_minimap}). Dies erfolgt zum einen zur Bestimmung der Likelihood der Allele-Fractions (Kap. \ref{subsec:lh_allele}) und zum anderen, um die Likelihood der Loci-Kombinationen zu ermitteln. \\
+Die Kanten des Graphen definieren sich durch die mittels Minimap2 erzeugten Sequenzalignments (vgl. Kap. \ref{sec:edit}). Jedes Alignment zweier Reads entspricht im Graphen einer gerichteten Kante $e = (source,\; target)$, die den Vergleich der Query- zur Referenzsequenz repräsentiert. Sie verbindet somit zwei der zuvor aus der FASTQ-Daten erzeugten Knoten. Das Auslesen des Alignmentfiles im BAM-Format erfolgt mit Hilfe der Python-Library pysam ~\cite{pysam}. Dabei werden die Edit-Distanzen aus dem NM-Tag genutzt, um nur Kanten in den Graphen aufzunehmen, die unterhalb des durch die Konfigurationsdatei festgelegten Grenzwertes \lstinline|threshold_max_edit_distance| liegen. Neben den Edit-Distanzen wird als weitere Kanteneigenschaft der zu Tupeln decodierte CIGAR-String hinzugefügt. Zusätzlich kann zur Kontrolle oder für eine spätere Verwendung auch der cs-Tag (Kap. \ref{subsec:samformat}) als Kanteneigenschaft gespeichert werden, falls bei Minimap2 die Option zur Erzeugung des cs-Tags aktiviert wurde. Die CIGAR-Tupel werden durch pysam aus dem CIGAR-String (Kap. \ref{subsec:samformat}) geparsed. Hierbei handelt es sich um eine Liste von Tupeln, die jeweils aus Integer-Wertepaaren bestehen. Der erste Wert jedes Tupels gibt die spezifische Operation des Matches oder Mismatches an. So entspricht beispielsweise ein Wert von $ 7 $ oder $ 0 $ einem Match und ein Wert von $ 2 $ einer Deletion. Der zweite Werte jedes Tupels gibt die Anzahl der Basen an, die von der entsprechenden Operation betroffen sind. Die CIGAR-Tupel werden für die Berechnung der Likelihood zwischen zwei Knoten benötigt (Kap. \ref{subsec:phmm_minimap}). Dies erfolgt zum einen zur Bestimmung der Likelihood der Allele-Fractions (Kap. \ref{subsec:lh_allele}) und zum anderen, um die Likelihood der Loci-Kombinationen zu ermitteln. \\
 
-Nach Abschluss der Graphkonstruktion werden für jedes Individuum Anzahl der Knoten und Kanten des Graphen in den Log-Dateien festgehalten. Als optionaler Output können über die Konfigurationsdatei und die Snakemake-Regel \lstinline|rule noderad| auch die detaillierten Graphinformationen sowie eine Visualisierung des Graphen ausgegeben werden. Die Graphinformationen wie Knoten, Kanten und ihre Eigenschaften können dabei im GraphMl-, DOT-, GML- oder im binären gt-Format gespeichert werden. Die graphische Darstellung wird als pdf-Datei ausgegeben. \\
+Nach Abschluss der Graphkonstruktion werden für jedes Individuum Anzahl der Knoten und Kanten des Graphen in den Log-Dateien festgehalten. Als optionaler Output können über die Konfigurationsdatei und die Snakemake-Regel \lstinline|noderad| auch die detaillierten Graphinformationen sowie eine Visualisierung des Graphen ausgegeben werden. Die Graphinformationen wie Knoten, Kanten und ihre Eigenschaften können dabei im GraphML-, DOT-, GML- oder im binären gt-Format gespeichert werden. Die graphische Darstellung wird als pdf-Datei ausgegeben. \\
 
 \subsection{Bestimmung der Zusammenhangskomponenten} \label{subsec:comp}
 
-Die Bestimmung der Zusammenhangskomponenten erfolgt durch graph-tool ~\cite{docs_graph_tool}. Die Indexnummer jeder Zusammenhangskomponente wird den in ihr enthaltenen Knoten als Knoteneigenschaft hinzugefügt. Zusammenhangskomponenten mit mehr als einem Knoten  werden als neuer eigenständiger Graph initialisiert und in einer Liste abgelegt. Hierfür wird aus dem Graphen für jede Komponente eine gefilterte Sicht erzeugt, die als neues Graph-Object gespeichert wird. \\
+Die Bestimmung der Zusammenhangskomponenten erfolgt ebenfalls durch graph-tool ~\cite{docs_graph_tool}. Die Indexnummer jeder Zusammenhangskomponente wird den in ihr enthaltenen Knoten als Knoteneigenschaft hinzugefügt. Zusammenhangskomponenten mit mehr als einem Knoten  werden als neuer eigenständiger Graph initialisiert und in einer Liste abgelegt. Hierfür wird aus dem Graphen für jede Komponente eine gefilterte Sicht erzeugt, die als neues Graph-Object gespeichert wird. \\
 
 \begin{figure}[H]
 	\begin{center}
-		%\includegraphics[width=0.8\textwidth]{bilder/xxxcomponents_all_5.png}
-		\includegraphics[width=0.95\textwidth]{bilder/components_all_6.png}
+		\includegraphics[width=0.95\textwidth]{bilder/all_components_5.png}
 		\caption{Ausschnitt einiger Zusammenhangskomponenten des Gesamtgraphen }
 		\label{fig:all_comp} 
 	\end{center}
@@ -45,14 +47,11 @@ Da alle weiteren Schritte des Algorithmus jeweils auf den einzelnen Komponenten 
 In der Log-Datei wird die Anzahl der Knoten aller Zusammenhangskomponenten als Histogramm festgehalten. Ebenso wird dort für alle Komponenten mit mehr als einem Element die Anzahl ihrer Knoten, Kanten und Eigenschaften aufgelistet.\\
 
 Über die Konfigurationsdatei und die Snakemake-Regel \lstinline|noderad| können optional auch für die Zusammenhangskomponenten jeweils Visualisierungen (siehe \autoref{fig:comp}) und detaillierte Graphinformationen in den oben genannten Formaten des Graphen (Kap. \ref{subsec:edges}) ausgegeben werden. \\
-
 \begin{figure}[H]
-	%\subfigure{\includegraphics[width=0.49\textwidth]{bilder/xxxcomponents_1.png}}
-	%\subfigure{\includegraphics[width=0.49\textwidth]{bilder/xxxcomponents_4.png}}
-	\subfigure{\includegraphics[width=0.14\textwidth]{bilder/components_3.png}}
-	\subfigure{\includegraphics[width=0.41\textwidth]{bilder/components_2.png}}
-	\subfigure{\includegraphics[width=0.42\textwidth]{bilder/components_5.png}}
-	\caption{Beispiele einzelner Zusammenhangskomponenten}
+	\subfigure{\includegraphics[width=0.22\textwidth]{bilder/small_components_2.png}}
+	\subfigure{\includegraphics[width=0.25\textwidth]{bilder/medium_components_1.png}}
+	\subfigure{\includegraphics[width=0.50\textwidth]{bilder/big_components_2.png}}
+	\caption{Beispiele von einzelnen Zusammenhangskomponenten unterschiedlicher Größe}
 	\label{fig:comp}
 \end{figure}
 
@@ -63,9 +62,9 @@ Zudem kann optional auch der gesamte Graph mit den Komponentenindizes als Knoten
 
 Die einzelnen Zusammenhangskomponenten repräsentieren einen oder mehrere Loci. Alle weiteren Berechnungen aus diesem und den folgenden Kapiteln ~\ref{sec:max_lh_loci} und ~\ref{sec:vcf} werden für jede Komponente einzeln durchgeführt, dabei sollen die wahrscheinlichsten Allelsequenzen und die dazugehörigen Loci identifiziert werden. Die hierfür implementierten Funktionen finden sich im Modul \lstinline|likelihood_operations.py|. \\
 
-Zunächst werden mit der Funktion \lstinline|get_candidate_alleles()| aus dem Modul \linebreak \lstinline|likelihood_operations.py| die Allelsequenzen ermittelt, die in der Zusammenhangskomponenten vorkommen. Für deterministischere Ergebnisse werden diese als lexikographisch sortierte Liste erzeugt. Übersteigt die Größe eines Clusters, d.h. die Knotenanzahl einer Zusammenhangskomponenten, den in der Konfigurationsdatei als \lstinline|treshold-cluster-size| festgelegten Grenzwert, so wird von allen vorkommenden Sequenzen des Clusters zunächst die absolute Häufigkeit bestimmt. Anschließend werden nur diejenigen Sequenzen lexikographisch sortiert zurückgegeben, die den \lstinline|treshold-seq-noise| Schwellenwert aus der Konfigurationsdatei überschreiten. Dies dient dazu, bei großen Clustern Komplexität und Rechenaufwand zu reduzieren, da davon auszugehen ist, dass innerhalb eines großen Clusters echte Varianten einer Sequenz mehrfach vorkommen, wohingegen Artefakte und Sequenzierfehler eher vereinzelt auftreten. Dieses sog. Rauschen kann durch Anpassung der Schwellwerte in der Konfigurationsdatei herausgefiltert werden. Da bei kleineren Clustern auch einmalig registrierte Varianten einer Sequenz von Bedeutung sein können, soll der Filtervorgang erst ab einer einstellbaren Clustergröße durchgeführt werden. \\
+Zunächst werden mit der Funktion \lstinline|get_candidate_alleles()| aus dem Modul \linebreak \lstinline|likelihood_operations.py| die Allelsequenzen ermittelt, die in der Zusammenhangskomponenten vorkommen und deren Häufigkeiten bestimmt. Übersteigt die Größe eines Clusters, d.h. die Knotenanzahl einer Zusammenhangskomponenten, den in der Konfigurationsdatei unter \lstinline|treshold-seq-noise| festgelegten Grenzwert \lstinline|large-clusters|, so werden nur diejenigen Sequenzen als Kandidatenallele ausgewählt, deren Häufigkeit über dem \lstinline|large-clusters| Schwellenwert liegt. Dies dient dazu, bei großen Clustern Komplexität und Rechenaufwand zu reduzieren, da davon auszugehen ist, dass innerhalb eines großen Clusters echte Varianten einer Sequenz mehrfach vorkommen, wohingegen Artefakte und Sequenzierfehler eher vereinzelt auftreten. Dieses sog. Rauschen kann durch Anpassung der Schwellwerte in der Konfigurationsdatei herausgefiltert werden. Ebenso kann es jedoch vorkommen, dass auch bei kleinen Clustern viele verschiedene Sequenzen auftreten, so dass es durch eine hohe Anzahl von Kandidatenallele zu einem erheblichen Rechenaufwand bei der späteren Analyse kommen kann. Um dem entgegenwirken, kann durch einen weiteren unter \lstinline|treshold-seq-noise| festgelegten Grenzwert \lstinline|small-clusters| die Mindesthäufigkeit der Sequenzen bei kleineren Clustern unterhalb von \lstinline|treshold-cluster-size| angegeben werden. Da bei kleinen Clustern auch einmalig registrierte Varianten einer Sequenz von Bedeutung sein können, sollte der Filtervorgang hier möglichst gering gehalten werden. Gilt \lstinline|small-clusters = 1|, so wird die Option für kleine Cluster vollständig deaktiviert. \\
 
-Aus der so erzeugten Liste lexikographisch sortierter Kandidatenallele $ A_{cand} $ der Länge $ n_{cand} $ sollen nun die möglichen Häufigkeitsverteilungen in Abhängigkeit von der Ploidie bestimmt werden. Hierzu muss zunächst die aufgrund der Ploidie tatsächlich zu erwartende Anzahl von Allelen $n_{alleles}$ bestimmt werden. Dies geschieht durch die Funktion \lstinline|get_max_parsimony_n_alleles()| in \lstinline|likelihood_operations.py|. Dadurch werden unnötige bzw. nicht mögliche Allelkombinationen eingespart und in der weiteren Berechnung nicht berücksichtigt. Ist die Ploidie $ \phi $ höher als die Anzahl der Kandidatenallele, so muss es mindestens genauso viele und bei Homozygotie auch mehrfach vorkommende Allele geben, damit die Ploidie erfüllt werden kann. Es muss also gelten $ n_{alleles} = \phi $. Wurden dagegen mehr Allele beobachtet als aufgrund der Ploidie möglich sind und die Ploidie ist Teiler von $n_{cand}$, so können alle beobachteten Allele auch tatsächlich vorkommen, da die Zusammenhangskomponente auch mehrere Loci enthalten kann. Es gilt dann also $ n_{alleles} = n_{cand} $. Ist dagegen die Anzahl der beobachteten Allele höher als die Ploidie, aber nicht ganzzahlig durch die Ploidie teilbar, so muss die Anzahl der Allele entsprechend erhöht werden. Das heißt, es müssen tatsächlich so viele Allele vorkommen, dass eine korrekte Ploidie erreicht wird, dass also die Ploidie eine Teiler von $ n_{alleles} $ wird. Die Anzahl der Allele muss also um die Ploidie abzüglich des Restes aus der Restdivision erhöht werden und es gilt $ n_{alleles} = n_{cand} + \phi - (n_{cand} \mod \phi)$. \\
+Die Kandidatenallele werden anschließend für deterministischere Ergebnisse lexikographisch sortiert und als Liste $ A_{cand} $ der Länge $ n_{cand} $ von \lstinline|get_candidate_alleles()| zurückgegeben. Aus dieser Liste sollen nun die möglichen Häufigkeitsverteilungen in Abhängigkeit von der Ploidie bestimmt werden. Hierzu muss zunächst die aufgrund der Ploidie tatsächlich zu erwartende Anzahl von Allelen $n_{alleles}$ bestimmt werden. Dies geschieht durch die Funktion \lstinline|get_max_parsimony_n_alleles()| in \lstinline|likelihood_operations.py|. Dadurch werden unnötige bzw. nicht mögliche Allelkombinationen eingespart und in der weiteren Berechnung nicht berücksichtigt. Ist die Ploidie $ \phi $ höher als die Anzahl der Kandidatenallele, so muss es mindestens genauso viele und bei Homozygotie auch mehrfach vorkommende Allele geben, damit die Ploidie erfüllt werden kann. Es muss also gelten $ n_{alleles} = \phi $. Wurden dagegen mehr Allele beobachtet als aufgrund der Ploidie möglich sind und die Ploidie ist Teiler von $n_{cand}$, so können alle beobachteten Allele auch tatsächlich vorkommen, da die Zusammenhangskomponente auch mehrere Loci enthalten kann. Es gilt dann also $ n_{alleles} = n_{cand} $. Ist dagegen die Anzahl der beobachteten Allele höher als die Ploidie, aber nicht ganzzahlig durch die Ploidie teilbar, so muss die Anzahl der Allele entsprechend erhöht werden. Das heißt, es müssen tatsächlich so viele Allele vorkommen, dass eine korrekte Ploidie erreicht wird, dass also die Ploidie eine Teiler von $ n_{alleles} $ wird. Die Anzahl der Allele muss also um die Ploidie abzüglich des Restes aus der Restdivision erhöht werden und es gilt $ n_{alleles} = n_{cand} + \phi - (n_{cand} \mod \phi)$. \\
 
 Mit Hilfe der tatsächlich zu erwarteten Anzahl von Allelen $ n_{alleles} $ können nun alle Kombinationen möglicher Häufigkeitsverteilungen der Allele bestimmt werden (Funktion \linebreak \lstinline|get_candidate_vafs()| im Modul \lstinline|likelihood_operations.py|). Diese Häufigkeitsverteilungen werden auch als Allele-Fractions bezeichnet. Hierfür werden zunächst alle möglichen Allelkombinationen ermittelt. Dies erfolgt nach dem Urnenmodell unter Auswahl von $ n_{alleles} $ Elementen mit Zurücklegen aus insgesamt $ n_{cand} $ verschiedenen Elementen und ohne Berücksichtigung der Reihenfolge. Dadurch berechnet sich die Anzahl möglicher Kombination nach \eqref{eqn:3-1} aus dem  Binomialkoeffizienten der $k$-ten Ordnung aus $ n $ Elementen mit Zurücklegen ~\cite{tb_stat,bronst}.
 \begin{equation} \label{eqn:3-1}
@@ -115,23 +114,23 @@ h_{a_{i}} = \frac{H_{a_{i}}} {n_{alleles}}
 
 In diesem Kapitel soll diejenige Allel-Fraction bestimmt werden, welche die beobachteten Reads am besten erklärt (vgl. Kap. \ref{subsec:sol_allele_lh}). Für jeden Read wird dafür zunächst die Wahrscheinlichkeit bestimmt, dass der Read durch Sequenzierfehler aus einem der Kandidatenallele entstanden ist. Hiernach wird für jeden Read die Wahrscheinlichkeit errechnet, diesen anhand einer gegebenen Allele-Fraction zu beobachten. Diese Berechnungen werden für alle Allele-Fractions durchgeführt. Aus der so gewonnenen Lösungsmenge wird die Allel-Fraction mit der höchsten Likelihood für die spätere Zuordnung der Loci (Kap. \ref{sec:max_lh_loci}) ausgewählt. \\ 
 
-Zunächst wird in der Funktion \lstinline|get_allele_likelihood_read()| eine Kante zwischen dem betrachteten Read und dem Kandidatenallel gesucht. Während der Ausführung werden die Sequenzen und Likelihoods der bereits gefundenen Read-Kandidatenallel-Paare in einem Dictionary abgelegt. Als Key wird dabei das Tupel aus Read- und Allelsequenz verwendet, die berechnete Likelihood wird als Value eingetragen. Dies ermöglicht eine schnellere und effizientere Suche einer passenden Kante. \\
+Zunächst wird in der Funktion \lstinline|get_allele_likelihood_read()| eine Kante zwischen dem betrachteten Read und dem Kandidatenallel gesucht. Während der Ausführung werden die Sequenzen und Likelihoods der bereits gefundenen Read-Kandidatenallel-Paare in einem Dictionary abgelegt. Als Key wird dabei das Tupel aus der Read-ID und der Allelsequenz verwendet, die berechnete Likelihood wird als Value eingetragen. Da später für die Likelihoodberechnungen der verschiedenen Allel-Fraktions mehrfach die Werte der Read-Allel-Likelihoods verwendet werden, ermöglicht die Verwendung eines Dictionary eine schnellere und effizientere Suche der passenden Kante ohne wiederholte Likelihoodberechnung. \\
 
-Existiert ein Read-Kandidatenallel-Paar noch kein Eintrag im Dictionary, so werden zuerst alle ausgehenden Nachbarn des Reads hinsichtlich ihrer in den Knoteneigenschaften abgelegten Sequenz geprüft. Besitzt einer der ausgehenden Nachbarknoten die Sequenz des Kandidatenallels, so wird die Likelihood durch \lstinline|get_alignment_likelihood()| berechnet (Algorithmus \ref{alg:lh_read}), ein entsprechender Eintrag im Dictionary angelegt und die Likelihood zurückgegeben.\\
+Existiert für ein Read-Kandidatenallel-Paar noch kein Eintrag im Dictionary, so werden zuerst alle ausgehenden Nachbarn des Reads hinsichtlich ihrer in den Knoteneigenschaften abgelegten Sequenz geprüft. Besitzt einer der ausgehenden Nachbarknoten die Sequenz des Kandidatenallels, so wird die Likelihood durch \lstinline|get_alignment_likelihood()| berechnet (Algorithmus \ref{alg:lh_read}), ein entsprechender Eintrag im Dictionary angelegt und die Likelihood zurückgegeben.\\
 
 Gibt es keine solche Kante, die vom Read zu einem Knoten mit Kandidatenallelsequenz führt, so wird geprüft, ob es eine Kante in umgekehrter Richtung gibt. Hierfür werden nun alle eingehenden Nachbarn des Reads betrachtet. Findet sich unter ihnen ein Knoten mit der gesuchten Kandidatenallelsequenz, so wird mit \lstinline|get_alignment_likelihood()| die Likelihood berechnet, wobei die Verwendung der Gegenrichtung durch das Argument \lstinline|reverse=True| markiert wird. Existiert auch keine entgegengesetzt gerichteten Kante, so wird der Wert $0$ zurückgegeben.\\
 
-Zur Veranschaulichung ist der beschriebene Algorithmus zudem in Pseudocode dargestellt (Algorithmus \ref{alg:r-a-lh}). Dabei sind $ C_{k} \in \{C_{1}, \dots ,C_{p}\} $ der Subgraph einer Zusammenhangskomponente, $ r_{i} \in C_{k} $ der Knoten des Reads mit der Sequenz $s_{r_{i}}$ und $ a_{j} \in A_{cand} $ ein Kandidatenallel mit der Sequenz $ s_{a_{j}} $, wobei $ k,i,j \in \mathds{N} $. Das oben beschriebene Dictionary $dict$ besitzt als Keys die Tupel der Sequenzen $(s_{r_{i}}, s_{a_{i}}) $ und als Values die Likelihoods $L_{r_{i}, a_{i}}$, so dass gilt $ ((s_{r_{i}}, s_{a_{i}}), L_{r_{i}, a_{i}})  \in dict $. Die Verwendung fester Knoten- oder Kanteneigenschaften ist durch eckige Klammern gekennzeichnet, so ruft beispielsweise $r_{i}[q\_values]$ die $ q $-Werte des Phred Quality Scores von $r_{i}$ auf.\\
+Zur Veranschaulichung ist der beschriebene Algorithmus zudem in Pseudocode dargestellt (Algorithmus \ref{alg:r-a-lh}). Dabei sind $ C_{k} \in \{C_{1}, \dots ,C_{p}\} $ der Subgraph einer Zusammenhangskomponente, $ r_{i} \in C_{k} $ der Knoten des Reads mit der ID $ idx_{r_{i}}$ und $ a_{j} \in A_{cand} $ ein Kandidatenallel mit der Sequenz $ s_{a_{j}} $, wobei $ k,i,j \in \mathds{N} $. Das oben beschriebene Dictionary $dict$ besitzt als Keys die Tupel der Sequenzen $(idx_{r_{i}}, s_{a_{i}}) $ und als Values die Likelihoods $L_{r_{i}, a_{i}}$, so dass gilt $ ((idx_{r_{i}}, s_{a_{i}}), L_{r_{i}, a_{i}})  \in dict $. Die Verwendung fester Knoten- oder Kanteneigenschaften ist durch eckige Klammern gekennzeichnet, so ruft beispielsweise $r_{i}[q\_values]$ die $ q $-Werte des Phred Quality Scores von $r_{i}$ auf.\\
 
 \renewcommand{\algorithmiccomment}[1]{\hfill$\triangleright$\textit{#1}}
 \begin{algorithm}[H]
 	\caption{Suche eines Alignments zwischen Read und Kandidatenallel} \label{alg:r-a-lh}
 	\begin{algorithmic}[1]	
 		\Function{get\_allele\_likelihood\_read}{$ C_{k} $, $ r_{i} $, $ s_{a_{j}} $, $ dict $}
-		\State $ s_{r_{i}} \gets r_{i}[sequence]$
-		\State $ m\_{rates} \gets C_{k}[m_{sub}] \cup C_{k}[m_{ins}] \cup C_{k}[m_{del}] $
+		\State $ idx_{r_{i}} \gets r_{i}[name]$
 		\State $ qual \gets r_{i}[q\_values] $
-		\If{$\exists (s_{r_{i}}, s_{a_{i}}): ((s_{r_{i}}, s_{a_{i}}), L_{r_{i}, a_{i}}) \in dict$}
+		\State $ \epsilon \gets C_{k}[\epsilon_{ins}] \cup C_{k}[\epsilon_{del}] $
+		\If{$\exists (idx_{r_{i}}, s_{a_{i}}): ((idx_{r_{i}}, s_{a_{i}}), L_{r_{i}, a_{i}}) \in dict$}
 		\State \Return $ L_{r_{i}, a_{i}} $
 		\EndIf		
 		\State $ out\_neighbors \gets get\_out\_neighbors(r_{i})$
@@ -139,7 +138,7 @@ Zur Veranschaulichung ist der beschriebene Algorithmus zudem in Pseudocode darge
 		\If{$ s_{a_{j}} = out\_neighbor[sequence] $}
 		\State $ cig \gets edge(r_{i}, out\_neighbor)[cigar\_tuples]$		
 		\State $ rev \gets False $
-		\State $ L_{r_{i}, a_{i}} \gets get\_alignment\_likelihood(m\_{rates},\, cig,\, qual,\, rev)$
+		\State $ L_{r_{i}, a_{i}} \gets get\_alignment\_likelihood(\epsilon,\, cig,\, qual,\, rev)$
 		\algorithmiccomment{Alg. \ref{alg:lh_read}}
 		\State $ dict \gets dict \, \cup ((r_{i}, out\_neighbor[sequence]), L_{r_{i}, a_{i}})  $
 		\State \Return $L_{r_{i}, a_{i}}$   
@@ -150,7 +149,7 @@ Zur Veranschaulichung ist der beschriebene Algorithmus zudem in Pseudocode darge
 		\If{$ s_{a_{j}} =  in\_neighbor[sequence] $}		
 		\State $ cig \gets edge(in\_neighbor, r_{i})[cigar\_tuples]$		
 		\State $ rev \gets True $
-		\State $ L_{r_{i}, a_{i}} \gets get\_alignment\_likelihood(m\_{rates},\, cig,\, qual,\, rev)$
+		\State $ L_{r_{i}, a_{i}} \gets get\_alignment\_likelihood(\epsilon,\, cig,\, qual,\, rev)$
 		\algorithmiccomment{Alg. \ref{alg:lh_read}}
 		\State $ dict \gets dict \, \cup ((r_{i}, in\_neighbor[sequence]), L_{r_{i}, a_{i}})  $
 		\State \Return $L_{r_{i}, a_{i}}$  
@@ -163,61 +162,52 @@ Zur Veranschaulichung ist der beschriebene Algorithmus zudem in Pseudocode darge
 
 Die eigentliche Likelihoodberechnung erfolgt in der Methode \linebreak \lstinline|get_alignment_likelihood()| (Algorithmus \ref{alg:lh_read}) nach Formel \eqref{eqn:2-15} des Modells. Wie in Kap. \ref{subsec:phmm_minimap} beschrieben wird hierfür die Approximation des PairHMM aus den Sequenzalignments von Minimap2 verwendet.\\
 
-Von der in \lstinline|get_allele_likelihood_read()| ermittelten Kante zwischen Read und Kandidatenallel werden der Funktion die CIGAR-Tupel aus den Kanteneigenschaften, der Vektor mit dem  Phred Quality Scores $Q =(q_{1}, \dots, q_{m})$ aus den Knoteneigenschaften (siehe Kap. \ref {subsec:nodes}) sowie die Kantenrichtung als boolescher Wert übergeben. Aus den Phred Quality Scores des Reads wird zunächst die geschätzte Fehlerwahrscheinlichkeit $ P=(p_{1}, \dots, p_{m}) $ für jede Base nach Formel \eqref{eqn:3-3} errechnet ~\cite{ewing_1998}.  
+Von der in \lstinline|get_allele_likelihood_read()| ermittelten Kante zwischen Read und Kandidatenallel werden der Funktion die CIGAR-Tupel aus den Kanteneigenschaften, der Vektor mit dem  Phred Quality Scores $Q =(q_{1}, \dots, q_{m})$ aus den Knoteneigenschaften des Reads (siehe Kap. \ref {subsec:nodes}) sowie die Kantenrichtung als boolescher Wert übergeben. Aus den Phred Quality Scores des Reads wird zunächst die geschätzte Fehlerwahrscheinlichkeit $ P=(p_{1}, \dots, p_{m}) $ für jede Base nach Formel \eqref{eqn:3-3} errechnet ~\cite{ewing_1998}.  
 \begin{equation} \label{eqn:3-3}
 \tag{3-3}
 p_{i} = 10^{\frac{-q_{i}}{10}}
 \end{equation}
 
-Im Anschluss wird aus den p-Werten der Basenqualität für jede Base des Reads die Wahrscheinlichkeit errechnet, dass es sich im Falle eines Matches um die korrekte Base handelt \eqref{eqn:2-6} bzw. im Falle eines Mismatches, dass es sich um einen Sequenzierfehler \eqref{eqn:2-8} oder um eine Mutation handelt \eqref{eqn:2-7}. Entsprechend den in den CIGAR-Tupeln angegebenen Operationen wird für die betreffenden Basen die Likelihood nach \eqref{eqn:2-9} berechnet. Das Produkt der Likelihoods der einzelnen Basen ergibt schließlich die Likelihood zwischen Read und Allel \eqref{eqn:2-5}.\\
+Im Anschluss wird aus den p-Werten der Basenqualität für jede Base des Reads die Wahrscheinlichkeit errechnet, dass es sich im Falle eines Matches um die korrekte Base handelt \eqref{eqn:2-6} bzw. im Falle eines Mismatches, dass sich der Read durch Sequenzierfehler aus dem Allel erklären lässt \eqref{eqn:2-8}. Für Indels werden die empirisch ermittelten Sequenzierfehlerraten von Illumina für Sequenzierplattformen~\cite{schirmer_2016} aus der Konfigurationsdatei unter dem Parameter \lstinline|errors-per-base| entnommen. Entsprechend den in den CIGAR-Tupeln angegebenen Operationen wird für jede Base die Likelihood berechnet. Das Produkt der Likelihoods der einzelnen Basen ergibt schließlich die Likelihood zwischen Read und Allel \eqref{eqn:2-5}.\\
 
 Bei Bedarf kann die Methode \lstinline|get_alignment_likelihood()| auch  die Likelihood der entgegengesetzt gerichteten Kante bestimmen. Dabei wird die Querysequenz als Referenzsequenz betrachtet und umgekehrt. Dies ist über das boolesche Argument \lstinline|reverse| steuerbar. Gilt \lstinline|reverse = True|, so werden für die übergebenen CIGAR-Tupel Insertionen zu Deletionen und Deletionen zu Insertionen umgewandelt.\\
 
-Zur Veranschaulichung ist die Methode in Algorithmus \ref{alg:lh_read} zusätzlich als Pseudocode verfasst. Die Mutationsraten für Substitutionen, Insertionen bzw. Deletionen aus den Grapheigenschaften werden dort mit $ m_{sub} $, $ m_{ins} $ bzw. $ m_{del} $ bezeichnet, der Vektor der Phred Quality Scores der Querysequenz mit $q_query$
+Zur Veranschaulichung ist die Methode in Algorithmus \ref{alg:lh_read} zusätzlich als Pseudocode verfasst. Die Wahrscheinlichkeiten für Sequenzierfehler bei Insertionen und Deletionen aus den Grapheigenschaften werden dort mit $ \epsilon_{ins} $ und $ \epsilon_{del} $ bezeichnet, der Vektor der Phred Quality Scores der Querysequenz mit $q_{query}$
 \newpage
 \begin{algorithm}[H]
 	\caption{Berechnung der Likelihood zwischen Read und Kandidatenallel}  \label{alg:lh_read}
 	\begin{algorithmic}[1]	
-		\Function{get\_alignment\_likelihood}{$ m_{sub} $, $ m_{ins} $, $ m_{del} $, $ cigar\_tuples $, $ q_{query} $, reverse}
-		\State $ likelihood \gets 1.0 $, $ index \gets 0 $
-		\State $ p_{query} \gets [\;] $
+		\Function{get\_alignment\_likelihood}{$ \epsilon_{ins} $, $ \epsilon_{del} $, $ cigar\_tuples $, $ q_{query} $, reverse}
+		\State $ likelihood \gets 1.0 $, $ index \gets 0 $, $ p_{query} \gets [\;] $
 		\For{$ q_{i} \in q_{query} $}
 		\State $p_{query} \gets p_{query}\, \cup \, (10^{\frac{-q_{i}}{10}}) $
 		\EndFor			
 		\If {$reverse$}
-		\State swap values of $ m_{ins} $ and $ m_{del} $
+		\State swap values of $ \epsilon_{ins} $ and $ \epsilon_{del} $
 		\EndIf
 		\ForAll {$ (operation, length) \in cigar\_tuples $}
-		\If {$operation \in match $}
-		\While{$ index < length $}
+		\While{$ index < (index + length) $}		
+		\If {$operation \in match $}		
 		\State $ likelihood\, \gets likelihood \,\cdotp (1-p_{query}[index]) $
-		\State $ index \gets index + 1 $
-		\EndWhile
 		\EndIf
-		\If {$operation \in mismatch $}
-		\State $ m_{rate} \gets 0 $
 		\If {$operation \in substitution $}
-		\State $ m_{rate} \gets m_{sub} $
+		\State $ likelihood\, \gets likelihood \,\cdotp \frac{1}{3} \,\cdotp p_{query}[index] $
 		\EndIf
 		\If {$operation \in insertion $}
-		\State $ m_{rate} \gets m_{ins} $
+		\State $ likelihood\, \gets likelihood \,\cdotp \epsilon_{ins}$
 		\EndIf
 		\If {$operation \in deletion $}
-		\State $ m_{rate} \gets m_{del} $
+		\State $ likelihood\, \gets likelihood \,\cdotp \epsilon_{del} $
 		\EndIf
-		\While{$ index < length $}
-		\State $ likelihood\, \gets likelihood \,\cdotp (1 - m_{rate})\,\cdotp \frac{1}{3} \,\cdotp p_{query}[index] \, +  m_{rate}\,\cdotp $         
-		\State \hspace{63pt}  $ (1 - p_{query}[index]) $ 		        
-		\State $ index \gets index + 1 $
+		\State $index \gets index + 1 $
 		\EndWhile
-		\EndIf
 		\EndFor
 		\State \Return $likelihood$
 		\EndFunction		
 	\end{algorithmic}
 \end{algorithm}
 
-Durch \lstinline|get_allele_likelihood_read()| und \lstinline|get_alignment_likelihood()| wurden also die Wahrscheinlichkeiten jedes Reads bestimmt, dass er von den verschiedenen Allelen der Zusammenhangskomponente stammt (siehe oben). Die Wahrscheinlichkeiten im Bezug auf jedes Allel sollen nun in die zuvor bestimmten Allele-Fractions (siehe Kap. \ref{subsec:cand_allele}) nach Formel \eqref{eqn:2-17} einbezogen werden. In der Funktion \lstinline|calc_vafs_likelihood_read()| aus dem Modul \lstinline|likelihood_operations.py| wird also für jeden Read die Wahrscheinlichkeit berechnet, diesen unter der gegebenen Allel-Fraction zu beobachten. Dazu wird über die relativen Häufigkeiten jedes Allels der Allele-Fraction iteriert und ihr Produkt mit der Readlikelihood aufsummiert. \\
+Durch \lstinline|get_allele_likelihood_read()| und \lstinline|get_alignment_likelihood()| wurden also die Wahrscheinlichkeiten jedes Reads bestimmt, dass er von den verschiedenen Allelen der Zusammenhangskomponente stammt (siehe oben). Die Wahrscheinlichkeiten im Bezug auf jedes Allel sollen nun in die zuvor bestimmten Allele-Fractions (siehe Kap. \ref{subsec:cand_allele}) nach Formel \eqref{eqn:2-17} einbezogen werden. In der Funktion \lstinline|calc_vafs_likelihood_read()| aus dem Modul \lstinline|likelihood_operations.py| wird nun für jeden Read die Wahrscheinlichkeit berechnet, diesen unter der gegebenen Allel-Fraction zu beobachten. Dazu wird über die relativen Häufigkeiten jedes Allels der Allele-Fraction iteriert und ihr Produkt mit der Readlikelihood aufsummiert. \\
 
 Aus dem Produkt über alle Reads wird anschließend für die Allele-Fraction nach Formel \eqref{eqn:2-18} in \lstinline|calc_vafs_likelihood()| die Gesamtwahrscheinlichkeit errechnet. \\
 
@@ -316,7 +306,7 @@ Das Ergebnis der Indikatorfunktion hängt allein von der absoluten Häufigkeiten
 				Für Kombinationen der Länge $p$ mit Wiederholung aber ohne Beachtung der Reihenfolge gilt, dass sich jedes Element bis zu $p$ Mal wiederholen kann. Da die Reihenfolge nicht beachtet werden soll, gilt außerdem dass jede Häufigkeitsverteilung der Elemente innerhalb einer Kombination in der Menge aller erzeugten Kombinationen nur genau einmal vorkommen darf. Andernfalls wäre dies eine Beachtung der Reihenfolge. Daraus kann abgeleitet werden:
 				\begin{enumerate}
 					\item Die absoluten Häufigkeiten einer Kombination sind in der Menge der erzeugten Kombinationen zu einer gegebenen Anzahl von Allelen und einer gegebenen Ploidie einzigartig.
-					\item Nach Formel \ref{eqn:3-2} sind somit auch die relativen Häufigkeiten einer Allel-Fraction in der Menge erzeugten Allele-Fractions zu einer gegebenen Anzahl von Allelen und einer gegebenen Ploidie einzigartig.
+					\item Nach Formel \ref{eqn:3-2} sind somit auch die relativen Häufigkeiten einer Allel-Fraction in der Menge der erzeugten Allele-Fractions zu einer gegebenen Anzahl von Allelen und einer gegebenen Ploidie einzigartig.
 				\end{enumerate}
 				Es bleibt also zu beweisen, dass die Bedingung der Indikatorfunktion für genau eine Allel-Fraction gilt:
 				\begin{equation} \label{}
@@ -329,7 +319,7 @@ Das Ergebnis der Indikatorfunktion hängt allein von der absoluten Häufigkeiten
 				&\ \Rightarrow z_{l} = 1 \Leftrightarrow \forall a_{i} \in A_{cand} : H_{a_{i}} = (H_{a_{i}})_{max\_lh} \\
 				\end{aligned}
 				\end{equation}
-				Für die Indikatorfunktion gilt also, dass ihre Bedingung nur dann erfüllt wird, wenn die absoluten Häufigkeiten der Allele einer Allelkombination den relativen Häufigkeiten der Allel-Fraction mit maximaler Likelihood $ \Theta_{max\_lh} $ entsprechen. Da absolute und relative Häufigkeitsverteilungen jeweils nur genau einmal in Kombinationen mit Wiederholung und ohne Beachtung der Reihenfolge auftreten, gibt es auch nur eine Allelkombination, welche über die Indikatorfunktion die Häufigkeitsverteilung der Allel-Fraction mit maximaler Likelihood erfüllen kann.
+				Für die Indikatorfunktion gilt also, dass ihre Bedingung nur dann erfüllt wird, wenn die absoluten Häufigkeiten der Allele einer Allelkombination den relativen Häufigkeiten der Allel-Fraction mit maximaler Likelihood $ \Theta_{max\_lh} $ entsprechen. Da absolute und relative Häufigkeitsverteilungen jeweils nur genau einmal bei den Kombinationen mit Wiederholung und ohne Beachtung der Reihenfolge auftreten, gibt es auch nur eine Allelkombination, welche über die Indikatorfunktion die Häufigkeitsverteilung der Allel-Fraction mit maximaler Likelihood erfüllen kann.
 			\end{beweis}
 	}}
 \end{center}
@@ -340,28 +330,38 @@ In diesem Schritt sollen schließlich für die Allel-Fraction mit maximaler Like
 
 Für jede Loci-Kombination aus \lstinline|get_candidate_loci()| wird aus der Funktion \linebreak \lstinline|calc_loci_likelihoods()| heraus zunächst geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten Allelfraktion mit maximaler Likelihood zuordnen lassen. Dies geschieht mit Hilfe der Indikatorfunktion \lstinline|indicator_constrait()| nach Formel \eqref{eqn:2-19}. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Likelihood der Loci-Kombination aus den Heterozygotiewahrscheinlichkeiten der darin enthaltenen Allele berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben. Wie bereits besprochen, ist durch die Änderungen an der Implementierung von \lstinline|get_candidate_loci()| dieser Schritt nicht mehr notwendig und wurde nur belassen, um das dahinterstehende Modell strukturierter zeigen zu können.\\
 
-Für die Likelihoodberechnung müssen nun einer Loci-Kombination zunächst die passenden Allelsequenzen zugeordnet werden. Die einzelnen Allele innerhalb einer Loci-Kombina-tion werden durch Integerwerte repräsentiert, die dem Index des dazugehörigen Kandidatenalleles entsprechen (siehe Kap. \ref{subsec:cand_allele}). Zu jeder Loci-Kombination wird also eine Liste $ L_{alleles} $ generiert, welche die Kandidatenallelsequenzen der einzelnen Loci als Sublisten beinhaltet.\\
+Für die Likelihoodberechnung müssen nun einer Loci-Kombination zunächst die passenden Allelsequenzen zugeordnet werden. Die einzelnen Allele innerhalb einer Loci-Kombina-tion werden durch Integerwerte repräsentiert, die dem Index des dazugehörigen Kandidatenalleles entsprechen (siehe Kap. \ref{subsec:cand_allele}). Zu jeder Loci-Kombination wird also eine Liste $ S_{\,loc,\, alleles} $ generiert, welche die Kandidatenallelsequenzen der einzelnen Loci als Sublisten beinhaltet.\\
 
 Die Berechnung der Likelihood ist im vorliegenden Modell zunächst nur für diploide Organismen möglich. Aanalog zur Likelihoodberechnung beim paarweisen Vergleich der Reads unter Berücksichtigung der Sequenzierfehlerwahrscheinlichkeit (Kap. \ref{subsec:edges}) erfolgt auch die Likelihoodberechnung für einer Loci-Kombination durch den paarweisen Vergleich der Allele im Sinne eines pair Hidden Markov Models $ pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}}) $ (vgl. Kap. \ref{subsec:phmm_minimap}). Allerdings werden nun die Heterozygotiewahrscheinlichkeiten $\eta_{sub}$, $\eta_{ins}$ und $\eta_{del}$ der Grapheigenschaften zur Ermittlung der Likelihood nach Formel \eqref{eqn:2-20} genutzt.  \\
 
-Hierzu werden zunächst in \lstinline|get_allele_likelihood_alleles()| (Algorithmus \ref{alg:lh_loci}) auf jeweils einer der Listen $L_{alleles}$ für jeden Locus die darin enthaltenen Allelsequenzen paarweise mit einander kombiniert. Dies wird durch die Funktion \lstinline|combinations()| aus \linebreak \lstinline|itertools| realisiert, die Kombinationen ohne Wiederholung und ohne Beachtung der Reihenfolge erzeugt. Für jedes Allelpaar wird dann der CIGAR-String durch die Funktion \lstinline|get_cigar_tuples()|  (Algorithmus \ref{alg:cig}) ermittelt und für die Likelihoodberechnung in \lstinline|get_heterozygosity()| verwendet (Algorithmus \ref{alg:lh_het}). Die Gesamtwahrscheinlichkeit errechnet sich aus dem Produkt der Likelihood aller Allelpaare nach \ref{eqn:2-21}.
+Hierzu werden zunächst in \lstinline|get_allele_likelihood_alleles()| (Algorithmus \ref{alg:lh_loci}) auf jeweils einer der Listen $S_{\,loc,\, alleles}$ für jeden Locus $loc$ die darin enthaltenen Allelsequenzen $s_{a_{i}}, s_{a_{j}}$  der Allele ${a_{i}, a_{j}}$ paarweise mit einander kombiniert. Dies wird durch die Funktion \lstinline|combinations()| aus  \lstinline|itertools| realisiert, die Kombinationen ohne Wiederholung und ohne Beachtung der Reihenfolge erzeugt. Die paarweise Kombination der Allele ist allerdings nur für Daten diploider Organismen möglich, bei höherer Ploidie wird ein multiples Sequenzalignment benötigt (vgl. Kap \ref{sec:ausblick}). Für jedes Allelpaar werden dann die CIGAR-Tupel durch die Funktion \lstinline|get_cigar_tuples()| (Algorithmus \ref{alg:cig}) ermittelt und für die Likelihoodberechnung in \lstinline|get_heterozygosity()| verwendet (Algorithmus \ref{alg:lh_het}). Die Gesamtwahrscheinlichkeit errechnet sich aus dem Produkt der Likelihood aller Allelpaare nach \ref{eqn:2-21}. Analog zur Likelihoodberechnung der Allele (vgl. Algorithmus \ref{alg:r-a-lh}) werden auch die ermittelten Locilikelihoods für die verschiedenen Loci-Kombinationen mehrfach benötigt. Daher wird die Effizienz auch hier durch Integration eines Dictionary mit den bereits ermittelten Likelihoods deutlich erhöht. Die Einträge des Dictionary sollen dabei die Tupel aus den beiden Allelsequenzen als Keys und die bereits errechneten Likelihoods als Values verwenden. Für alle Allelsequenzpaare wird noch vor der Suche nach geeigneten CIGAR-Tupeln das Dictionary $ dict_{\,loc} $ auf bereits vorhandene Einträge überprüft.  Falls es einen Eintrag gibt, so wird auf eine erneute Likelihoodberechnung verzichtet und stattdessen der Wert des Dictionary verwendet. Falls kein Eintrag existiert, so wird im Anschluss an die Likelihoodberechnung ein entsprechender Eintrag dem Dictionary hinzugefügt.
 
 \begin{algorithm}[H]
 	\caption{Bestimmung der Likelihood der Allele innerhalb einer Loci-Kombination}  \label{alg:lh_loci}
 	\begin{algorithmic}[1]	
-		\Function{get\_allele\_likelihood\_alleles}{$ C_{k} $, $ L_{alleles} $}
+		\Function{get\_allele\_likelihood\_alleles}{$ C_{k} $, $ S_{\,loc,\, alleles} $, $ dict_{\,loc} $}
 		\State $ likelihood \gets 1.0 $
-		\For{$ loc \in L_{alleles} $}
-		    \State $ pairs \gets \binom{loc}{2}$
-		    \For{$ (a_{i}, a_{j}) \in pairs $}
-		    \State $cigar \gets get\_cigar\_tuples(C_{k}, a_{i}, a_{j})$  \algorithmiccomment{Alg. \ref{alg:cig}}
+		\For{$ loc \in S_{\,loc,\, alleles} $}
+		    \State $ pairs \gets combinations(loc) $
+		    \algorithmiccomment{\href{https://docs.python.org/3/library/itertools.html\#itertools.combinations}{itertools.combinations()}}
+		    \For{$ (s_{a_{i}}, s_{a_{j}}) \in pairs $}
+		    \If{$\exists (s_{a_{i}}, s_{a_{j}}): ((s_{a_{i}}, s_{a_{j}}), L_{a_{i}, a_{j}}) \in dict_{\,loc}$}
+		    \State $likelihood \gets likelihood + L_{a_{i}, a_{j}} $
+
+		    \Else
+		    
+		    
+		    
+		    \State $cigar \gets get\_cigar\_tuples(C_{k}, s_{a_{i}}, s_{a_{j}})$  \algorithmiccomment{Alg. \ref{alg:cig}}
 			    \If{$cigar$ exists}
-			        \State $cig \gets cigar[0]$
-			        \State $rev \gets cigar[1]$
-			        \State $ \eta_{rates} \gets C_{k}[\eta_{sub}, \eta_{ins}, \eta_{del}]$
-			        \State $pr \gets get\_heterozygosity(C_{k}[\eta_{sub}], C_{k}[\eta_{ins}], C_{k}[\eta_{del}], cig, rev)$  \algorithmiccomment{Alg. \ref{alg:lh_het}}
-			    	\State $ likelihood \gets likelihood + log(pr)$    
-			    \EndIf
+			        \State $cig \gets cigar\,[\,0\,]$
+			        \State $rev \gets cigar\,[\,1\,]$
+			        \State $ \eta_{rates} \gets C_{k}[\eta_{sub}] \cup C_{k}[\eta_{ins}] \cup C_{k}[\eta_{del}]$
+			        \State $L_{a_{i}, a_{j}} \gets log(get\_heterozygosity(\eta_{rates}, cig, rev))$  \algorithmiccomment{Alg. \ref{alg:lh_het}}
+			        \State $ dict_{\,loc} \gets dict_{\,loc} \, \cup ((s_{a_{i}}, s_{a_{j}}),  L_{a_{i}, a_{j}})  $
+			    	\State $ likelihood \gets likelihood + L_{a_{i}, a_{j}}$    
+			        \EndIf
+			\EndIf
 			\EndFor
 		\EndFor
 		\State \Return $ e^{\;likelihood} $
@@ -379,23 +379,18 @@ In \lstinline|get_heterozygosity()| erfolgt die Likelihoodberechnung der paarwei
 		\If{reverse}
 		\State swap values of $\eta_{ins}$ and $\eta_{del}$
 		\EndIf
-		\State $\eta_{all} \gets \eta_{sub}+\eta_{ins}+\eta_{del}$
 		\ForAll{$(operation, length) \in cigar\_tuples$}
 		\If{$operation \in match$}
-		\State $ likelihood \gets likelihood \, \cdotp (1 - \eta_{all})^{\;length} $
-		\EndIf		    
-		\If{$operation \in mismatch$}
-		\State $ \eta_{factor} \gets 1.0$			    	
+		\State $ likelihood \gets likelihood \, \cdotp (1 - (\eta_{sub}+\eta_{ins}+\eta_{del}))^{\;length} $
+		\EndIf		    		    	
 		\If{$operation \in substitution$}
-		\State $\eta_{factor} \gets \eta_{sub}$
+		\State $likelihood \gets likelihood \, \cdotp (\eta_{sub})^{length}$
 		\EndIf	
 		\If{$operation \in insertion$}
-		\State $\eta_{factor} \gets \eta_{ins}$
+		\State $likelihood \gets likelihood \, \cdotp (\eta_{ins})^{length}$
 		\EndIf
 		\If{$operation \in deletion$}
-		\State $\eta_{factor} \gets \eta_{del}$
-		\EndIf
-		\State $ likelihood \gets likelihood \, \cdotp (\eta_{factor})^{length}$
+		\State $likelihood \gets likelihood \, \cdotp (\eta_{del})^{length}$
 		\EndIf
 		\EndFor
 		\State \Return $ likelihood $
@@ -405,9 +400,9 @@ In \lstinline|get_heterozygosity()| erfolgt die Likelihoodberechnung der paarwei
 
 Wie bereits erwähnt, werden für den paarweisen Vergleich zweier Kandidatenallele im Rahmen der Likelihoodberechnung die dazugehörigen CIGAR-Tupel benötigt. Diese werden durch die Funktion \lstinline|get_cigar_tuples()| ermittelt. Als Eingabeparameter erhält die Funktion den Subgraphen der Zusammenhangskomponente sowie die beiden Kandidatenallelsequenzen: die Query-Sequenz $ s_{source} $ und die Referenz-Sequenz $ s_{target} $. Der Subgraph wird nach einer Kante durchsucht, die Knoten miteinander verbindet, welche die beiden gegebenen Sequenzen besitzen. Dabei werden nicht nur Kanten berücksichtigt, die von der Query- zur Referenzsequenz verlaufen, sondern auch Kanten in Gegenrichtung. Zur Markierung der Kantenrichtung gibt die Funktion neben den CIGAR-Tupeln auch einen booleschen Wert zurück. Dieser wird in der Funktion \lstinline|get_heterozygosity()| (Kap. \ref{subsec:lh_loci}) für das Argument \lstinline|reverse| verwendet. \\
 
-Um eine passende Kante im Subgraphen zu finden, erstellt \lstinline|get_cigar_tuples()| zunächst eine Liste aller Knoten $ R_{source} = (v_{1}, \dots, v_{i})$, welche die Query-Sequenz $ s_{source} $ besitzen sowie eine Liste aller Knoten $ R_{target} = (w_{1}, \dots, w_{j}) $, die die Referenz-Sequenz $ s_{target} $ tragen. Hierfür werden für beide Sequenzen die Knoten des Subgraphen mit \lstinline|find_vertex()| aus graph-tool durchsucht. Anschließend wird nach einer Kante gesucht, die einen der Knoten aus $ R_{source} $ mit einem der Knoten aus $ R_{target} $ verbindet. Es erfolgt also ein Kantenaufruf für jeden Knoten aus $ R_{source} $ in Kombination mit jedem  Knoten aus $ R_{target} $. Der Kantenaufruf wird sowohl für die angegebene Kantenrichtung und falls erfolglos auch für die entgegengesetzte Richtung durchgeführt. Existiert eine solche Kante, dann werden die CIGAR-Tupel sowie der boolsche Wert entsprechend der Kantenrichtung zurückgegeben, andernfalls wird $ None $ zurückgegeben. \\
+Um eine passende Kante im Subgraphen zu finden, erstellt \lstinline|get_cigar_tuples()| zunächst eine Liste aller Knoten $ R_{source} = (v_{1}, \dots, v_{i})$, welche die Query-Sequenz $ s_{query} $ besitzen sowie eine Liste aller Knoten $ R_{target} = (w_{1}, \dots, w_{j}) $, die die Referenz-Sequenz $ s_{ref} $ tragen. Hierfür werden für beide Sequenzen die Knoten des Subgraphen mit \lstinline|find_vertex()| aus graph-tool durchsucht. Anschließend wird nach einer Kante gesucht, die einen der Knoten aus $ R_{source} $ mit einem der Knoten aus $ R_{target} $ verbindet. Es erfolgt also ein Kantenaufruf für jeden Knoten aus $ R_{source} $ in Kombination mit jedem  Knoten aus $ R_{target} $. Der Kantenaufruf wird sowohl für die angegebene Kantenrichtung und falls erfolglos auch für die entgegengesetzte Richtung durchgeführt. Existiert eine solche Kante, dann werden die CIGAR-Tupel sowie der boolsche Wert entsprechend der Kantenrichtung zurückgegeben, andernfalls wird $ None $ zurückgegeben. \\
 
-Zur Veranschaulichung ist der Algorithmus in \ref{alg:cig} zudem als Pseudocode dargestellt. Dabei sind $ C_{k} \in \{C_{1}, \dots ,C_{p}\} $ der Subgraph einer Zusammenhangskomponente, $ s_{query} $ die Query-Sequenz und $ s_{ref} $ die Referenz-Sequenz. Die Verwendung fester Knoten- oder Kanteneigenschaften ist durch eckige Klammern gekennzeichnet, so ruft beispielsweise $v_{i}[sequence]$ die Sequenz des Knotens $v_{i}$ aus den Knoteneigenschaften ab. \\
+Zur Veranschaulichung ist der Algorithmus in \ref{alg:cig} zudem als Pseudocode dargestellt. Dabei sei $ C_{k} \in \{C_{1}, \dots ,C_{p}\} $ der Subgraph einer Zusammenhangskomponente mit seiner Kantenmenge $ E_{k} $ und $ s_{query} $ bzw. $ s_{ref} $ seien die Query- bzw. die Referenz-Sequenz. Die Verwendung fester Knoten- oder Kanteneigenschaften ist durch eckige Klammern gekennzeichnet, so ruft beispielsweise $v_{i}[sequence]$ die Sequenz des Knotens $v_{i}$ aus den Knoteneigenschaften ab. \\
 
 \begin{algorithm}[H]
 	\caption{CIGAR-Tupel bestimmen}  \label{alg:cig}
@@ -417,11 +412,11 @@ Zur Veranschaulichung ist der Algorithmus in \ref{alg:cig} zudem als Pseudocode 
 		\State $ R_{target} \gets \{w_{j} \in C_{k} \wedge j,k \in \mathds{N} \; |\; w_{j}[sequence]= s_{ref} \}$
 		\For{$ v_{i} \in R_{source} $}
 		\For{$ w_{j} \in R_{target} $}
-		\If{$ edge(v_{i}, w_{j})$ exists}
-		\State \Return $ (\;edge(v_{i}, w_{j})[cigar\_tuples],\, False\;) $		    
+		\If{$ (v_{i}, w_{j}) \in E_{k}$}
+		\State \Return $ (\;E_{k}[(v_{i}, w_{j})][cigar\_tuples],\, False\;) $		    
 		\EndIf
-		\If{$ edge(w_{j}, v_{i})$ exists}
-		\State \Return $ (\;edge(w_{j}, v_{i})[cigar\_tuples],\, True\;) $		
+		\If{$ (w_{j}, v_{i}) \in E_{k}$}
+		\State \Return $ (\;E_{k}[(w_{j}, v_{i})][cigar\_tuples],\, True\;) $		
 		\EndIf
 		\EndFor
 		\EndFor

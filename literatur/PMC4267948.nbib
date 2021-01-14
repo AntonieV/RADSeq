@@ -1,0 +1,71 @@
+PMID- 25378476
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20150820
+LR  - 20181113
+IS  - 2160-1836 (Electronic)
+IS  - 2160-1836 (Linking)
+VI  - 4
+IP  - 12
+DP  - 2014 Nov 4
+TI  - Correcting for sequencing error in maximum likelihood phylogeny inference.
+PG  - 2545-52
+LID - 10.1534/g3.114.014365 [doi]
+AB  - Accurate phylogenies are critical to taxonomy as well as studies of speciation 
+      processes and other evolutionary patterns. Accurate branch lengths in phylogenies 
+      are critical for dating and rate measurements. Such accuracy may be jeopardized by 
+      unacknowledged sequencing error. We use simulated data to test a correction for DNA 
+      sequencing error in maximum likelihood phylogeny inference. Over a wide range of 
+      data polymorphism and true error rate, we found that correcting for sequencing error 
+      improves recovery of the branch lengths, even if the assumed error rate is up to 
+      twice the true error rate. Low error rates have little effect on recovery of the 
+      topology. When error is high, correction improves topological inference; however, 
+      when error is extremely high, using an assumed error rate greater than the true 
+      error rate leads to poor recovery of both topology and branch lengths. The error 
+      correction approach tested here was proposed in 2004 but has not been widely used, 
+      perhaps because researchers do not want to commit to an estimate of the error rate. 
+      This study shows that correction with an approximate error rate is generally 
+      preferable to ignoring the issue.
+CI  - Copyright © 2014 Kuhner and McGill.
+FAU - Kuhner, Mary K
+AU  - Kuhner MK
+AD  - Department of Genome Sciences, University of Washington, Seattle, Washington 
+      98195-5065 mkkuhner@uw.com.
+FAU - McGill, James
+AU  - McGill J
+AD  - Department of Genome Sciences, University of Washington, Seattle, Washington 
+      98195-5065.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, U.S. Gov't, Non-P.H.S.
+DEP - 20141104
+TA  - G3 (Bethesda)
+JT  - G3 (Bethesda, Md.)
+JID - 101566598
+SB  - IM
+MH  - Animals
+MH  - Computational Biology/*methods
+MH  - Humans
+MH  - Likelihood Functions
+MH  - Models, Genetic
+MH  - Models, Statistical
+MH  - *Phylogeny
+MH  - Probability
+MH  - Sequence Analysis, DNA
+MH  - *Software
+PMC - PMC4267948
+OTO - NOTNLM
+OT  - maximum likelihood
+OT  - phylogeny inference
+OT  - sequencing error
+EDAT- 2014/11/08 06:00
+MHDA- 2015/08/21 06:00
+CRDT- 2014/11/08 06:00
+PHST- 2014/11/08 06:00 [entrez]
+PHST- 2014/11/08 06:00 [pubmed]
+PHST- 2015/08/21 06:00 [medline]
+AID - g3.114.014365 [pii]
+AID - GGG_014365 [pii]
+AID - 10.1534/g3.114.014365 [doi]
+PST - epublish
+SO  - G3 (Bethesda). 2014 Nov 4;4(12):2545-52. doi: 10.1534/g3.114.014365.

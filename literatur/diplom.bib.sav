@@ -702,12 +702,11 @@
   howpublished = {Babraham Institute},
   month        = jan,
   year         = {2012},
-  note         = {http://www.bioinformatics.babraham.ac.uk/projects/fastqc/},
+  note         = {source: \url{http://www.bioinformatics.babraham.ac.uk/projects/fastqc/}},
   abstract     = {FastQC aims to provide a simple way to do some quality control checks on raw sequence data coming from high throughput sequencing pipelines. It provides a modular set of analyses which you can use to give a quick impression of whether your data has any problems of which you should be aware before doing any further analysis.},
   address      = {{Babraham, UK}},
   copyright    = {GPL v3},
   language     = {english},
-  url          = {http://www.bioinformatics.babraham.ac.uk/projects/fastqc/},
 }
 
 @Article{martin_2011,
@@ -814,8 +813,7 @@
 @Misc{docs_graph_tool,
   author = {Peixoto, Tiago de Paula},
   title  = {graph-tool 2.35 documentation: graph\_tool - efficient graph analysis and manipulation},
-  note   = {https://graph-tool.skewed.de/static/doc/graph\_tool.html},
-  url    = {https://graph-tool.skewed.de/static/doc/graph_tool.html},
+  note   = {source: \url{https://graph-tool.skewed.de/static/doc/graph\_tool.html}},
 }
 
 @Article{li_2009,
@@ -854,8 +852,7 @@
 @Misc{pysam,
   author = {Andreas Heger and Kevin Jacobs},
   title  = {{{FastQC}}},
-  note   = {source: https://github.com/pysam-developers/pysam, documentation: https://pysam.readthedocs.io/en/latest/index.html},
-  url    = {https://pysam.readthedocs.io/en/latest/index.html},
+  note   = {source: \url{https://github.com/pysam-developers/pysam, documentation: https://pysam.readthedocs.io/en/latest/index.html}},
 }
 
 @Misc{graph_tool_coplexity_find_vertex,
@@ -863,15 +860,13 @@
   title  = {{{Mail conversation[graph-tool]: problem building weighted graph}}},
   month  = sep,
   year   = {2019},
-  note   = {source: https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html},
-  url    = {https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html},
+  note   = {source: \url{https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html}},
 }
 
 @Misc{itertools,
   author = {Python Software Foundation, Van Rossum, Guido},
   title  = {itertools — Functions creating iterators for efficient looping},
-  note   = {https://docs.python.org/3/library/itertools.html},
-  url    = {https://docs.python.org/3/library/itertools.html},
+  note   = {source: \url{https://docs.python.org/3/library/itertools.html}},
 }
 
 @InBook{tb_stat,
@@ -898,15 +893,13 @@
   author = {Wittenburg, Kim},
   title  = {Algorithmen und Datenstrukturen},
   year   = {2017},
-  note   = {$https://www2.informatik.uni-hamburg.de/fachschaft/wiki/images/3/3e/AD-Skript\_\%28WS16-17\%9.pdf$, pages 156-157},
-  url    = {$https://www2.informatik.uni-hamburg.de/fachschaft/wiki/images/3/3e/AD-Skript\_\%28WS16-17\%29.pdf$},
+  note   = {source: \url{https://www2.informatik.uni-hamburg.de/fachschaft/wiki/images/3/3e/AD-Skript\_(WS16-17).pdf}, pages 156-157},
 }
 
 @Misc{python-sort,
   author = {Python Software Foundation and Stutzbach, Daniel},
   title  = {Python — TimeComplexity of various operations},
-  note   = {https://wiki.python.org/moin/TimeComplexity},
-  url    = {https://wiki.python.org/moin/TimeComplexity},
+  note   = {source: \url{https://wiki.python.org/moin/TimeComplexity}},
 }
 
 @Article{danecek_2011,
@@ -1015,7 +1008,6 @@
   volume             = {10},
   pages              = {402-15},
   month              = {Sep},
-  __markedentry      = {[tarja:]},
   abstract           = {Hidden Markov models (HMMs) have been extensively used in biological sequence analysis. In this paper, we give a tutorial review of HMMs and their applications in a variety of problems in molecular biology. We especially focus on three types of HMMs: the profile-HMMs, pair-HMMs, and context-sensitive HMMs. We show how these HMMs can be used to solve various sequence analysis problems, such as pairwise and multiple sequence alignments, gene annotation, classification, similarity search, and many others.},
   article-doi        = {10.2174/138920209789177575},
   article-pii        = {CG-10-402},
@@ -1046,7 +1038,6 @@
   volume             = {333},
   pages              = {453-60},
   month              = {Oct},
-  __markedentry      = {[tarja:6]},
   abstract           = {This work presents a novel pairwise statistical alignment method based on an explicit evolutionary model of insertions and deletions (indels). Indel events of any length are possible according to a geometric distribution. The geometric distribution parameter, the indel rate, and the evolutionary time are all maximum likelihood estimated from the sequences being aligned. Probability calculations are done using a pair hidden Markov model (HMM) with transition probabilities calculated from the indel parameters. Equations for the transition probabilities make the pair HMM closely approximate the specified indel model. The method provides an optimal alignment, its likelihood, the likelihood of all possible alignments, and the reliability of individual alignment regions. Human alpha and beta-hemoglobin sequences are aligned, as an illustration of the potential utility of this pair HMM approach.},
   address            = {England},
   article-doi        = {10.1016/j.jmb.2003.08.015},
@@ -1069,7 +1060,7 @@
   title-abbreviation = {J Mol Biol},
 }
 
-@InCollection{Durbin1998,
+@InCollection{durbin_1998,
   author    = {Durbin, Richard and Eddy, Sean R. and Krogh, Anders and Mitchison, Graeme},
   title     = {Markov chains and hidden Markov models},
   booktitle = {Biological Sequence Analysis: Probabilistic Models of Proteins and Nucleic Acids},
@@ -1079,6 +1070,60 @@
   doi       = {10.1017/CBO9780511790492.004},
   language  = {english},
   place     = {Cambridge},
+}
+
+@Misc{sam_bam,
+  author = {The SAM/BAM Format Specification Working Group},
+  title  = {{{Sequence Alignment/Map Format Specfication}}},
+  note   = {source: \url{https://samtools.github.io/hts-specs/SAMv1.pdf}},
+}
+
+@Article{kuhner_2014,
+  author                 = {Kuhner, Mary K. and McGill, James},
+  title                  = {Correcting for sequencing error in maximum likelihood phylogeny inference.},
+  journal                = {G3 (Bethesda, Md.)},
+  year                   = {2014},
+  volume                 = {4},
+  pages                  = {2545-52},
+  month                  = {Nov},
+  __markedentry          = {[tarja:]},
+  abstract               = {Accurate phylogenies are critical to taxonomy as well as studies of speciation processes and other evolutionary patterns. Accurate branch lengths in phylogenies are critical for dating and rate measurements. Such accuracy may be jeopardized by unacknowledged sequencing error. We use simulated data to test a correction for DNA sequencing error in maximum likelihood phylogeny inference. Over a wide range of data polymorphism and true error rate, we found that correcting for sequencing error improves recovery of the branch lengths, even if the assumed error rate is up to twice the true error rate. Low error rates have little effect on recovery of the topology. When error is high, correction improves topological inference; however, when error is extremely high, using an assumed error rate greater than the true error rate leads to poor recovery of both topology and branch lengths. The error correction approach tested here was proposed in 2004 but has not been widely used, perhaps because researchers do not want to commit to an estimate of the error rate. This study shows that correction with an approximate error rate is generally preferable to ignoring the issue.},
+  article-doi            = {10.1534/g3.114.014365},
+  article-pii            = {GGG_014365},
+  completed              = {20150820},
+  electronic-issn        = {2160-1836},
+  electronic-publication = {20141104},
+  history                = {2015/08/21 06:00 [medline]},
+  issue                  = {12},
+  keywords               = {Animals, Computational Biology/*methods, Humans, Likelihood Functions, Models, Genetic, Models, Statistical, *Phylogeny, Probability, Sequence Analysis, DNA, *Software, maximum likelihood, phylogeny inference, sequencing error},
+  language               = {english},
+  linking-issn           = {2160-1836},
+  location-id            = {10.1534/g3.114.014365 [doi]},
+  nlm-unique-id          = {101566598},
+  owner                  = {NLM},
+  publication-status     = {epublish},
+  revised                = {20181113},
+  source                 = {G3 (Bethesda). 2014 Nov 4;4(12):2545-52. doi: 10.1534/g3.114.014365.},
+  status                 = {MEDLINE},
+  subset                 = {IM},
+  termowner              = {NOTNLM},
+  title-abbreviation     = {G3 (Bethesda)},
+}
+
+@Article{schirmer_2016,
+  author        = {Schirmer, Melanie and D’Amore, Rosalinda and Ijaz, Umer Z. and Hall, Neil and Quince, Christopher},
+  title         = {Illumina error profiles: resolving fine-scale variation in metagenomic sequencing data},
+  journal       = {BMC Bioinformatics},
+  year          = {2016},
+  volume        = {17},
+  number        = {1},
+  pages         = {125},
+  month         = mar,
+  issn          = {1471-2105},
+  __markedentry = {[tarja:6]},
+  abstract      = {Illumina’s sequencing platforms are currently the most utilised sequencing systems worldwide. The technology has rapidly evolved over recent years and provides high throughput at low costs with increasing read-lengths and true paired-end reads. However, data from any sequencing technology contains noise and our understanding of the peculiarities and sequencing errors encountered in Illumina data has lagged behind this rapid development.},
+  refid         = {Schirmer2016},
+  url           = {https://doi.org/10.1186/s12859-016-0976-y},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

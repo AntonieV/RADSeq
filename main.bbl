@@ -126,6 +126,11 @@
   {\em Single-cell genome sequencing: current state of the science.}
 \newblock Nature reviews. Genetics, 17:175--88, Mar 2016.
 
+\bibitem{sam_bam}
+{\sc Group, The SAM/BAM Format Specification~Working}: {\em {{Sequence
+  Alignment/Map Format Specfication}}}.
+\newblock source: \url{https://samtools.github.io/hts-specs/SAMv1.pdf}.
+
 \bibitem{li_2009}
 {\sc Li, Heng}, {\sc Bob Handsaker}, {\sc Alec Wysoker}, {\sc Tim Fennell},
   {\sc Jue Ruan}, {\sc Nils Homer}, {\sc Gabor Marth}, {\sc Goncalo Abecasis},
@@ -161,6 +166,18 @@
   alignments and pair hidden markov models using evolutionary history.}
 \newblock Journal of molecular biology, 333:453--60, Oct 2003.
 
+\bibitem{durbin_1998}
+{\sc Durbin, Richard}, {\sc Sean~R. Eddy}, {\sc Anders Krogh}, \btxandlong{}\
+  {\sc Graeme Mitchison}: {\em Markov chains and hidden markov models}.
+\newblock \Btxinlong{}\ {\em Biological Sequence Analysis: Probabilistic Models
+  of Proteins and Nucleic Acids}, \btxpageslong{}\ 47--80. Cambridge University
+  Press, 1998.
+
+\bibitem{kuhner_2014}
+{\sc Kuhner, Mary~K.} \btxandlong{}\ {\sc James McGill}: {\em Correcting for
+  sequencing error in maximum likelihood phylogeny inference.}
+\newblock G3 (Bethesda, Md.), 4:2545--52, Nov 2014.
+
 \bibitem{koester_2012_1}
 {\sc Köster, Johannes} \btxandlong{}\ {\sc Sven Rahmann}: {\em {Snakemake—a
   scalable bioinformatics workflow engine}}.
@@ -186,7 +203,8 @@
   Laura Biggins}, {\sc Christel Krueger}, \btxandlong{}\ {\sc Steven Wingett}:
   {\em {{FastQC}}}.
 \newblock Babraham Institute, \btxmonjanlong{} 2012.
-\newblock http://www.bioinformatics.babraham.ac.uk/projects/fastqc/.
+\newblock source:
+  \url{http://www.bioinformatics.babraham.ac.uk/projects/fastqc/}.
 
 \bibitem{ewels_2016}
 {\sc Ewels, Philip}, {\sc Måns Magnusson}, {\sc Sverker Lundin},
@@ -216,13 +234,14 @@
 
 \bibitem{pysam}
 {\sc Heger, Andreas} \btxandlong{}\ {\sc Kevin Jacobs}: {\em {{FastQC}}}.
-\newblock source: https://github.com/pysam-developers/pysam, documentation:
-  https://pysam.readthedocs.io/en/latest/index.html.
+\newblock source: \url{https://github.com/pysam-developers/pysam,
+  documentation: https://pysam.readthedocs.io/en/latest/index.html}.
 
 \bibitem{docs_graph_tool}
 {\sc Peixoto, Tiago de~Paula}: {\em graph-tool 2.35 documentation: graph\_tool
   - efficient graph analysis and manipulation}.
-\newblock https://graph-tool.skewed.de/static/doc/graph\_tool.html.
+\newblock source:
+  \url{https://graph-tool.skewed.de/static/doc/graph\_tool.html}.
 
 \bibitem{tb_stat}
 {\sc Voß, W, Sauerbier~T}: {\em Taschenbuch der Statistik}, \btxchapterlong{}\
@@ -239,29 +258,35 @@
 \bibitem{itertools}
 {\sc Python Software~Foundation, Van~Rossum, Guido}: {\em itertools —
   functions creating iterators for efficient looping}.
-\newblock https://docs.python.org/3/library/itertools.html.
+\newblock source: \url{https://docs.python.org/3/library/itertools.html}.
 
 \bibitem{ewing_1998}
 {\sc Ewing, B.} \btxandlong{}\ {\sc P.~Green}: {\em Base-calling of automated
   sequencer traces using phred. ii. error probabilities.}
 \newblock Genome research, 8:186--94, Mar 1998.
 
+\bibitem{schirmer_2016}
+{\sc Schirmer, Melanie}, {\sc Rosalinda D’Amore}, {\sc Umer~Z. Ijaz}, {\sc
+  Neil Hall}, \btxandlong{}\ {\sc Christopher Quince}: {\em Illumina error
+  profiles: resolving fine-scale variation in metagenomic sequencing data}.
+\newblock BMC Bioinformatics, 17(1):125, \btxmonmarlong{} 2016.
+
 \bibitem{graph_tool_coplexity_find_vertex}
 {\sc Paula~Peixoto, Tiago~de}: {\em {{Mail conversation[graph-tool]: problem
   building weighted graph}}}, \btxmonseplong{} 2019.
 \newblock source:
-  https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html.
+  \url{https://www.mail-archive.com/graph-tool@skewed.de/msg03486.html}.
 
 \bibitem{script_binom}
 {\sc Wittenburg, Kim}: {\em Algorithmen und datenstrukturen}, 2017.
-\newblock
-  $https://www2.informatik.uni-hamburg.de/fachschaft/wiki/images/3/3e/AD-Skript\_\%28WS16-17\%9.pdf$,
+\newblock source:
+  \url{https://www2.informatik.uni-hamburg.de/fachschaft/wiki/images/3/3e/AD-Skript\_(WS16-17).pdf},
   pages 156-157.
 
 \bibitem{python-sort}
 {\sc Foundation, Python~Software} \btxandlong{}\ {\sc Daniel Stutzbach}: {\em
   Python — timecomplexity of various operations}.
-\newblock https://wiki.python.org/moin/TimeComplexity.
+\newblock source: \url{https://wiki.python.org/moin/TimeComplexity}.
 
 \bibitem{liu_2010}
 {\sc Liu, Yongchao}, {\sc Bertil Schmidt}, \btxandlong{}\ {\sc Douglas~L.

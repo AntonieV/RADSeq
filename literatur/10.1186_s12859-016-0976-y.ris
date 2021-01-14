@@ -1,0 +1,19 @@
+TY  - JOUR
+AU  - Schirmer, Melanie
+AU  - D’Amore, Rosalinda
+AU  - Ijaz, Umer Z.
+AU  - Hall, Neil
+AU  - Quince, Christopher
+PY  - 2016
+DA  - 2016/03/11
+TI  - Illumina error profiles: resolving fine-scale variation in metagenomic sequencing data
+JO  - BMC Bioinformatics
+SP  - 125
+VL  - 17
+IS  - 1
+AB  - Illumina’s sequencing platforms are currently the most utilised sequencing systems worldwide. The technology has rapidly evolved over recent years and provides high throughput at low costs with increasing read-lengths and true paired-end reads. However, data from any sequencing technology contains noise and our understanding of the peculiarities and sequencing errors encountered in Illumina data has lagged behind this rapid development.
+SN  - 1471-2105
+UR  - https://doi.org/10.1186/s12859-016-0976-y
+DO  - 10.1186/s12859-016-0976-y
+ID  - Schirmer2016
+ER  - 
