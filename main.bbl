@@ -156,6 +156,13 @@
 {\sc Li, Heng}: {\em {Minimap2: pairwise alignment for nucleotide sequences}}.
 \newblock Bioinformatics, 34(18):3094--3100, 05 2018.
 
+\bibitem{durbin_1998}
+{\sc Durbin, Richard}, {\sc Sean~R. Eddy}, {\sc Anders Krogh}, \btxandlong{}\
+  {\sc Graeme Mitchison}: {\em Markov chains and hidden markov models}.
+\newblock \Btxinlong{}\ {\em Biological Sequence Analysis: Probabilistic Models
+  of Proteins and Nucleic Acids}, \btxpageslong{}\ 47--80. Cambridge University
+  Press, 1998.
+
 \bibitem{yoon_2009}
 {\sc Yoon, Byung-Jun}: {\em Hidden markov models and their applications in
   biological sequence analysis.}
@@ -165,13 +172,6 @@
 {\sc Knudsen, Bjarne} \btxandlong{}\ {\sc Michael~M. Miyamoto}: {\em Sequence
   alignments and pair hidden markov models using evolutionary history.}
 \newblock Journal of molecular biology, 333:453--60, Oct 2003.
-
-\bibitem{durbin_1998}
-{\sc Durbin, Richard}, {\sc Sean~R. Eddy}, {\sc Anders Krogh}, \btxandlong{}\
-  {\sc Graeme Mitchison}: {\em Markov chains and hidden markov models}.
-\newblock \Btxinlong{}\ {\em Biological Sequence Analysis: Probabilistic Models
-  of Proteins and Nucleic Acids}, \btxpageslong{}\ 47--80. Cambridge University
-  Press, 1998.
 
 \bibitem{kuhner_2014}
 {\sc Kuhner, Mary~K.} \btxandlong{}\ {\sc James McGill}: {\em Correcting for

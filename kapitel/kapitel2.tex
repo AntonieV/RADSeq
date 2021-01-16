@@ -14,36 +14,178 @@ Ziel ist die Zuordnung der Reads zu den Loci unter Berücksichtigung von $\epsil
 
 \section{Lösungsansatz und Modell} \label{sec:solution}
 
-Das Problem wird als gerichteter Graph betrachtet (siehe Kap. \ref{subsec:sol_graph}), dessen Knoten die einzelnen Reads beinhalten und dessen Kanten auf dem Sequenzalignment des Tools Minimap2 basieren. Das Sequenzalignment stellt dabei eine Approximation des pair Hidden Markov Models zum paarweisen Readvergleich dar (siehe Kap. \ref{subsec:phmm_minimap}).  \\
+Das Problem wird als gerichteter Graph betrachtet (siehe Kap. \ref{subsec:sol_graph}), dessen Knoten die einzelnen Reads beinhalten und dessen Kanten auf einem Sequenzalignment der Reads basieren. Für die Zuordnung der Reads soll das Problem in Teilprobleme aufgeteilt werden, für jedes Teilproblem wird dann eine Lösung ermittelt. Der Graph wird daher entsprechend seiner Zusammenhangskomponenten partitioniert. Die in einer Zusammenhangskomponente vorkommenden Sequenzen werden in Abhängigkeit von festgelegten Schwellwerten als Kandidatenallele betrachtet und jeweils mit sämtlichen Reads der Zusammenhangskomponente verglichen. Dabei sollen diejenigen Allele identifiziert werden, von denen die übrigen Reads der Komponente am wahrscheinlichsten durch Sequenzierfehler entstanden sind (Kap. \ref{subsec:sol_allele_lh}). Die Likelihoodberechnung hierfür wird durch die Basenqualität der Reads und Sequenzierfehlerrate bestimmt und erfolgt über alle Kombination möglicher Häufigkeitsverteilungen der Allele (Allele-Fractions). \\
 
-Für die Zuordnung der Reads soll das Problem in Teilprobleme aufgeteilt werden, für jedes Teilproblem wird dann eine Lösung ermittelt. Der Graph wird daher entsprechend seiner Zusammenhangskomponenten partitioniert. Die in einer Zusammenhangskomponente vorkommenden Sequenzen werden als Kandidatenallele betrachtet und jeweils mit sämtlichen Reads der Zusammenhangskomponente verglichen. Dabei sollen diejenigen Allele identifiziert werden, von denen die übrigen Reads der Komponente am wahrscheinlichsten durch Sequenzierfehler oder Mutationen entstanden sind (Kap. \ref{subsec:sol_allele_lh}). 
+Die Allele-Fraction mit der höchsten Likelihood $vaf_{max}$ soll anschließend für die Zuordnung der Loci verwendet werden (Kap. \ref{subsec:sol_loci_lh}). Hierfür wird die Likelihood für alle Loci-Kombinationen bestimmt, welche zu der ermittelten $vaf_{max}$ passen. Für die Berechnung der Likelihoods der Locizuordnung werden die Heterozygotiewahrscheinlichkeiten verwendet. Die Loci-Kombination mit der größten Likelihood wird schließlich als Lösung der betreffenden Zusammenhangskomponente ausgegeben (Kap. \ref{subsec:sol_vcf}).\\
 
-\noindent======================= draft =======================\\
+Für jede Zusammenhangskomponente wird auf diese Weise also die wahrscheinlichste Lösung ermittelt, deren Komposition von Loci die beobachteten Reads innerhalb der Zusammenhangskomponente am besten erklären kann. Die Loci mit maximaler Likelihood aus allen Zusammenhangskomponenten werden schließlich durch NodeRAD im VCF-Format ausgegeben. Eine Übersicht der einzelnen Schritte des Workflows findet sich in \autoref{fig:workflow_all}.  \\
+%https://texample.net/tikz/examples/labs-schema/
+\usetikzlibrary{shadows,arrows}
+% Layer des Diagramms
+\pgfdeclarelayer{background}
+\pgfdeclarelayer{foreground}
+\pgfsetlayers{background,main,foreground}
 
-Für jede Zusammenhangskomponente werden alle Reads mit einander verglichen und diejenigen Allele identifiziert, von denen die übrigen Reads der Komponente am wahrscheinlichsten durch Sequenzierfehler entstanden sind (Kap. \ref{subsec:sol_allele_lh}). Hierzu werden Basenqualität und Mutatationsraten berücksichtigt, so dass die Sequenzierfehlerrate die Likelihoodberechnung bestimmt. \\
+% Eigenschaften der Blöcke 
+\tikzstyle{blocktxt}=[draw, text width=6.0em, text centered,
+minimum height=1.5em,drop shadow]
+\tikzstyle{blockitem} = [blocktxt, fill=green!40, text width=8em, minimum width=10em,
+minimum height=3em, rounded corners, drop shadow]
+\tikzstyle{ioitem} = [blocktxt, fill=white, text width=8em, minimum width=10em,
+minimum height=3em, rounded corners, drop shadow]
+\tikzstyle{sectiontxt} = [above, text = black, text width=6em, text centered]
+\tikzstyle{dashedline} = [draw, thick, color=black, -latex', dashed]
+\tikzstyle{line} = [draw, thick, color=red, -latex']
+\tikzstyle{ur}=[draw, text centered, minimum height=0.01em]
 
-Die Allelkombination mit der höchsten Wahrscheinlichkeit soll anschließend für die Zuordnung der Loci verwendet werden (Kap. \ref{subsec:sol_loci_lh}). Auch hierfür wird die Likelihood für alle Loci-Kombinationen bestimmt, wobei nun die Heterozygotiewahrscheinlichkeiten einbezogen werden. Die Loci-Kombination mit der größten Likelihood wird schließlich als Lösung der betreffenden Zusammenhangskomponente ausgegeben (Kap. \ref{subsec:sol_vcf}).\\
+% Distanzen
+\newcommand{\blockdist}{1.3}
+\newcommand{\edgedist}{1.5}
 
-Für jede Zusammenhangskomponente wird auf diese Weise also die wahrscheinlichste Lösung ermittelt, deren Komposition von Loci die beobachteten Reads innerhalb der Zusammenhangskomponente am besten erklären kann. \\
+\newcommand{\blockitem}[2]{node (p#1) [blockitem]
+	{\textbf{\textit{#2}}}}
 
+\newcommand{\ioitem}[2]{node (p#1) [ioitem]
+	{\textbf{\textit{#2}}}}
+
+% Eigenschaften der DNA-Abbildung
+\newcommand{\bond}[3]{
+	\draw[very thick, #1] (#3, 0) -- (#3, 0.35);
+	\draw[very thick, densely dotted] (#3, 0.35) -- (#3, 0.65);
+	\draw[very thick, #2] (#3, 0.65) -- (#3, 1);
+}
+% Hintergrundfeld
+\newcommand{\background}[5]{%
+	\begin{pgfonlayer}{background}
+		% Hintergrundfeld obere linke Ecke
+		\path (#1.west |- #2.north)+(-3.3,0.3) node (a1) {};
+		% Hintergrundfeld untere rechte Ecke
+		\path (#3.east |- #4.south)+(+0.5,-0.25) node (a2) {};
+		% Hintergrundeigenschaften
+		\path[fill=blue!20,rounded corners, draw=black]
+		(a1) rectangle (a2);
+		\path (a1.east |- a1.south) +(-3.0,-1.0) node (u1)[sectiontxt]
+		{\textbf{\textit{#5}}};
+\end{pgfonlayer}}
+
+\newcommand{\out}[3]{%
+	\path [dashedline] (#1.east) -- node [above]
+	{\scriptsize Output: #2} (#3);}
+
+\begin{figure}[]
+	\begin{center}
+		\begin{tikzpicture}[scale=0.66,transform shape]
+			% https://github.com/PetarV-/TikZ/tree/master/DNA
+			\path \ioitem {1}{Reads\\
+				\begin{tikzpicture}[scale=0.6,transform shape]
+				\bond{red}{blue}{0.1}
+				\bond{red}{blue}{0.25}
+				\bond{red}{blue}{0.4}
+				\bond{blue}{red}{1.1}
+				\bond{blue}{red}{1.25}
+				\bond{blue}{red}{1.4}
+				\bond{red}{blue}{2.1}
+				\bond{red}{blue}{2.25}
+				\bond{red}{blue}{2.4}
+				\bond{blue}{red}{3.1}	
+				\bond{blue}{red}{3.25}
+				\bond{blue}{red}{3.4}
+				\bond{red}{blue}{4.1}
+				\bond{red}{blue}{4.25}
+				\bond{red}{blue}{4.4}
+				\braid[rotate=90,style strands={1}{red, very thick},style strands={2}{blue, very thick}] (tst) at (0, 0) s_1 s_1 s_1 s_1 ;
+				\end{tikzpicture}
+			};
+			\path (p1.south)+(-2.5,-2.0) \blockitem{2}{Adapter trimming};
+			\path (p2.south)+(2.5,-1.2) \blockitem{3}{Quality control};
+			\path (p3.south)+(-2.5,-1.2) \blockitem{5}{Sequence alignment};
+			\path (p3.west)+(4.75,-3.8) \blockitem{4}{Build graph};
+			\path (p3.east)+(+9.8, 0.0) node (ur1)[ur] {\includegraphics[width=2.0cm]{bilder/qc_reports_icon_5.png}};
+			\path (p4.south)+(0.0,-1.5) \blockitem{6}{Connected components};
+			\path (p4.east)+(+7.0,0) node (ur2)[ur] {\includegraphics[width=2.0cm]{bilder/big_components_3.png}};
+			\path (p6.south)+(-5.5,-1.4) \blockitem{7}{Allele \\combinations};
+			\path (p6.south)+(0.0,-1.4) \blockitem{8}{Candidate Alleles};
+			\path (p6.east)+(+6.5,0) node (ur3)[ur] {\includegraphics[width=1.0cm]{bilder/small_components_2.png}};				
+			\path (p7.south)+(0.0,-3.87) \blockitem{9}{Allele fractions};
+			\path (p8.south)+(0.0,-1.5)	\blockitem{10}{Likelihood of alleles given one read};
+			\path (p9.south)+(0.0,-6.83) \blockitem{11}{Indicator constrait};
+			\path (p10.south)+(0.0,-1.5) \blockitem{12}{Likelihood of allele fractions given one read};
+			\path (p11.south)+(0.0,-1.5) \blockitem{13}{Loci \\combinations};
+			\path (p12.south)+(0.0,-1.5) \blockitem{14}{Likelihood of allele fractions given all reads};
+			\path (p14.south)+(0.0,-1.5) \blockitem{15}{Maximum likelihood allele fractions};
+			\path (p15.south)+(0.0,-1.7) \blockitem{16}{Likelihood of an allele given another allele};
+			\path (p16.south)+(0.0,-1.8) \blockitem{17}{Likelihood of loci given alleles and fractions}; 
+			\path (p17.south)+(0.0,-1.3) \blockitem{18}{Maximum likelihood loci};
+			\path (p18.south)+(0.0,-1.7) \ioitem{19}{VCF \\ \includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}};
+			
+			% Pfeile
+			\path [line] (p1.south) -- +(0.0,-0.5) -- +(-2.5,-0.5) -- node [above, midway] {} (p2);
+			\path [line] (p1.south) -- +(0.0,-0.5) -- +(+2.83,-0.5) -- node [above, midway] {} (p4);
+			\path [line] (p2.south) -- node [above] {} (p3) ;
+			\path [line] (p3.south) -- node [above] {} (p5) ;		
+			\path [line] (p5.south) -- +(0.0,-1.415) -- node [above, midway] {} (p4.west);		
+			\path [line] (p4.south) --node [above] {} (p6);
+			\path [line] (p6.south) -- node [above] {} (p8);
+			\path [line] (p8.south) -- node [above] {} (p10) ;	
+			\path [line] (p10.south) -- node [above] {} (p12) ;	
+			\path [line] (p12.south) -- node [above] {} (p14) ;		
+			\path [line] (p14.south) -- node [above, midway] {} (p15);
+			\path [line] (p15.south) -- node [above] {} (p16) ;     
+			\path [line] (p16.south) -- node [above] {} (p17) ;
+			\path [line] (p17.south) -- node [above] {} (p18) ;
+			\path [line] (p18.south) -- node [above] {} (p19) ;		
+			\path [line] (p19.south) -- +(0.0,-0.5) -- +(-8.8,-0.5) -- +(-8.8,26.327) -- node [above] {} (p5.west) ;
+			
+			\out{p3}{Reports (MultiQC, FastQC)}{ur1}
+			\out{p4}{Graph, XML, DOT}{ur2}
+			\out{p6}{Subgraphes, XML, DOT}{ur3}
+			
+			\path [dashedline] (p8.west) -- node [left] {} (p7);
+			\path [dashedline] (p7.south) -- node [above] {} (p9) ;
+			\path [dashedline] (p9.east) -- node [left] {} (p12.west);
+			\path [dashedline] (p9.south) -- node [left] {} (p11.north);
+			\path [dashedline] (p11.east) -- node [left] {} (p16.west);
+			\path [dashedline] (p13.north) -- node [left] {} (p11.south); 
+			
+			\background{p3}{p2}{p3}{p5}{Preprocessing}
+			\background{p3}{p4}{p4}{p6}{Graph \\construction}
+			\background{p3}{p8}{p4}{p15}{Allele Likelihood}
+			\background{p3}{p16}{p4}{p18}{Loci Likelihood}
+ 		\end{tikzpicture}
+		\caption{Übersicht der Prozesse des Workflows}
+		\label{fig:workflow_all}
+	\end{center}
+\end{figure}
 
 \subsection{Graph und Zusammenhangskomponenten} \label{subsec:sol_graph}
 
-Im Preprocessing wird aus den Reads zunächst ein Alignment mit Hilfe des Tools Minimap2  erzeugt ~\cite{li_2018}. Hierbei werden alle Reads mit einander verglichen und bei ausreichender Ähnlichkeit ihrer Sequenzen zu Paaren zusammengefasst. Zudem werden durch Minimap2 die Edit-Distanzen zwischen den jeweils verglichenen Readsequenzen bestimmt. \\
+Im Preprocessing wird aus den Reads zunächst ein paarweises Sequenzalignment mit Hilfe des Tools Minimap2 erzeugt ~\cite{li_2018}. Hierbei werden alle Reads mit einander verglichen und bei ausreichender Ähnlichkeit ihrer Sequenzen einander zugeordnet. Zusätzlich werden durch Minimap2 die Edit-Distanzen zwischen den jeweils verglichenen Readsequenzen bestimmt. \\
 
-Wie bereits einleitend erwähnt, wird das Problem als gerichteter Graph $G=(V, \, E)$ mit der Knotenmenge $V$ und der Kantenmenge $E$ betrachtet. Die Knoten repräsentieren dabei die einzelnen Reads. Entsprechend dem von Minimap2 erzeugtem Sequenzalignment werden die Knoten der Reads durch Kanten verbunden. Die Kanten des Graphen repräsentieren also den Vergleich der Sequenzen der beiden angrenzenden Reads.\\dass der Read des Knotens, von dem die Kante ausgeht (Source-Knoten), vom dem Read stammt, auf den die Kanten gerichtet ist (Target-Knoten).
+Wie bereits einleitend erwähnt, wird das Problem schließlich als gerichteter Graph $G=(V, \, E)$ mit der Knotenmenge $V$ und der Kantenmenge $E$ betrachtet. Die Knoten repräsentieren dabei die einzelnen Reads. Entsprechend dem von Minimap2 erzeugtem Sequenzalignment werden die Knoten der Reads durch Kanten verbunden. Die Kanten des Graphen repräsentieren somit den Vergleich der Sequenzen der beiden angrenzenden Reads. Die Anzahl der Kanten kann zusätzlich durch die von Minimap2 bestimmten Edit-Distanzen reguliert werden. Diese soll über einen konfigurierbaren Schwellwert flexibel wählbar sein und ermöglicht ein zusätzliches Filtern der Kanten zugunsten von  Laufzeit und Effizienz. \\
 
-Initial basieren die Kantengewichtungen auf den durch Minimap2 bestimmten Edit-Distanzen zwischen den Reads. Um die Anzahl der Kanten im Graph in einem überschaubaren Rahmen zu halten, sollen nur Kanten eingefügt werden, die einen festgelegten Schwellenwert hinsichtlich der Edit-Distanz nicht überschreiten. Das Problem wird durch diesen Filtervorgang verkleinert, so dass die eigentliche Likelihoodberechnung der paarweisen Vergleiche der Reads über ein pair hidden Markov Modell (Kap. \ref{subsec:sol_phmm}) effizienter erfolgen kann. \\
-
-Da nur Reads mit einander verbunden werden, deren Sequenzen also eine gewisse Ähnlichkeit zu einander aufweisen, ist der Graph in Abhängigkeit vom festgelegten Schwellenwert nicht zusammenhängend und besitzt mehrere Zusammenhangskomponenten. Dies ermöglicht eine Unterteilung des Gesamtproblems in kleinere Teilprobleme, indem für die einzelnen Zusammenhangskomponenten des Graphen jeweils Lösungen ermittelt werden. Da der Grenzwert ein gewählter und konfigurierbarer Wert ist, entsprechen die so entstandenen Zusammenhangskomponenten nicht unbedingt Clustern von Reads die nur einem einzelnen Locus zuzuordnen sind. Vielmehr können die Zusammenhangskomponenten auch jeweils mehrere Loci beinhalten. 
-
+Da aufgrund des Sequenzalignments nur Reads mit einander verbunden werden, deren Sequenzen eine gewisse Ähnlichkeit zu einander aufweisen und da die RAD-Sequencing-Daten für gewöhnlich mehrere Loci beinhalten, ist der Graph in der Regel nicht zusammenhängend. Dies ermöglicht eine Unterteilung des Gesamtproblems in kleinere Teilprobleme durch Betrachtung der einzelnen Zusammenhangskomponenten des Graphen. Für diese Teilprobleme wird dann nach Lösungen gesucht. Da sich die Konstellation der Zusammenhangskomponenten direkt aus dem Sequenzalignment ergibt, sind die so entstandenen Cluster nicht notwendiger Weise nur einem einzigen Locus zuzuordnen. Vielmehr können die einzelnen Zusammenhangskomponenten auch jeweils mehrere Loci beinhalten. \\
 
 \subsection{Approximation von PairHMM mittels Minimap2-Alignments} \label{subsec:phmm_minimap}
+
+Wie bereits erwähnt, werden die Kanten des Graphen durch das Sequenzalignment repräsentiert. Dabei führt Minimap2 einen paarweisen Readvergleich anhand der DNA-Sequenzen der Reads durch. Die Sequenz jedes Reads (Querysequenz) wird mit jeder Sequenz der übrigen Reads (Referenzsequenz) verglichen. Reads mit hoher Ähnlichkeit zueinander werden in das Alignment aufgenommen. Das Ergebnis ist ein Mapping derjenigen Reads, die eine hohe Wahrscheinlichkeit besitzen, durch Sequenzierfehler, Variationen oder Mutationen aus einem gemeinsamen Allel hervorgegangen zu sein. Somit basieren die Kanten des Graphen auf den Wahrscheinlichkeiten des Sequenzalignments. \\
+
+Das zugrundeliegende Modell ist hierbei ein vollständiger gerichteter Graph dessen Kantengewichte durch den paarweisen Sequenzvergleich eines pair Hidden Markov Models (pairHMM)~\cite{durbin_1998} errechnet werden. Das beobachtete Ergebnis der Referenzsequenz wird dabei durch Abfolgen von Mismatch-, Insertions und Deletions-Operationen der Querysequenz erklärt. Jede dieser Operationen stellt einen Zustand dar, der Übergang zwischen den Zuständen wird über Wahrscheinlichkeiten abgebildet. Die Zustände selbst sind allerdings nicht direkt beobachtbar. Die möglichen Kombinationen von Zustandsübergängen, die zum beobachteten Ergebnis der Referenzsequenz führen, können aber errechnet und als Matrix dargestellt werden. In der Matrix kann dann der wahrscheinlichste Pfad ermittelt werden. Hierfür muss gelten, dass auf diesem Pfad das Produkt über die Zustandsübergangswahrscheinlichkeiten der Matrix maximal ist. Als Ergebnis erhält man somit die wahrscheinlichste Zustandssequenz, um die Querysequenz in die Referezsequenz zu transformieren.\\
+
+\noindent======================= draft =======================\\
+
+
+ ergibt sich dabei aus dem Produkt der Zustandsübergangswahrscheinlichkeiten. kann aber die wahrscheinl Als Resultat entsteht eine Matrix mit den
+Daher soll im vorliegenden Modell das Sequenzalignment durch Minimap2 als Approximation des zugrundeliegenden PairHMM betrachtet werden, welches
+
+stellt dabei eine Approximation des pair Hidden Markov Models zum paarweisen Readvergleich dar (siehe Kap. \ref{subsec:phmm_minimap}). 
+Grundlage für die Berechnung der Likelihoods der Kandidatenallele und der Loci ist das durch Minimap2 ermittelte Sequenzalignment. Minimap2 berechnet hier die
+
+Dieses repräsentiert einen Pfad im der  pairHMM-Matrix, und zwar den Wahrscheinlichsten Pfad. Dieser dominiert ohnehin die Wahrscheinlichkeit die das pairHMM berechnen würde. Daher kannst du auch einfach nur die Wahrscheinlichkeit für diesen Pfad berechnen. Das ist ein Produkt über dem Alignment.  Dieses liefert die wird als Approximation als Approximation eine Pair hidden Markov Models ~\cite{durbin_1998} (PairHMM) betrachtet\\
 
 ~\cite{yoon_2009}
 ~\cite{knudsen_2003}
 ~\cite{durbin_1998}
--> Berücksichtigung der Basenqualität $q_{r}$ => Sequenzierfehler fließen mit geringerer liklihood in die weitere Berechnung ein -> werden weniger berücksichtigt und kommen seltener vor, z.T als noise entfernt-> loci likelihood wird mit den sequenzen mit seq-fehlern geringer sein -> seq-fehler gefiltert, da es nicht möglich ist eine  bessere lh für z.B. 3 Allele zu bekommen (von denen eines aber auf einem seq-fehler beruht), wenn es nur 2 tatsächliche Allele in einer komp gibt, d.h. lh für 2 Allele ist in diesem fall höher als für 3 -> loci likelihood enthält mutationen \\
+-> Berücksichtigung der Basenqualität $q_{r}$ => Sequenzierfehler fließen mit geringerer likelihood in die weitere Berechnung ein -> werden weniger berücksichtigt und kommen seltener vor, z.T als noise entfernt-> loci likelihood wird mit den sequenzen mit seq-fehlern geringer sein -> seq-fehler gefiltert, da es nicht möglich ist eine  bessere lh für z.B. 3 Allele zu bekommen (von denen eines aber auf einem seq-fehler beruht), wenn es nur 2 tatsächliche Allele in einer komp gibt, d.h. lh für 2 Allele ist in diesem fall höher als für 3 -> loci likelihood enthält mutationen \\
 paarweises Alignment aus Minimap2 als Teilproblem -> fast jede Beobachtung wird berücksichtigt\\
 Bewertung/wslk ob ein read aus einem anderen read entstanden ist\\
 
@@ -167,6 +309,8 @@ $m$ ist Anzahl der Reads, $L \in \{l_{i} \in \mathds{N}_{\leq n}^\phi \, | \, i=
 L(\Theta=\theta_{1},\dots,\theta_{n} \, | \, D) = Pr(D \, | \, \Theta=\theta_{1},\dots,\theta_{n}) = \prod_{r=1}^{m}Pr (s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n})
 \end{equation}
 für jede vaf wurde also liklihood über alle reads bestimmt -> Maximum 
+
+
 \subsection{Locuszuordnung mit maximaler Likelihood} \label{subsec:sol_loci_lh}
 connected comp in loci aufsplitten\\
 Zuordnung zu loci, also welche genomischen loci stecken dahinter, wie werden die allele den loci zugeordnet -> max parximony, prinzip der einfachsen möglichen lösung \\
