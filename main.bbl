@@ -152,6 +152,14 @@
   tool set for population genomics.}
 \newblock Molecular ecology, 22:3124--40, Jun 2013.
 
+\bibitem{tikz_schema}
+{\sc Alanis, Cristo~J.}: {\em {{Schema of Labs on a class}}}.
+\newblock source: \url{https://texample.net/tikz/examples/labs-schema/}.
+
+\bibitem{tikz_dna}
+{\sc Veličković, Petar}: {\em {{Deoxyribonucleic acid (DNA)}}}.
+\newblock source: \url{https://github.com/PetarV-/TikZ/tree/master/DNA}.
+
 \bibitem{li_2018}
 {\sc Li, Heng}: {\em {Minimap2: pairwise alignment for nucleotide sequences}}.
 \newblock Bioinformatics, 34(18):3094--3100, 05 2018.
@@ -168,10 +176,11 @@
   biological sequence analysis.}
 \newblock Current genomics, 10:402--15, Sep 2009.
 
-\bibitem{knudsen_2003}
-{\sc Knudsen, Bjarne} \btxandlong{}\ {\sc Michael~M. Miyamoto}: {\em Sequence
-  alignments and pair hidden markov models using evolutionary history.}
-\newblock Journal of molecular biology, 333:453--60, Oct 2003.
+\bibitem{schirmer_2016}
+{\sc Schirmer, Melanie}, {\sc Rosalinda D’Amore}, {\sc Umer~Z. Ijaz}, {\sc
+  Neil Hall}, \btxandlong{}\ {\sc Christopher Quince}: {\em Illumina error
+  profiles: resolving fine-scale variation in metagenomic sequencing data}.
+\newblock BMC Bioinformatics, 17(1):125, \btxmonmarlong{} 2016.
 
 \bibitem{kuhner_2014}
 {\sc Kuhner, Mary~K.} \btxandlong{}\ {\sc James McGill}: {\em Correcting for
@@ -264,12 +273,6 @@
 {\sc Ewing, B.} \btxandlong{}\ {\sc P.~Green}: {\em Base-calling of automated
   sequencer traces using phred. ii. error probabilities.}
 \newblock Genome research, 8:186--94, Mar 1998.
-
-\bibitem{schirmer_2016}
-{\sc Schirmer, Melanie}, {\sc Rosalinda D’Amore}, {\sc Umer~Z. Ijaz}, {\sc
-  Neil Hall}, \btxandlong{}\ {\sc Christopher Quince}: {\em Illumina error
-  profiles: resolving fine-scale variation in metagenomic sequencing data}.
-\newblock BMC Bioinformatics, 17(1):125, \btxmonmarlong{} 2016.
 
 \bibitem{graph_tool_coplexity_find_vertex}
 {\sc Paula~Peixoto, Tiago~de}: {\em {{Mail conversation[graph-tool]: problem

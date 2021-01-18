@@ -1086,7 +1086,6 @@
   volume                 = {4},
   pages                  = {2545-52},
   month                  = {Nov},
-  __markedentry          = {[tarja:]},
   abstract               = {Accurate phylogenies are critical to taxonomy as well as studies of speciation processes and other evolutionary patterns. Accurate branch lengths in phylogenies are critical for dating and rate measurements. Such accuracy may be jeopardized by unacknowledged sequencing error. We use simulated data to test a correction for DNA sequencing error in maximum likelihood phylogeny inference. Over a wide range of data polymorphism and true error rate, we found that correcting for sequencing error improves recovery of the branch lengths, even if the assumed error rate is up to twice the true error rate. Low error rates have little effect on recovery of the topology. When error is high, correction improves topological inference; however, when error is extremely high, using an assumed error rate greater than the true error rate leads to poor recovery of both topology and branch lengths. The error correction approach tested here was proposed in 2004 but has not been widely used, perhaps because researchers do not want to commit to an estimate of the error rate. This study shows that correction with an approximate error rate is generally preferable to ignoring the issue.},
   article-doi            = {10.1534/g3.114.014365},
   article-pii            = {GGG_014365},
@@ -1111,19 +1110,32 @@
 }
 
 @Article{schirmer_2016,
-  author        = {Schirmer, Melanie and D’Amore, Rosalinda and Ijaz, Umer Z. and Hall, Neil and Quince, Christopher},
-  title         = {Illumina error profiles: resolving fine-scale variation in metagenomic sequencing data},
-  journal       = {BMC Bioinformatics},
-  year          = {2016},
-  volume        = {17},
-  number        = {1},
-  pages         = {125},
-  month         = mar,
-  issn          = {1471-2105},
+  author   = {Schirmer, Melanie and D’Amore, Rosalinda and Ijaz, Umer Z. and Hall, Neil and Quince, Christopher},
+  title    = {Illumina error profiles: resolving fine-scale variation in metagenomic sequencing data},
+  journal  = {BMC Bioinformatics},
+  year     = {2016},
+  volume   = {17},
+  number   = {1},
+  pages    = {125},
+  month    = mar,
+  issn     = {1471-2105},
+  abstract = {Illumina’s sequencing platforms are currently the most utilised sequencing systems worldwide. The technology has rapidly evolved over recent years and provides high throughput at low costs with increasing read-lengths and true paired-end reads. However, data from any sequencing technology contains noise and our understanding of the peculiarities and sequencing errors encountered in Illumina data has lagged behind this rapid development.},
+  refid    = {Schirmer2016},
+  url      = {https://doi.org/10.1186/s12859-016-0976-y},
+}
+
+@Misc{tikz_schema,
+  author        = {Cristo J. Alanis},
+  title         = {{{Schema of Labs on a class}}},
+  note          = {source: \url{https://texample.net/tikz/examples/labs-schema/}},
+  __markedentry = {[tarja:]},
+}
+
+@Misc{tikz_dna,
+  author        = {Petar Veličković},
+  title         = {{{Deoxyribonucleic acid (DNA)}}},
+  note          = {source: \url{https://github.com/PetarV-/TikZ/tree/master/DNA}},
   __markedentry = {[tarja:6]},
-  abstract      = {Illumina’s sequencing platforms are currently the most utilised sequencing systems worldwide. The technology has rapidly evolved over recent years and provides high throughput at low costs with increasing read-lengths and true paired-end reads. However, data from any sequencing technology contains noise and our understanding of the peculiarities and sequencing errors encountered in Illumina data has lagged behind this rapid development.},
-  refid         = {Schirmer2016},
-  url           = {https://doi.org/10.1186/s12859-016-0976-y},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

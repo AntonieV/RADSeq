@@ -3,23 +3,24 @@
 \chapter{Analyse von RAD-Seq-Daten} \label{chapter:kap2}
 \section{Problemstellung} \label{sec:probl}
 
-Ausgangsmaterial für RAD-Seq-Analysen sind die Reads aus in der Regel gepoolten Probengemischen mehrerer Individuen. Durch entsprechende Barcodemarkierungen können die Reads den einzelnen Individuen zugeordnet werden. Durch die Verwendung gepoolter Probengemischen ist das Verfahren kostengünstiger und zeitsparender als die meisten anderen NGS-Verfahren. Die Reads stammen aus dem gesamten Genom, wobei sie nur kleinere Sequenzabschnitte zwischen den Schnittstellen der Restriktionsenzyme repräsentieren und damit nicht das gesamte Genom abbilden. Ein deutlicher Vorteil des Verfahrens besteht darin, die Reads ohne Kenntnis eines Referenzgenoms möglichen Loci zuordnen zu können. Auch die Loci und ihre Sequenz sind somit anfangs unbekannt und werden erst durch die Analyse ermittelt.\\
+Ausgangsmaterial für RAD-Seq-Analysen sind die Reads aus in der Regel gepoolten Probengemischen mehrerer Individuen. Durch entsprechende Barcodemarkierungen können die Reads den einzelnen Individuen zugeordnet werden. Die Verwendung gepoolter Probengemische macht das Verfahren kostengünstiger und zeitsparender als die meisten anderen NGS-Verfahren. Die Reads stammen aus dem gesamten Genom, wobei sie nur kleinere Sequenzabschnitte zwischen den Schnittstellen der Restriktionsenzyme repräsentieren und damit nicht das gesamte Genom abbilden. Ein deutlicher Vorteil des Verfahrens besteht darin, die Reads ohne Kenntnis eines Referenzgenoms möglichen Loci zuordnen zu können. Auch die Loci und ihre Sequenz sind somit anfangs unbekannt und werden erst durch die Analyse ermittelt.\\
 
-Das RAD-Sequencing-Verfahren bedingt, dass durch die Restriktionsenzyme die DNA nur in innerhalb spezifischer Sequenzen geschnitten wird und dass durch PCR und Sequenzierung mehrere Reads erzeugt werden, die jeweils vom gleichen Locus stammen. Das hier implementierte Tool NodeRAD stellt einen Prototypen dar, der im Gegensatz zu derzeit etablierten RADSeq-Tools, wie beispielsweise dem Tool Stacks \cite{catchen_2013}, mit Hilfe von nur zwei Parametern diese Zuordnung realisiert. Das Clustering der Reads sowie die Identifizierung und Locizuordnung sollen dabei unter Berücksichtigung der Ploidie ohne weiteres Vorwissen allein auf Grundlage der Sequenzierfehlerrate und Heterozygotiewahrscheinlichkeit erfolgen. Die ermittelten Loci sollen für anschließende Diversitätsanalysen zur Verfügung stehen. 
+Das RAD-Sequencing-Verfahren bedingt, dass durch die Restriktionsenzyme die DNA nur  innerhalb spezifischer Sequenzen geschnitten wird und dass durch PCR und Sequenzierung mehrere Reads erzeugt werden, die jeweils vom gleichen Locus stammen. Das hier implementierte Tool NodeRAD stellt einen Prototypen dar, der im Gegensatz zu derzeit etablierten RADSeq-Tools, wie beispielsweise dem Tool Stacks \cite{catchen_2013}, mit Hilfe von nur zwei Parametern diese Zuordnung realisiert. Das Clustering der Reads sowie die Identifizierung und Locizuordnung sollen dabei unter Berücksichtigung der Ploidie ohne weiteres Vorwissen allein auf Grundlage der Sequenzierfehlerrate und Heterozygotiewahrscheinlichkeit erfolgen. Die ermittelten Loci sollen für anschließende Diversitätsanalysen zur Verfügung stehen. 
 
 \section{Formale Definition der Problemstellung} \label{sec:formal}
 
-Gegeben sei eine Menge von Reads eines Individuums $ D = (s_{1}, \dots , s_{m}) \in \{A,\,C,\,G,\,T,\}^{k^m}$ mit der Readlänge $k$. In den Reads sind zudem für jede Base Informationen zur Qualität der Sequenzierung $ Q = (q_{1}, \dots , q_{m}) \in {[0,\,1]}^{k^m}$ enthalten. Weiterhin seien für Substitutionen, Insertionen und Deletionen die Heterozygotiewahrscheinlichkeit $\eta = (\eta_{sub},\, \eta_{ins},\, \eta_{del}) $ und für Indels die Sequenzierfehlerrate $\epsilon=(\epsilon_{ins},\, \epsilon_{del})$ gegeben. Ebenso ist die Ploidie $\phi$ des untersuchten Organismus bekannt. In der vorliegenden Arbeit wird im Model und beim implementierten Prototypen ein diploider Chromosomensatz vorausgesetzt, für höherploide Organismen ist eine Anpassung hinsichtlich des Sequenzalignments notwendig (siehe Kap. \ref{sec:ausblick}). \\
+Gegeben sei eine Menge von Reads eines Individuums $ D = (s_{1}, \dots , s_{m}) \in \{A,\,C,\,G,\,T,\}^{k^m}$ mit der Readlänge $k$. In den Reads sind zudem für jede Base Informationen zur Qualität der Sequenzierung $ Q = (q_{1}, \dots , q_{m}) \in {[0,\,1]}^{k^m}$ enthalten. Weiterhin seien für Substitutionen, Insertionen und Deletionen die Heterozygotiewahrscheinlichkeiten $\eta=(\eta_{sub},\, \eta_{ins},\, \eta_{del}) $ und für Indels die Sequenzierfehlerraten $\epsilon=(\epsilon_{ins},\, \epsilon_{del})$ gegeben. Ebenso ist die Ploidie $\phi$ des untersuchten Organismus bekannt. In der vorliegenden Arbeit wird im Model und beim implementierten Prototypen ein diploider Chromosomensatz vorausgesetzt, für höherploide Organismen ist eine Anpassung hinsichtlich des Sequenzalignments notwendig (siehe Kap. \ref{sec:ausblick}). \\
 
 Ziel ist die Zuordnung der Reads zu den Loci unter Berücksichtigung von $\epsilon$ und $\eta$ sowie die Ausgabe der Menge der ermittelten Loci mit den Sequenzen der beteiligten Allele. Dabei soll die Menge von Loci gefunden werden, welche die beobachteten Reads am besten erklären kann, das heißt welche die höchste Wahrscheinlichkeit in Zusammenschau mit $\epsilon$ und $\eta$ besitzt. \\
 
 \section{Lösungsansatz und Modell} \label{sec:solution}
 
-Das Problem wird als gerichteter Graph betrachtet (siehe Kap. \ref{subsec:sol_graph}), dessen Knoten die einzelnen Reads beinhalten und dessen Kanten auf einem Sequenzalignment der Reads basieren. Für die Zuordnung der Reads soll das Problem in Teilprobleme aufgeteilt werden, für jedes Teilproblem wird dann eine Lösung ermittelt. Der Graph wird daher entsprechend seiner Zusammenhangskomponenten partitioniert. Die in einer Zusammenhangskomponente vorkommenden Sequenzen werden in Abhängigkeit von festgelegten Schwellwerten als Kandidatenallele betrachtet und jeweils mit sämtlichen Reads der Zusammenhangskomponente verglichen. Dabei sollen diejenigen Allele identifiziert werden, von denen die übrigen Reads der Komponente am wahrscheinlichsten durch Sequenzierfehler entstanden sind (Kap. \ref{subsec:sol_allele_lh}). Die Likelihoodberechnung hierfür wird durch die Basenqualität der Reads und Sequenzierfehlerrate bestimmt und erfolgt über alle Kombination möglicher Häufigkeitsverteilungen der Allele (Allele-Fractions). \\
+Das Problem wird als gerichteter Graph betrachtet (siehe Kap. \ref{subsec:sol_graph}), dessen Knoten die einzelnen Reads beinhalten und dessen Kanten auf einem Sequenzalignment der Reads basieren. Für die Zuordnung der Reads soll das Problem in Teilprobleme aufgeteilt werden, für jedes Teilproblem wird dann eine Lösung ermittelt. Der Graph wird daher entsprechend seiner Zusammenhangskomponenten partitioniert. Die in einer Zusammenhangskomponente vorkommenden Sequenzen werden in Abhängigkeit von konfigurierbaren Schwellenwerten als Kandidatenallele betrachtet und jeweils mit sämtlichen Reads der Zusammenhangskomponente verglichen. Dabei sollen diejenigen Allele identifiziert werden, von denen die übrigen Reads der Komponente am wahrscheinlichsten durch Sequenzierfehler entstanden sind (Kap. \ref{subsec:sol_allele_lh}). Die Likelihoodberechnung hierfür wird durch die Basenqualität der Reads und Sequenzierfehlerrate bestimmt und erfolgt über alle Kombinationen möglicher Häufigkeitsverteilungen der Allele (Allele-Fractions). \\
 
-Die Allele-Fraction mit der höchsten Likelihood $vaf_{max}$ soll anschließend für die Zuordnung der Loci verwendet werden (Kap. \ref{subsec:sol_loci_lh}). Hierfür wird die Likelihood für alle Loci-Kombinationen bestimmt, welche zu der ermittelten $vaf_{max}$ passen. Für die Berechnung der Likelihoods der Locizuordnung werden die Heterozygotiewahrscheinlichkeiten verwendet. Die Loci-Kombination mit der größten Likelihood wird schließlich als Lösung der betreffenden Zusammenhangskomponente ausgegeben (Kap. \ref{subsec:sol_vcf}).\\
+Die Allele-Fraction mit der höchsten Likelihood $\Theta_{max\_lh}$ soll anschließend für die Zuordnung der Loci verwendet werden (Kap. \ref{subsec:sol_loci_lh}). Hierfür wird die Likelihood für alle Loci-Kombinationen bestimmt, welche zu der ermittelten $\Theta_{max\_lh}$ passen. Für die Berechnung der Likelihoods der Locizuordnung werden die Heterozygotiewahrscheinlichkeiten verwendet. Die Loci-Kombination mit der größten Likelihood wird schließlich als Lösung der betreffenden Zusammenhangskomponente ausgegeben.\\
 
-Für jede Zusammenhangskomponente wird auf diese Weise also die wahrscheinlichste Lösung ermittelt, deren Komposition von Loci die beobachteten Reads innerhalb der Zusammenhangskomponente am besten erklären kann. Die Loci mit maximaler Likelihood aus allen Zusammenhangskomponenten werden schließlich durch NodeRAD im VCF-Format ausgegeben. Eine Übersicht der einzelnen Schritte des Workflows findet sich in \autoref{fig:workflow_all}.  \\
+Für jede Zusammenhangskomponente wird auf diese Weise die wahrscheinlichste Lösung ermittelt, deren Komposition von Loci die beobachteten Reads innerhalb der Zusammenhangskomponente am besten erklären kann. Die Loci mit maximaler Likelihood aus allen Zusammenhangskomponenten werden schließlich durch NodeRAD im VCF-Format ausgegeben. Eine Übersicht der einzelnen Schritte des Workflows findet sich in \autoref{fig:workflow_all}. Die dort dargestellten Schritte werden im Folgenden näher erläutert. \\
+
 %https://texample.net/tikz/examples/labs-schema/
 \usetikzlibrary{shadows,arrows}
 % Layer des Diagramms
@@ -97,27 +98,27 @@ minimum height=3em, rounded corners, drop shadow]
 				\braid[rotate=90,style strands={1}{red, very thick},style strands={2}{blue, very thick}] (tst) at (0, 0) s_1 s_1 s_1 s_1 ;
 				\end{tikzpicture}
 			};
-			\path (p1.south)+(-2.5,-2.0) \blockitem{2}{\hyperref[step1txt]{\color{green}..}1. Adapter trimming};\phantomsection\label{step1}
-			\path (p2.south)+(2.5,-1.2) \blockitem{3}{\hyperref[step2txt]{\color{green}..}2.\phantomsection\label{step2} Quality \\control};
-			\path (p3.south)+(-2.5,-1.2) \blockitem{5}{\hyperref[step3txt]{\color{green}..}3.\phantomsection\label{step3} Sequence alignment};
+			\path (p1.south)+(-2.5,-2.0) \blockitem{2}{\hyperref[step1txt]{\color{green!40}..}1. Adapter trimming};\phantomsection\label{step1}
+			\path (p2.south)+(2.5,-1.2) \blockitem{3}{\hyperref[step2txt]{\color{green!40}..}2.\phantomsection\label{step2} Quality \\control};
+			\path (p3.south)+(-2.5,-1.2) \blockitem{5}{\hyperref[step3txt]{\color{green!40}..}3.\phantomsection\label{step3} Sequence alignment};
 			\path (p3.west)+(4.75,-3.8) \blockitem{4}{\hyperref[step4txt]{ 4}.\phantomsection\label{step4} Build graph};
 			\path (p3.east)+(+9.8, 0.0) node (ur1)[ur] {\includegraphics[width=2.0cm]{bilder/qc_reports_icon_5.png}};
-			\path (p4.south)+(0.0,-1.5) \blockitem{6}{\hyperref[step5txt]{\color{green}..}5.\phantomsection\label{step5} Connected components};
+			\path (p4.south)+(0.0,-1.5) \blockitem{6}{\hyperref[step5txt]{\color{green!40}..}5.\phantomsection\label{step5} Connected components};
 			\path (p4.east)+(+7.0,0) node (ur2)[ur] {\includegraphics[width=2.0cm]{bilder/big_components_3.png}};
-			\path (p6.south)+(-5.5,-1.4) \blockitem{7}{\hyperref[step7txt]{\color{green} ..}7.\phantomsection\label{step7} Allele \\combinations};
-			\path (p6.south)+(0.0,-1.4) \blockitem{8}{\hyperref[step6txt]{\color{green}..}6.\phantomsection\label{step6} Candidate \\alleles};
+			\path (p6.south)+(-5.5,-1.4) \blockitem{7}{\hyperref[step7txt]{\color{green!40} ..}7.\phantomsection\label{step7} Allele \\combinations};
+			\path (p6.south)+(0.0,-1.4) \blockitem{8}{\hyperref[step6txt]{\color{green!40}..}6.\phantomsection\label{step6} Candidate \\alleles};
 			\path (p6.east)+(+6.5,0) node (ur3)[ur] {\includegraphics[width=1.0cm]{bilder/small_components_2.png}};				
-			\path (p7.south)+(0.0,-3.9) \blockitem{9}{\hyperref[step8txt]{\color{green}..}8.\phantomsection\label{step8} Allele fractions};
-			\path (p8.south)+(0.0,-1.5)	\blockitem{10}{\hyperref[step9txt]{\color{green}..}9.\phantomsection\label{step9} Likelihood of alleles given one read};
-			\path (p9.south)+(0.0,-7.64) \blockitem{11}{\hyperref[step14txt]{\color{green}.\color{black}1}4.\phantomsection\label{step14} Indicator constrait};
-			\path (p10.south)+(0.0,-1.5) \blockitem{12}{\hyperref[step10txt]{\color{green}.\color{black}1}0.\phantomsection\label{step10} Likelihood of allele fractions given one read};
-			\path (p11.south)+(0.0,-1.5) \blockitem{13}{\hyperref[step13txt]{\color{green}.\color{black}1}3.\phantomsection\label{step13} Loci \\combinations};
-			\path (p12.south)+(0.0,-1.5) \blockitem{14}{\hyperref[step11txt]{\color{green}.\color{black}1}1.\phantomsection\label{step11} Likelihood of allele fractions given all reads};
-			\path (p14.south)+(0.0,-1.5) \blockitem{15}{\hyperref[step12txt]{\color{green}.\color{black}1}2.\phantomsection\label{step12} Maximum likelihood allele fractions};
-			\path (p15.south)+(0.0,-2.0) \blockitem{16}{\hyperref[step15txt]{\color{green}.\color{black}1}5.\phantomsection\label{step15} Likelihood \\of an allele given another allele};
-			\path (p16.south)+(0.0,-1.8) \blockitem{17}{\hyperref[step16txt]{\color{lime}.\color{black}1}6.\phantomsection\label{step16} Likelihood of loci given alleles and fractions}; 
-			\path (p17.south)+(0.0,-1.3) \blockitem{18}{\hyperref[step17txt]{\color{green}.\color{black}1}7.\phantomsection\label{step17} Maximum likelihood loci};
-			\path (p18.south)+(0.0,-1.7) \ioitem{19}{\hyperref[step18txt]{\color{green}.\color{black}1}8.\phantomsection\label{step18} VCF \\ \includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}};
+			\path (p7.south)+(0.0,-3.9) \blockitem{9}{\hyperref[step8txt]{\color{green!40}..}8.\phantomsection\label{step8} Allele fractions};
+			\path (p8.south)+(0.0,-1.5)	\blockitem{10}{\hyperref[step9txt]{\color{green!40}..}9.\phantomsection\label{step9} Likelihood of alleles given one read};
+			\path (p9.south)+(0.0,-7.64) \blockitem{11}{\hyperref[step14txt]{\color{green!40}.\color{black}1}4.\phantomsection\label{step14} Indicator constrait};
+			\path (p10.south)+(0.0,-1.5) \blockitem{12}{\hyperref[step10txt]{\color{green!40}.\color{black}1}0.\phantomsection\label{step10} Likelihood of allele fractions given one read};
+			\path (p11.south)+(0.0,-1.5) \blockitem{13}{\hyperref[step13txt]{\color{green!40}..}13.\phantomsection\label{step13} Loci \\combinations};
+			\path (p12.south)+(0.0,-1.5) \blockitem{14}{\hyperref[step11txt]{\color{green!40}.\color{black}1}1.\phantomsection\label{step11} Likelihood of allele fractions given all reads};
+			\path (p14.south)+(0.0,-1.5) \blockitem{15}{\hyperref[step12txt]{\color{green!40}.\color{black}1}2.\phantomsection\label{step12} Maximum likelihood allele fractions};
+			\path (p15.south)+(0.0,-2.0) \blockitem{16}{\hyperref[step15txt]{\color{green!40}.\color{black}1}5.\phantomsection\label{step15} Likelihood \\of an allele given another allele};
+			\path (p16.south)+(0.0,-1.8) \blockitem{17}{\hyperref[step16txt]{\color{green!40}.\color{black}1}6.\phantomsection\label{step16} Likelihood of loci given alleles and fractions}; 
+			\path (p17.south)+(0.0,-1.3) \blockitem{18}{\hyperref[step17txt]{\color{green!40}.\color{black}1}7.\phantomsection\label{step17} Maximum likelihood loci};
+			\path (p18.south)+(0.0,-1.7) \ioitem{19}{\hyperref[step18txt]{\color{white}..}18.\phantomsection\label{step18} VCF \\ \includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}};
 			
 			% Pfeile
 			\path [line] (p1.south) -- +(0.0,-0.5) -- +(-2.5,-0.5) -- node [above, midway] {} (p2);
@@ -135,7 +136,7 @@ minimum height=3em, rounded corners, drop shadow]
 			\path [line] (p16.south) -- node [above] {} (p17) ;
 			\path [line] (p17.south) -- node [above] {} (p18) ;
 			\path [line] (p18.south) -- node [above] {} (p19) ;		
-			\path [line] (p19.south) -- +(0.0,-0.5) -- +(-8.8,-0.5) -- +(-8.8,27.498) -- node [above] {} (p5.west) ;
+			\path [line] (p19.south) -- +(0.0,-0.5) -- +(-8.8,-0.5) -- +(-8.8,27.498) -- node [above] {\color{black}Section 6} (p5.west) ;
 			
 			\out{p3}{Reports (MultiQC, FastQC)}{ur1}
 			\out{p4}{Graph, XML, DOT}{ur2}
@@ -153,16 +154,16 @@ minimum height=3em, rounded corners, drop shadow]
 			\background{p3}{p8}{p4}{p15}{Allele Likelihood}
 			\background{p3}{p16}{p4}{p18}{Loci Likelihood}
  		\end{tikzpicture}
-		\caption{Übersicht der Prozesse des Workflows}
+		\caption{Übersicht der Prozesse des Workflows \cite{tikz_schema, tikz_dna}}
 		\label{fig:workflow_all}
 	\end{center}
 \end{figure}
 
 \subsection{Graph und Zusammenhangskomponenten} \label{subsec:sol_graph}
 
-Im Preprocessing erfolgt die Zuordnung der Reads zu den einzelnen Individuen und die Entfernung der Barcodes aus den Sequenzen (\hyperref[step1]{Schritt 1\phantomsection\label{step1txt}} des Workflows). Anschließend wird in \hyperref[step3]{Schritt 3\phantomsection\label{step3txt}} aus den Reads ein paarweises Sequenzalignment mit Hilfe des Tools Minimap2 ~\cite{li_2018} erzeugt. Hierbei werden alle Reads mit einander verglichen und bei ausreichender Ähnlichkeit ihrer Sequenzen einander zugeordnet. Zusätzlich werden durch Minimap2 die Edit-Distanzen zwischen den jeweils verglichenen Readsequenzen bestimmt. \\
+Im Preprocessing erfolgt die Zuordnung der Reads zu den einzelnen Individuen und die Entfernung der Barcodes aus den Sequenzen (\hyperref[step1]{Schritt 1\phantomsection\label{step1txt}} des Workflows). Anschließend wird in \hyperref[step3]{Schritt 3\phantomsection\label{step3txt}} aus den Reads ein paarweises Sequenzalignment mit Hilfe des Tools Minimap2 ~\cite{li_2018} erzeugt. Hierbei werden alle Reads mit einander verglichen und bei ausreichender Ähnlichkeit ihrer Sequenzen einander zugeordnet. Zusätzlich werden durch Minimap2 die Edit-Distanzen zwischen den jeweils miteinander verglichenen Readsequenzen bestimmt. \\
 
-Wie bereits einleitend erwähnt, wird das Problem schließlich als gerichteter Graph $G=(V, \, E)$ mit der Knotenmenge $V$ und der Kantenmenge $E$ betrachtet (\hyperref[step4]{Schritt 4\phantomsection\label{step4txt}} des Workflows). Die Knoten repräsentieren dabei die einzelnen Reads. Entsprechend dem von Minimap2 erzeugtem Sequenzalignment werden die Knoten der Reads durch Kanten verbunden. Die Kanten des Graphen repräsentieren somit den Vergleich der Sequenzen der beiden angrenzenden Reads. Die Anzahl der Kanten kann zusätzlich durch die von Minimap2 bestimmten Edit-Distanzen reguliert werden. Diese soll über einen konfigurierbaren Schwellwert flexibel wählbar sein und ermöglicht ein zusätzliches Filtern der Kanten zugunsten von  Laufzeit und Effizienz. \\
+Wie bereits einleitend erwähnt, wird das Problem als gerichteter Graph $G=(V, \, E)$ mit der Knotenmenge $V$ und der Kantenmenge $E$ betrachtet (\hyperref[step4]{Schritt 4\phantomsection\label{step4txt}} des Workflows). Die Knoten entsprechen dabei den einzelnen Reads. Auf Grundlage des von Minimap2 erzeugtem Sequenzalignment werden die Knoten der Reads durch Kanten verbunden. Die Kanten des Graphen repräsentieren somit den Vergleich der Sequenzen der beiden angrenzenden Reads. Die Anzahl der Kanten kann zusätzlich durch die von Minimap2 bestimmten Edit-Distanzen reguliert werden. Diese soll über einen konfigurierbaren Schwellenwert flexibel wählbar sein und ermöglicht ein zusätzliches Filtern der Kanten zugunsten von  Laufzeit und Effizienz. \\
 
 Da aufgrund des Sequenzalignments nur Reads mit einander verbunden werden, deren Sequenzen eine gewisse Ähnlichkeit zu einander aufweisen und da die RAD-Sequencing-Daten für gewöhnlich mehrere Loci beinhalten, ist der Graph in der Regel nicht zusammenhängend. Dies ermöglicht eine Unterteilung des Gesamtproblems in kleinere Teilprobleme durch Betrachtung der einzelnen Zusammenhangskomponenten des Graphen (\hyperref[step5]{Schritt 5\phantomsection\label{step5txt}}). Für diese Teilprobleme wird dann nach Lösungen gesucht. Da sich die Konstellation der Zusammenhangskomponenten direkt aus dem Sequenzalignment ergibt, sind die so entstandenen Cluster nicht notwendiger Weise nur einem einzigen Locus zuzuordnen. Vielmehr können die einzelnen Zusammenhangskomponenten auch jeweils mehrere Loci beinhalten. \\
 
@@ -170,15 +171,15 @@ Da aufgrund des Sequenzalignments nur Reads mit einander verbunden werden, deren
 
 Minimap2 führt einen paarweisen Readvergleich anhand der DNA-Sequenzen der Reads durch. Die Sequenz jedes Reads (Querysequenz) wird mit jeder Sequenz der übrigen Reads (Referenzsequenz) verglichen. Reads mit hoher Ähnlichkeit zueinander werden in das Alignment aufgenommen. Das Ergebnis ist ein Mapping derjenigen Reads, die eine hohe Wahrscheinlichkeit besitzen, durch Sequenzierfehler, Variationen oder Mutationen aus einem gemeinsamen Allel hervorgegangen zu sein. Somit basieren die Kanten des Graphen auf den Wahrscheinlichkeiten des Sequenzalignments. \\
 
-Das eigentlich zugrundeliegende Modell des Clusterings der Reads ist allerdings ein vollständiger gerichteter Graph dessen Kantengewichte durch den paarweisen Sequenzvergleich über ein pair Hidden Markov Model (pairHMM)~\cite{durbin_1998} errechnet werden. Das beobachtete Ergebnis der Referenzsequenz wird dabei durch Abfolgen von Mismatch-, Insertions und Deletions-Operationen der Querysequenz erklärt (Evaluationsproblem). Jede dieser Operationen stellt einen Zustand dar, der Übergang zwischen den Zuständen wird über Wahrscheinlichkeiten abgebildet. Die Zustände selbst sind allerdings nicht direkt beobachtbar. Die möglichen Kombinationen von Zustandsübergängen, die zum beobachteten Ergebnis der Referenzsequenz führen, können aber errechnet und als Matrix dargestellt werden. In der Matrix kann dann der wahrscheinlichste Pfad ermittelt werden. Als Ergebnis erhält man somit die Zustandssequenz mit maximaler Likelihood, um die Querysequenz in die Referezsequenz zu transformieren, dieser entspricht der Kantengewichtung des Graphen. Die Kantengewichte können schließlich anhand eines Schwellenwertes gefiltert werden, so nur Kanten mit ausreichender Likelihood zurückbleiben. Je nach gewähltem Schwellwert wird der Graph hierdurch in mehrere Zusammenhangskomponenten partitioniert und das Problem kann über die entstandenen Teilprobleme gelöst werden. \\
+Das eigentliche zugrundeliegende Modell des Clusterings der Reads ist allerdings ein vollständiger gerichteter Graph dessen Kantengewichte durch den paarweisen Sequenzvergleich über ein pair Hidden Markov Model (pairHMM)~\cite{durbin_1998} errechnet werden. Das beobachtete Ergebnis der Referenzsequenz wird dabei durch Abfolgen von Mismatch-, Insertions und Deletions-Operationen der Querysequenz erklärt (Evaluationsproblem). Jede dieser Operationen stellt einen Zustand dar, der Übergang zwischen den Zuständen wird über Wahrscheinlichkeiten abgebildet. Die Zustände selbst sind allerdings nicht direkt beobachtbar. Die möglichen Kombinationen von Zustandsübergängen, die zum beobachteten Ergebnis der Referenzsequenz führen, können aber errechnet und als Matrix dargestellt werden. In der Matrix kann dann der wahrscheinlichste Pfad ermittelt werden. Als Ergebnis erhält man somit die Zustandssequenz mit maximaler Likelihood, um die Querysequenz in die Referezsequenz zu transformieren, dieser entspricht der Kantengewichtung des Graphen. Die Kantengewichte können schließlich anhand eines Schwellenwertes gefiltert werden, so dass nur Kanten mit ausreichender Likelihood zurückbleiben. Je nach gewähltem Schwellwert wird der Graph hierdurch in mehrere Zusammenhangskomponenten partitioniert und das Problem kann über die entstandenen Teilprobleme gelöst werden. \\
 
-Die Bestimmung der Kantenwahrscheinlichkeiten mittels pairHMM ist sehr rechenintensiv und wirkt sich entsprechend ungünstig auf die Laufzeit aus~\cite{durbin_1998, yoon_2009}. Stattdessen kann das durch Minimap2 generierte Sequenzalignmment für diploide Organismen als Approximation des pairHMM verwendet werden, polyploide Organismen benötigen stattdessen für die Locizuordnung ein multiples Sequenzalignment (siehe Kap. \ref{sec:ausblick}). Jedes Alignment aus Minimap2 repräsentiert bereits den wahrscheinlichsten Pfad einer pairHMM-Matrix. Daher genügt es die Likelihood $ L_{i} $ über diesem Alignment hinsichtlich des Sequenzierfehlerrate bei der Auswahl der Allele (siehe Kap. \ref{subsec:sol_allele_lh}) bzw. hinsichtlich der Heterozygotiewahrscheinlichkeiten bei der Zuordnung der Loci (siehe Kap. \ref{subsec:sol_loci_lh}) zu berechnen. Diese Likelihoodberechnungen sollen zur besseren Sicht auf das Modell bereits an dieser Stelle besprochen werden, auch wenn dadurch einige Schritte des Workflows vorweg genommen werden.
+Die Bestimmung der Kantenwahrscheinlichkeiten mittels pairHMM ist sehr rechenintensiv und wirkt sich entsprechend ungünstig auf die Laufzeit aus~\cite{durbin_1998, yoon_2009}. Stattdessen kann das durch Minimap2 generierte Sequenzalignmment bei diploiden Organismen als Approximation des pairHMM verwendet werden, polyploide Organismen benötigen stattdessen für die Locizuordnung ein multiples Sequenzalignment (siehe Kap. \ref{sec:ausblick}). Jedes durch Minimap2 generierte Alignment zweier Reads repräsentiert bereits den wahrscheinlichsten Pfad einer pairHMM-Matrix. Daher genügt es die Likelihood $ L_{i} $ über diesem Alignment hinsichtlich des Sequenzierfehlerrate bei der Auswahl der Allele (siehe Kap. \ref{subsec:sol_allele_lh}) bzw. hinsichtlich der Heterozygotiewahrscheinlichkeiten bei der Zuordnung der Loci (siehe Kap. \ref{subsec:sol_loci_lh}) zu berechnen. Diese Likelihoodberechnungen sollen zur besseren Veranschaulichung des Modells bereits an dieser Stelle besprochen werden, auch wenn dadurch einige Schritte des Workflows vorweg genommen werden.
 
 \subsubsection{Likelihoodberechnung der Allele bei einem gegebenen Read} \label{pHMM_alleles}
 
-Um die Wahrscheinlichkeit zu bestimmen, dass ein Read mit der Readsequenz $s_{r}$ und der Fehlerrate $\epsilon$ tatsächlich aus einem bestimmten Allel hervorgegangen (\hyperref[step9]{Schritt 9\phantomsection\label{step9txt}} des Workflows), muss die Sequenzierfehlerrate berücksichtigt werden. Die Zustandssequenz des approximierten pairHMM lässt sich dem CIGAR-String des Minimap2-Alignments entnehmen. Für jede Base der Querysequenz wird entsprechend den Operationen des CIGAR-Strings wird Sequenzierfehlerwahrscheinlichkeit auf unterschiedliche Weise in die Likelihoodberechnung einbezogen. \\
+Um in Kap. \ref{sol_al_read} die Wahrscheinlichkeit zu bestimmen, dass ein Read mit der Readsequenz $s_{r}$ und der Fehlerrate $\epsilon$ tatsächlich aus einem bestimmten Allel hervorgegangen ist (\hyperref[step9]{Schritt 9\phantomsection\label{step9txt}} des Workflows), muss die Sequenzierfehlerrate einbezogen werden. Die Zustandssequenz des approximierten pairHMM lässt sich dem CIGAR-String des Minimap2-Alignments entnehmen. Für jede Base der Querysequenz wird in Abhängigkeit von den Operationen des CIGAR-Strings die Sequenzierfehlerrate auf unterschiedliche Weise in die Likelihoodberechnung einbezogen. \\
 
-Bei einem Match sind beide Basen aus Query- und Referenzsequenz identisch. Daher ergibt sich die Wahrscheinlichkeit $L_{match}$, dass es sich bei Querysequenz an Position $i$ tatsächlich um die korrekte Base handelt allein aus der Fehlerrate. Die geschätzte Fehlerrate $ p_{i} $ lässt sich anhand der Basenqualität des Reads nach \eqref{eqn:3-3} bestimmen (vgl. Kap. \ref{subsec:lh_allele}). Die resultierende Likelihood der Base wird um diese Fehlerrate reduziert:
+Bei einem Match sind beide Basen aus Query- und Referenzsequenz identisch. Daher ergibt sich die Wahrscheinlichkeit $L_{match}$, dass es sich bei der Querysequenz an Position $i$ tatsächlich um die korrekte Base handelt allein aus der Fehlerrate. Die geschätzte Fehlerrate $ p_{i} $ lässt sich anhand der Basenqualität des Reads nach \eqref{eqn:3-3} bestimmen (vgl. Kap. \ref{subsec:lh_allele}). Die resultierende Likelihood der Base wird um diese Fehlerrate reduziert:
 \vspace{-0.5cm}
 \begin{center}
 	\fcolorbox{black}{white}{		
@@ -225,11 +226,11 @@ Die Likelihood $ pairHMM_{\epsilon, q_{query}} \;(s_{ref}\;|\; s_{query}) $, das
         }}
 \end{center}
  
-Durch die Berücksichtigung der Basenqualität fließen Sequenzierfehler mit geringerer Likelihood in die weitere Berechnung ein. Dadurch wird auch die Likelihood bei der späteren Locizuordnung für Reads mit Sequenzierfehlern geringer ausfallen. Insgesamt werden an dieser Stelle also die Sequenzierfehler herausgefiltert, da es auf diese Weise nicht möglich ist eine bessere Likelihood unter Einschluss eines Reads mit Sequenzierfehlern bei der Locizuordnung zu erreichen, als ohne diesen Read (siehe Kap. \ref{subsec:sol_loci_lh}).
+Durch die Berücksichtigung der Basenqualität fließen Sequenzierfehler mit geringerer Likelihood in die weitere Berechnung ein. Dadurch wird auch die Likelihood bei der späteren Loci-Zuordnung für Reads mit Sequenzierfehlern geringer ausfallen. Es ist somit nicht möglich, eine bessere Likelihood bei der späteren Loci-Zuordnung unter Einschluss eines Reads mit Sequenzierfehlern zu erreichen, als ohne diesen Read (siehe Kap. \ref{subsec:sol_loci_lh}). Insgesamt werden an dieser Stelle also Reads mit Sequenzierfehlern herausgefiltert.
 
 \subsubsection{Likelihoodberechnung bei der Zuordnung der Allele zu möglichen Loci} \label{pHMM_loci}
 
-Ein weiteres Mal wird auf die Approximation des pairHMM durch Minimap2 zurückgegriffen, um die Menge der wahrscheinlichsten Allele einer Zusammenhangskomponente sinnvollen Locikombinationen zuordnen zu können (\hyperref[step15]{Schritt 15\phantomsection\label{step15txt}} des Workflows). Hierfür können bei diploiden Spezies die Allele ebenfalls paarweise unter Berücksichtigung der Hetereozygotiewahrscheinlichkeiten $\eta_{sub}$, $\eta_{ins}$ und $\eta_{del}$ mit einander verglichen werden. Auch hier wird die Sequenz eines der Allel (Query) gegen die Sequenz ein anderes Allels (Referenz) verglichen. Entsprechend den Operationen des CIGAR-Strings wird die Likelihood für jede Position $i$ der Querysequenz bestimmt. \\
+Ein weiteres Mal wird auf die Approximation des pairHMM durch Minimap2 in Kap. \ref{sol_lh_al_al} zurückgegriffen, um die Menge der wahrscheinlichsten Allele einer Zusammenhangskomponente sinnvollen Locikombinationen zuordnen zu können (\hyperref[step15]{Schritt 15\phantomsection\label{step15txt}} des Workflows). Hierfür können bei diploiden Spezies die Allele ebenfalls paarweise unter Berücksichtigung der Hetereozygotiewahrscheinlichkeiten $\eta_{sub}$, $\eta_{ins}$ und $\eta_{del}$ mit einander verglichen werden. Auch hier wird die Sequenz eines der Allele (Query) gegen die Sequenz ein anderes Allels (Referenz) verglichen. Entsprechend den Operationen des CIGAR-Strings wird die Likelihood für jede Position $i$ der Querysequenz bestimmt. \\
 
 Im Falle eines Matches senken sämtliche Heterozygotiewahrscheinlichkeiten die Likelihood $L_{match}$, dass beide Allele vom gleichen Locus stammen (Formel \eqref{eqn:2-11}).
 \vspace{-0.5cm}
@@ -266,24 +267,12 @@ Die Wahrscheinlichkeit $ pairHMM_{\eta}(a_{l_{j,query}} \, | \, a_{l_{j,ref}}) $
         }}
 \end{center}
 
-Daraus ergibt sich nach Formel \eqref{eqn:2-12} die Likelihood $ Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) $, dass zwei Allele $a_{l_{j,1}}$ und $a_{l_{j,2}}$ vom gleichen Locus $l_{j}$ stammen.
-\vspace{-0.5cm}
-\begin{center}
-	\fcolorbox{black}{light-gray}{		
-		\parbox{\textwidth}{
-			\begin{equation} \label{eqn:2-12}
-			\tag{2-12}
-			Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) = pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}})
-			\end{equation}
-        }}
-\end{center}
-
 \subsection{Allele-Fractions mit maximaler Likelihood} \label{subsec:sol_allele_lh}
-\subsubsection{Bestimmung der Kandidatenallele und der Allele-Fractions} \label{outsubsec:sol_cand_allele}
+\subsubsection{Bestimmung der Kandidatenallele und der Allele-Fractions} \label{subsec:sol_cand_allele}
 
 Um später die Allele zu identifizieren, von denen die beobachteten Reads einer Zusammenhangskomponente am wahrscheinlichsten stammen, muss zunächst die Menge der Kandidatenallele $A=(a_{1}, \dots, a_{n}) \in \{A,\,C,\,G,\,T,\}^{k^n}$ bestimmt werden (\hyperref[step6]{Schritt 6\phantomsection\label{step6txt}} des Workflows). Bei größeren Clustern ist davon auszugehen, dass die Sequenzen solcher Kandidatenallele mehrfach in den Reads auftauchen. Um den Aufwand der Likelihoodberechnung bei größeren Cluster anpassen zu können, soll es möglich sein, selten auftretende Sequenzen herauszufiltern. Dies geschieht über Grenzwerte, welche die Mindestgröße der Cluster und die Mindesthäufigkeiten von Kandidatenallelsequenzen berücksichtigen sollen. \\
 
-Über der Menge der Kandidatenallele sollen nun mögliche Allelkombinationen erzeugt werden (\hyperref[step7]{Schritt 7\phantomsection\label{step7txt}}), die später den Loci zugeordnet werden. Die Länge dieser Kombinationen, also die erwartbare Anzahl von Allelen $n_{alleles}$, die auf einen oder mehrere Loci verteilt sind, ergibt sich dabei aus der Anzahl der Kandidatenallele $n_{cand}$ und der Ploidie $\phi$. Sie entspricht also entweder direkt der Ploidie, falls diese höher ist als die Anzahl der Kandidatenallele oder andernfalls gilt $n_{alleles} \geq n_{cand}$, so dass $n_{alleles}$ ein ganzzahliges Vielfaches der Ploidie ist. Dies ist in Formel \eqref{eqn:2-1} formal dargestellt, wobei gilt $d=n_{cand} \mod \phi$.
+Über der Menge der Kandidatenallele sollen nun mögliche Allelkombinationen erzeugt werden (\hyperref[step7]{Schritt 7\phantomsection\label{step7txt}}), die später den Loci zugeordnet werden. Die Länge dieser Kombinationen, also die erwartbare Anzahl von Allelen $n_{alleles}$, die auf einen oder mehrere Loci verteilt sind, ergibt sich dabei aus der Anzahl der Kandidatenallele $n_{cand}$ und der Ploidie $\phi$. Sie entspricht also entweder direkt der Ploidie, falls diese höher ist als die Anzahl der Kandidatenallele oder andernfalls gilt $n_{alleles} \geq n_{cand}$, so dass $n_{alleles}$ ein ganzzahliges Vielfaches der Ploidie ist. Dies ist in Formel \eqref{eqn:2-1} formal dargestellt, wobei gilt $d=n_{cand} \, mod \, \phi$.
 
 \begin{equation} \label{eqn:2-1}
 \tag{2-1}
@@ -303,7 +292,7 @@ Für jede Allelkombination werden anschließend die relativen Häufigkeiten der 
 
 \subsubsection{Bestimmung der Likelihood eines Alleles im Bezug auf einen Read} \label{sol_al_read}
 
-Für jeden Read wird nun in \hyperref[step9]{Schritt 9} des Workflows die Wahrscheinlichkeit bestimmt, dass er aus einem bestimmten Allel allein durch Sequenzierfehler hervorgegangen ist. Dies genaue Berechnung der Likelihood wurde in Kap. \ref{pHMM_alleles} bereits vorgestellt. \\
+Für jeden Read wird nun in \hyperref[step9]{Schritt 9} des Workflows die Wahrscheinlichkeit bestimmt, dass er aus einem bestimmten Allel allein durch Sequenzierfehler hervorgegangen ist. Die genaue Berechnung der Likelihood wurde in Kap. \ref{pHMM_alleles} bereits vorgestellt. \\
 
 In Zusammenschau mit Formel \eqref{eqn:2-5} lässt sich beim paarweisen Vergleich eines Read mit der Sequenz $s_{r}$ und dem Kandidatenallel $a_{i} \in A $ die Likelihood $ Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) $ unter Berücksichtigung der Fehlerrate $\epsilon$ wie folgt errechnen:
 \vspace{-0.5cm}
@@ -321,7 +310,7 @@ In Zusammenschau mit Formel \eqref{eqn:2-5} lässt sich beim paarweisen Vergleic
 
 \subsubsection{Bestimmung der Likelihood einer Allele-Fraction im Bezug auf einen Read} \label{sol_vaf_one_reads}
 
-In \hyperref[step10]{Schritt 10\phantomsection\label{step10txt}} des Workflows wird anschließend die Wahrscheinlichkeit ermittelt, einen bestimmten Read $s_{r}$ anhand einer gegebenen Allele-Fraction $\Theta_{i} = (\theta_{1},\dots,\theta_{n_{cand}}) \in [0,1]^n_{cand}$ zu beobachten. Hierzu wird die in Formel \eqref{eqn:2-15} ermittelte Likelihood auf die relativen Häufigkeiten aller Kandidatenallele $ (\theta_{1},\dots,\theta_{n}) $ der Allele-Fraction bezogen.\\
+In \hyperref[step10]{Schritt 10\phantomsection\label{step10txt}} des Workflows wird anschließend die Wahrscheinlichkeit ermittelt, einen bestimmten Read $s_{r}$ anhand einer gegebenen Allele-Fraction $\Theta_{i} = (\theta_{1},\dots,\theta_{n}) \in [0,1]^{n}$, mit $n=n_{cand}$, zu beobachten. Hierzu wird die in Formel \eqref{eqn:2-15} ermittelte Likelihood auf die relativen Häufigkeiten aller Kandidatenallele $ (\theta_{1},\dots,\theta_{n}) $ der Allele-Fraction bezogen.\\
 
 Da eine Zusammenhangskomponente auch mehrere Loci enthalten kann, sollen nun die Fractions in einer möglichen Menge von Loci ermittelt werden. Nach dem oben genannten Urnenmodell entspricht dies der Wahrscheinlichkeit, dass bei Auswahl von $n_{alleles}$ Elementen (siehe Kap. \ref{subsec:sol_allele_lh}) das Kandidatenallel $ a_{i}$ mit einer Häufigkeit von genau $\theta_{i}$ vorliegt. Es wird also die Multinomialverteilung der Kandidatenallele betrachtet. Dabei muss sich die Wahrscheinlichkeit aus den tatsächlichen Beobachtungen ergeben, so dass die Likelihood $Pr(s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n})$ aus der Multinomialverteilung $\theta_{i}$ im Bezug auf die individuelle Verteilung $Pr(T=s_{r} \, | \, S=a_{i}, \epsilon)$ nach Formel \eqref{eqn:2-17} bestimmt wird. Im Hinblick auf die Zuordnung zu einem oder mehreren möglichen Loci muss für jede Allele-Fraction gelten, dass $\sum \theta_{i} = 1$.
 \vspace{-0.5cm}
@@ -338,7 +327,7 @@ Da eine Zusammenhangskomponente auch mehrere Loci enthalten kann, sollen nun die
 \end{center}
 \subsubsection{Bestimmung der Likelihood einer Allele-Fraction im Bezug auf alle Reads} \label{sol_vaf_all_reads}
 
-Schließlich soll in \hyperref[step11]{Schritt 11\phantomsection\label{step11txt}} die resultierende Likelihood einer Allele-Fraction in Zusammenschau mit allen Reads bestimmt werden. Die Unsicherheit bei der Zuordnung der Reads wird dabei durch die relativen Häufigkeiten in der Allele-Fraction abgebildet und an die spätere Loci-Zuordnung (Kap. \ref{subsec:sol_loci_lh}) weitergereicht. Sei $L \in \{l_{i} \in \mathds{N}_{\leq n}^\phi \, | \, i=1, \dots, g\}$ die Menge möglicher Loci, die durch eine Allele-Fraction abgebildet wird und $D = (s_{1}, \dots, s_{m}) \in \{A,C, G, T\}^{k^m}$ die Menge der Readsequenzen. Die Menge möglicher Loci für eine Allel-Fraction ergibt sich dabei aus Likelihood $Pr(D \, | \, \Theta)$ der Allel-Fraction $\Theta$ über alle Readsequenzen $D$. Und lässt sich als Produkt der Likelihoods $Pr(s_{r} \, | \, \Theta)$ der Allele-Fractions für jeden Read ausdrücken: 
+Schließlich soll in \hyperref[step11]{Schritt 11\phantomsection\label{step11txt}} die resultierende Likelihood einer Allele-Fraction in Zusammenschau mit allen Reads bestimmt werden. Die Unsicherheit bei der Zuordnung der Reads wird dabei durch die relativen Häufigkeiten in der Allele-Fraction abgebildet und an die spätere Loci-Zuordnung (Kap. \ref{subsec:sol_loci_lh}) weitergereicht. Sei $L \in \{l_{i} \in \mathds{N}_{\leq n}^\phi \, | \, i=1, \dots, g\}$ eine mögliche Loci-Verteilung, die durch die gegebene Allele-Fraction abgebildet wird und $D = (s_{1}, \dots, s_{m}) \in \{A,C, G, T\}^{k^m}$ die Menge der Readsequenzen. Die möglichen Loci im Bezug auf die beobachteten Reads der Zusammenhangskomponente ergeben sich dann aus der Likelihood $Pr(D \, | \, \Theta)$ der Allel-Fraction $\Theta$ über allen Readsequenzen $D$. Dies lässt sich als Produkt der Likelihoods $Pr(s_{r} \, | \, \Theta)$ der Allele-Fractions für jeden Read formulieren: 
 \vspace{-0.5cm}
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
@@ -352,43 +341,62 @@ Schließlich soll in \hyperref[step11]{Schritt 11\phantomsection\label{step11txt
 	}}
 \end{center}
 
-Die \hyperref[step9]{Schritte 9}, \hyperref[step10]{10} und \hyperref[step11]{11} des Workflows werden für alle Allele-Fractions jeder Zusammenhangskomponente durchgeführt. Für jedes Kandidatenallel aller Allel-Fractions wird so die Wahrscheinlichkeit berechnet, dass die Reads der Zusammenhangskomponente aus den einzelnen Kandidatenallelen entstanden sind. Da nur die Fehlerrate $\epsilon$ einbezogen wurde, können alle dabei entstandenen Abweichungen ausschließlich auf Sequenzierfehlern beruhen. Um diejenige Allel-Fraction zu wählen, deren Verteilung der Kandidatenallelsequenzen am besten zusammen passen, wird in \hyperref[step12]{Schritt 12\phantomsection\label{step12txt}} aus der Menge der errechneten Likelihoods aller Allele-Fractions das Maximum bestimmt.  
+Die \hyperref[step9]{Schritte 9}, \hyperref[step10]{10} und \hyperref[step11]{11} des Workflows werden für alle Allele-Fractions jeder Zusammenhangskomponente durchgeführt. Für jedes Kandidatenallel jeder Allel-Fraction wird so die Wahrscheinlichkeit berechnet, dass die Reads der Zusammenhangskomponente aus den einzelnen Kandidatenallelen entstanden sind. Da nur die Fehlerrate $\epsilon$ einbezogen wurde, können alle dabei entstandenen Abweichungen ausschließlich auf Sequenzierfehlern beruhen. Um diejenige Allel-Fraction zu wählen, deren Verteilung der Kandidatenallelsequenzen am anhand der beobachteten Reads am wahrscheinlichsten ist, wird in \hyperref[step12]{Schritt 12\phantomsection\label{step12txt}} aus der Menge der errechneten Likelihoods aller Allele-Fractions das Maximum bestimmt.  
 
 \subsection{Locuszuordnung mit maximaler Likelihood} \label{subsec:sol_loci_lh}
 
+In diesem Kapitel sollen die in der Allel-Fraction mit maximaler Likelihood $\Theta_{max\_lh} = (\theta_{1},\dots,\theta_{n}) \in [0,1]^n $ vorkommenden Allele $A_{max\_lh}$ mit $\theta_{i} \neq 0$ den möglichen genomischen Loci zugeordnet werden. \\
 
-\noindent======================= draft =======================\\
+\subsubsection{Bestimmung Likelihood aus dem Vergleich zweier Allele} \label{sol_lh_al_al}
 
+Um die Wahrscheinlichkeit zu bestimmen, inwieweit die einzelnen Allele aus $A_{max\_lh}$ hinsichtlich der Heterozygotiewahrscheinlichkeiten mit einander in Beziehung stehen, werden die Allele aus $A_{max\_lh}$ paarweise mit einander verglichen. Dies wurde bereits in Kap. \ref{pHMM_loci} ausführlich beschrieben. \\
 
+In Zusammenschau mit Formel \eqref{eqn:2-14} ergibt sich für \hyperref[step15]{Schritt 15} die Likelihood $ Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) $, dass zwei Allele $a_{l_{j,1}}$ und $a_{l_{j,2}}$ vom gleichen Locus $l_{j}$ stammen:
+\vspace{-0.5cm}
+\begin{center}
+	\fcolorbox{black}{light-gray}{		
+		\parbox{\textwidth}{
+			\begin{korollar*}[Likelihood des paarweisen Vergleichs zweier Allele]
+				\begin{equation} \label{eqn:2-12}
+				\tag{2-12}
+				Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) = pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}})
+				\end{equation}
+		\end{korollar*}
+	}}
+\end{center}
 
-connected comp in loci aufsplitten\\
-Zuordnung zu loci, also welche genomischen loci stecken dahinter, wie werden die allele den loci zugeordnet -> max parsimony, prinzip der einfachsen möglichen lösung \\
--> ploidy als eingabeparam -> zuordnung der candidaten allele zu loci\\
-lh ausrechnen aus anzahl der allele und loci -> gerade die loci, die die seq. der reads am besten unter der geg. ploidy und heterozygotie erklären haben max lh
-max\_lh\_vafs nur noch 1 Vektor\\
-Zuordnung von cand-Allelen zu den loci => die beobachteten max\_lh\_allel\_fractionen müssen sie durch die gewählten loci erklären, z.B. 2 loci => 1.locus: allel 0, 0 homozyg, 2. locus allel 0, 2 heterozygot\\
--> bei z.B 3 Allelen sind min 2 Loci notwendig => min \# der loci, so dass alle ausgewählten allele passen -> diese menge muss gefunden werden und muss wieder max lh haben\\
-unter der annahme der loci-verteilung muss bestimmt werden ob sinnvoll, d.h allel-vafs müssen sich zu 1 summieren -> indikator-funktion: wenn 1, dann gilt Pr(T|S), d.h. Wslk, dass sich aus S die seq T gebildet hat\\
+\subsubsection{Mögliche Locikombination und die Indikatorfunktion}
 
-indicator-function $z_{l} \in {[0,1]}$: wird 1, wenn anzahl des auftretens aller allele $A = (a_{1}, \dots, a_{n})$ in einer möglichen locus-verteilung $l = (l_{1}, \dots, l_{g \, \cdotp \phi})$ jeweils genau ihrer absoluten Häufigkeit aus der in Kap. \ref{subsec:sol_allele_lh} errechneten vaf mit maximaler Likelihood entspricht, also $\theta_{i} \, \cdotp g \, \cdotp \phi$ entsprechen, andernfalls gilt $ z_{l} = 0 $. Seien dabei  $\Theta=\theta_{1},\dots,\theta_{n}) \in [0,1]^n $ die vaf mit maximaler Likelihood, $ \phi $ die Ploidie und gilt für eine mögliche Locusverteilung $l$ außerdem $L \in \{l_{j} \in \mathds{N}_{\leq n}^\phi \, | \, j=1, \dots, g\}$, so lässt sich die Indikatorfunktion wie folgt definieren:
-\begin{equation} \label{eqn:2-19}
-\tag{2-19}
-z_{l}=\prod_{i=1}^{n}1_{\sum_{j=1}^{g}\sum_{k=1}^{\phi}1_{l_{j,k}=i} = \theta_{i} \, \cdotp g \, \cdotp \phi}
-\end{equation}
+Wie bereits erwähnt, können in Abhängigkeit von der Ploidie $ \phi $ und der Anzahl der Kandidatenallele $n_{cand}$ auch mehrere Loci in einer Zusammenhangskomponente vorkommen. Zunächst müssen daher in \hyperref[step13]{Schritt 13\phantomsection\label{step13txt}} des Workflows alle denkbaren Loci-Kombinationen gebildet werden. Hierfür werden die Permutationen über den zuvor bestimmten Allelkombinationen gebildet (Kap. \ref{subsec:sol_cand_allele}). Jede Permutation wird dann entsprechend der gegebenen Ploidie zu Loci gruppiert. Dies wird in Kap. \ref{subsec:comb_loci} näher ausgeführt. Jede Loci-Kombination kann hierdurch einen oder mehrere Loci beinhalten.\\
 
-pHMM: Wslk, dass allel 2 $ a_{l_{j,2}} $ aus allel 1 $ a_{l_{j,1}} $ entstanden ist -> heterozygotie $\eta$ (in conf konfigurierbar) =>$ match = 1 - (het_{sub} + het_{del} + het_{ins}) $
-\begin{equation} \label{eqn:2-20}
-\tag{2-20}
-Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) = pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}})
-\end{equation}
+Für jede Loci-Kombination muss nun geprüft werden, ob sie die durch $\Theta_{max\_lh}$ ermittelte wahrscheinlichste Häufigkeitsverteilung der Kandidatenallele erfüllen kann. Die absolute Häufigkeit jedes Kandidatenallels aus $A_{max\_lh}$ muss dabei, unter Berücksichtigung der zu erwartende Anzahl von Allelen $n_{alleles}$ und der Ploidie $\phi$, zur Häufigkeit des entsprechenden Allels in der Loci-Kombination passen. Die Überprüfung wird durch eine Indikatorfunktion $ z_{l} \in {[0,1]} $ in \hyperref[step14]{Schritt 14\phantomsection\label{step14txt}} realisiert. Diese nimmt den Wert $1$ an, wenn die Anzahl der einzelnen Kandidatenallele $A = (a_{1}, \dots, a_{n})$ in einer Loci-Kombination $L \in \{l_{j} \in \mathds{N}_{\leq n}^\phi \, | \, j=1, \dots, g\}$ jeweils ihren absoluten Häufigkeiten in $\Theta_{max\_lh}$ entspricht, andernfalls gilt $ z_{l} = 0 $.
+\vspace{-0.5cm}
+\begin{center}
+	\fcolorbox{black}{light-gray}{		
+		\parbox{\textwidth}{
+			\begin{korollar*}[Indikatorfunktion]
+				\begin{equation} \label{eqn:2-19}
+				\tag{2-19}
+				z_{l}=\prod_{i=1}^{n}1_{\sum_{j=1}^{g}\sum_{k=1}^{\phi}1_{l_{j,k}=i} = \theta_{i} \, \cdotp g \, \cdotp \phi}
+				\end{equation}
+			\end{korollar*}
+        }}
+\end{center}
 
-Kombi von loci -> lh berechnen
-\begin{equation} \label{eqn:2-21}
-\tag{2-21}
-Pr(\Theta,A \, | \, L=\{l_{j}\, |\, j=1,\dots,g\})=z_{l} \, \cdotp \prod_{j=1}^{g}Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}})
-\end{equation}
+\subsubsection{Bestimmung der Likelihood der Loci-Kombinationen} \label{sol_loci_lh_max}
 
-=> maximum der loci Likelihoods wählen
-\subsection{Varianten und Genotyp} \label{subsec:sol_vcf}
-mit den allelen $A = (a_{1}, \dots, a_{n})$ jedes locus $L \in \{l_{j} \in \mathds{N}_{\leq n}^\phi \, | \, j=1, \dots, g\}$, allelsequenz, genotyp\\
-Menge von Loci, die die Beobachtungen erklären
+Für jede Loci-Kombination $L$, welche die ermittelte Allele-Fraction mit maximaler Likelihood $\Theta$ erklären kann, wird schließlich in \hyperref[step16]{Schritt 16\phantomsection\label{step16txt}} die Wahrscheinlichkeit bestimmt, dass die enthaltenen Allele $A$ bei gegebenen Heterozygotiewahrscheinlichkeiten in dieser Konstellation der Loci vorliegen. Die Likelihood errechnet sich dabei aus dem Produkt der paarweisen Allelkombinationen für jeden Locus $l_{j}$ der gegebenen Loci-Kombination. 
+\vspace{-0.5cm}
+\begin{center}
+	\fcolorbox{black}{light-gray}{		
+		\parbox{\textwidth}{
+			\begin{korollar*}[Likelihood einer Loci-Kombination]
+				\begin{equation} \label{eqn:2-21}
+				\tag{2-21}
+				Pr(\Theta,A \, | \, L=\{l_{j}\, |\, j=1,\dots,g\})=z_{l} \, \cdotp \prod_{j=1}^{g}Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}})
+				\end{equation}
+            \end{korollar*}
+}}
+\end{center}
+Aus der Ergebnismenge der Likelihoods möglicher Loci-Kombinationen wird in \hyperref[step17]{Schritt 17\phantomsection\label{step17txt}} für jede Zusammenhangskomponente die Lösung mit maximaler Likelihood ausgewählt. Sie spiegelt die wahrscheinlichste Loci-Zuordnung der Komponente anhand der beobachteten Reads wider. Die Lösungen aus allen Zusammenhangskomponenten werden in \hyperref[step18]{Schritt 18\phantomsection\label{step18txt}} mit ihren Sequenzen und dem Genotyp in eine Datei im VCF-Format geschrieben.
+\let\cleardoublepage\clearpage
