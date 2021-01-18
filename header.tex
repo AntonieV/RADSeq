@@ -47,6 +47,24 @@
 %\setcounter{tocdepth}{5}
 \usepackage[breaklinks, pdftex]{hyperref} %hyperref still needs to be put at the end
 
+\hypersetup{%
+	colorlinks=false,% hyperlinks will be black
+	linkcolor=red,
+	linkbordercolor=red,% hyperlink borders will be red
+	citecolor=green,	
+	citebordercolor=green,
+	urlcolor=blue,
+	urlbordercolor=blue,
+%	pdfborderstyle={/S/U/W 1}% border style will be underline of width 1pt
+}
+%\makeatletter
+%\Hy@AtBeginDocument{%
+%	\def\@pdfborder{0 0 1}% Overrides border definition set with colorlinks=true
+%	\def\@pdfborderstyle{/S/U/W 1}% Overrides border style set with colorlinks=true
+%	% Hyperlink border style will be underline of width 1pt
+%}
+%\makeatother
+
 % depth of numbering in sections
 %\setcounter{secnumdepth}{3}
 

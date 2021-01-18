@@ -1,4 +1,5 @@
 % kapitel3.tex
+\definecolor{light-gray}{gray}{0.93}
 \chapter{Implementierung} \label{sec:alg}
 Für das in Python implementierte RAD-Sequencing-Tool, NodeRAD, wurde zur Workflowintegration das Workflow Management System Snakemake verwendet ~\cite{koester_2012_1, koester_2012_2}. Die einzelnen Analyseschritte werden dabei über Regeln abgebildet. Für jede Regel können neben dem zu verwendenden Script oder Shell-Kommando sowie den Pfadangaben für In- und Output auch zusätzliche Optionen festgelegt werden. Dazu gehören beispielsweise Angaben zu Parametern bzw. Argumenten für die verwendeten Tools, Pfadangaben für Log-Dateien oder die Anzahl der zu verwendenden Threads. \\
 
@@ -73,7 +74,6 @@ Mit Hilfe der tatsächlich zu erwarteten Anzahl von Allelen $ n_{alleles} $ kön
 
 Die Allelkombinationen werden mit Hilfe der Funktion  \lstinline|combinations_with_replacement| aus der Python-Library \lstinline|itertools| erzeugt \cite{itertools}.\\
 \\
-\definecolor{light-gray}{gray}{0.93}
 \fcolorbox{black}{light-gray}{
 	\parbox{\textwidth}{
 		\vspace{0.5cm}
