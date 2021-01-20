@@ -151,17 +151,17 @@ Im folgenden soll nun die Laufzeit der verschiedenen Suchvorgänge in \linebreak
 O(\min (d(r_{i}), d(a_{j}))) =O(\min (d(V_{c}+1), d(V_{c}-1)))= O(V_{c})
 \end{equation} 
 
-Im Hinblick auf \lstinline|get_allele_likelihood_read()| müssen im Worst Case alle Schritte (\ref{-1-}) bis (\ref{-4-}) ausgeführt werden, so dass sich ihre Laufzeiten summieren. In der unter (\ref{-1-}) beschriebenen Suche, werden alle ausgehenden Nachbarn des Reads betrachtet, ihre Anzahl entspricht also dem ausgehenden Knotengrad des Readknotens $d(r_{i_{out}})$. War die Suche erfolgreich, so muss die Likelihood der betreffenden Kante aus den Kanteneigenschaften ausgegeben werden. Hierfür ist ein Kantenaufruf wie oben beschrieben in $ O(V_{c}) $ notwendig. Im ungünstigsten Fall hat jeder Knoten nur ausgehende Kanten und zwar zu allen anderen Knoten der Zusammenhangskomponente, dann beträgt die Laufzeit nach \eqref{eqn:4-16} für alle Reads der Komponente $ O(V_{c}^2)$.
+Im Hinblick auf \lstinline|get_allele_likelihood_read()| müssen im Worst Case alle Schritte der Funktion ausgeführt werden, so dass sich ihre Laufzeiten summieren. In der Suche bei den eingehenden Nachbarn, werden alle ausgehenden Nachbarn des Reads betrachtet, ihre Anzahl entspricht also dem ausgehenden Knotengrad des Readknotens $d(r_{i_{out}})$. War die Suche erfolgreich, so muss die Likelihood der betreffenden Kante aus den Kanteneigenschaften ausgegeben werden. Hierfür ist ein Kantenaufruf wie oben beschrieben in $ O(V_{c}) $ notwendig. Im ungünstigsten Fall hat jeder Knoten nur ausgehende Kanten und zwar zu allen anderen Knoten der Zusammenhangskomponente, dann beträgt die Laufzeit nach \eqref{eqn:4-16} für alle Reads der Komponente $ O(V_{c}^2)$.
 \begin{equation} \label{eqn:4-16}
 \tag{4-16}
 O(V_{c}) \, \cdotp (O(d(r_{i_{out}})) +  O(V_{c})) = O(V_{c} \, \cdotp ((V_{c}-1) + V_{c})  = O(V_{c}^2)
 \end{equation} 
 
-Die Suche bei (\ref{-2-}) erfolgt analog über alle eingehenden Nachbarn in $ O(V_{c}^2)$, allerdings mit zusätzlicher Likelihoodberechnung der rückläufigen Kante in $O(k)$. Daraus ergibt sich insgesamt eine Laufzeit von $ O(V_{c}^2 +k) = O(V_{c}^2)$, da $\overline{k}=const$ (siehe Kap. \ref{subsec:graph_compl}).\\
+Die Suche der ausgehenden Nachbarn erfolgt analog über alle eingehenden Nachbarn in $ O(V_{c}^2)$, allerdings mit zusätzlicher Likelihoodberechnung der rückläufigen Kante in $O(k)$. Daraus ergibt sich insgesamt eine Laufzeit von $ O(V_{c}^2 +k) = O(V_{c}^2)$, da $\overline{k}=const$ (siehe Kap. \ref{subsec:graph_compl}).\\
 
-Die Laufzeit für das Auffinden eine geeigneten CIGAR-Tupels (\ref{-3-}) kann in $O(V_{c}^3)$ erfolgen (siehe Formel \eqref{eqn:4-18}). Auch hier führt die Likelihoodberechnung einer einzelnen Kante zu keiner relevanten Änderung der Laufzeit.\\
+Die Laufzeit für das Auffinden eine geeigneten CIGAR-Tupels kann in $O(V_{c}^3)$ erfolgen (siehe Formel \eqref{eqn:4-18}). Auch hier führt die Likelihoodberechnung einer einzelnen Kante zu keiner relevanten Änderung der Laufzeit.\\
 
-Die Rückgabe eines konstanten Wertes bei (\ref{-4-}) benötigt lediglich eine Laufzeit von $ O(1) $.\\
+Die Rückgabe eines konstanten Wertes bei benötigt lediglich eine Laufzeit von $ O(1) $.\\
 
 Aus den insgesamt vier Schritten, die im ungünstigsten Fall alle ausgeführt werden ergibt sich für \lstinline|get_allele_likelihood_read()| eine Gesamtlaufzeit von $O(V_{c}^3)$. \\
 \begin{equation} \label{eqn:4-17}
@@ -187,11 +187,11 @@ Die hierfür erforderliche Laufzeit setzt sich zusammen aus den Suchvorgengen f�
 \end{aligned}
 \end{equation}
 
-Funktion \lstinline|calc_vafs_likelihood_read()| Formel \eqref{eqn:2-17} 
+Funktion \lstinline|calc_vafs_likelihood_read()| Formel \eqref{eqn:2-10} 
 
 Es über die relativen Häufigkeiten jedes Allels einer Allele-Fraction iteriert und ihr Produkt mit der Readlikelihood aufsummiert. Da die Läge der Allelfraktion genau der Anzahl der Allele einer Zusammenhangskomponenten $ n_{cand} $ entspricht, erhöht sich hierdurch die Laufzeit um den Faktor $ O(n_{cand}) $.
 
-Funktion \lstinline|calc_vafs_likelihood()| Formel \eqref{eqn:2-18}
+Funktion \lstinline|calc_vafs_likelihood()| Formel \eqref{eqn:2-11}
 Dadurch wird dir Laufzeit zusätzlich um den Faktor der Anzahl der Reads der Zusammenhangskomponente $ O(V_{c}) $ erhöht.
 
 in \lstinline|noderad_main.py| für alle Allele-Fractions

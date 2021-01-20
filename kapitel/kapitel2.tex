@@ -184,8 +184,8 @@ Bei einem Match sind beide Basen aus Query- und Referenzsequenz identisch. Daher
 \begin{center}
 	\fcolorbox{black}{white}{		
 		\parbox{\textwidth}{
-			\begin{equation} \label{eqn:2-13}
-			\tag{2-13}
+			\begin{equation} \label{eqn:2-1}
+			\tag{2-1}
 			L_{match} = 1 - p_{i}
 			\end{equation}
         }}
@@ -195,8 +195,8 @@ Für Insertionen und Deletionen werden empirisch ermittelte Sequenzierfehlerrate
 \begin{center}
 	\fcolorbox{black}{white}{		
 		\parbox{\textwidth}{
-			\begin{equation} \label{eqn:2-22}
-			\tag{2-22}
+			\begin{equation} \label{eqn:2-2}
+			\tag{2-2}
 			L_{indel} \in \{\epsilon_{ins}, \epsilon_{del}\}
 			\end{equation}
         }}
@@ -207,8 +207,8 @@ Bei Substitutionen ergibt sich die Sequenzierfehlerrate ebenfalls aus der gesch�
 \begin{center}
 	\fcolorbox{black}{white}{		
 		\parbox{\textwidth}{
-			\begin{equation} \label{eqn:2-8}
-			\tag{2-8}
+			\begin{equation} \label{eqn:2-3}
+			\tag{2-3}
 			L_{sub} = \frac{1}{3} \; \cdotp \; p_{i}
 			\end{equation}
         }}
@@ -219,8 +219,8 @@ Die Likelihood $ pairHMM_{\epsilon, q_{query}} \;(s_{ref}\;|\; s_{query}) $, das
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
 		\parbox{\textwidth}{
-			\begin{equation} \label{eqn:2-5}
-			\tag{2-5}
+			\begin{equation} \label{eqn:2-4}
+			\tag{2-4}
 			pairHMM_{\epsilon, q_{query}} \;(s_{query}\;|\; s_{ref}) = \prod_{i=1}^{k}L_{i}
 			\end{equation}
         }}
@@ -232,13 +232,13 @@ Durch die Berücksichtigung der Basenqualität fließen Sequenzierfehler mit ger
 
 Ein weiteres Mal wird auf die Approximation des pairHMM durch Minimap2 in Kap. \ref{sol_lh_al_al} zurückgegriffen, um die Menge der wahrscheinlichsten Allele einer Zusammenhangskomponente sinnvollen Locikombinationen zuordnen zu können (\hyperref[step15]{Schritt 15\phantomsection\label{step15txt}} des Workflows). Hierfür können bei diploiden Spezies die Allele ebenfalls paarweise unter Berücksichtigung der Hetereozygotiewahrscheinlichkeiten $\eta_{sub}$, $\eta_{ins}$ und $\eta_{del}$ mit einander verglichen werden. Auch hier wird die Sequenz eines der Allele (Query) gegen die Sequenz ein anderes Allels (Referenz) verglichen. Entsprechend den Operationen des CIGAR-Strings wird die Likelihood für jede Position $i$ der Querysequenz bestimmt. \\
 
-Im Falle eines Matches senken sämtliche Heterozygotiewahrscheinlichkeiten die Likelihood $L_{match}$, dass beide Allele vom gleichen Locus stammen (Formel \eqref{eqn:2-11}).
+Im Falle eines Matches senken sämtliche Heterozygotiewahrscheinlichkeiten die Likelihood $L_{match}$, dass beide Allele vom gleichen Locus stammen (Formel \eqref{eqn:2-5}).
 \vspace{-0.5cm}
 \begin{center}
 	\fcolorbox{black}{white}{		
 		\parbox{\textwidth}{
-			\begin{equation} \label{eqn:2-11}
-			\tag{2-11}
+			\begin{equation} \label{eqn:2-5}
+			\tag{2-5}
 			L_{match} = 1 - (\eta_{sub} + \eta_{ins} + \eta_{del})
 			\end{equation}
         }}
@@ -248,8 +248,8 @@ Bei einem Mismatch entspricht die Likelihood $L_{mismatch}$ der Heterozygotiewah
 \begin{center}
 	\fcolorbox{black}{white}{		
 		\parbox{\textwidth}{
-			\begin{equation} \label{eqn:2-10}
-			\tag{2-10}
+			\begin{equation} \label{eqn:2-6}
+			\tag{2-6}
 			L_{mismatch} \in  \{\,\eta_{sub},\, \eta_{ins},\, \eta_{del}\,\}
 			\end{equation}
         }}
@@ -260,8 +260,8 @@ Die Wahrscheinlichkeit $ pairHMM_{\eta}(a_{l_{j,query}} \, | \, a_{l_{j,ref}}) $
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
 		\parbox{\textwidth}{
-			\begin{equation} \label{eqn:2-14}
-			\tag{2-14}
+			\begin{equation} \label{eqn:2-7}
+			\tag{2-7}
 			pairHMM_{\eta}(a_{l_{j,query}} \, | \, a_{l_{j,ref}}) = \prod_{i=1}^{k}L_{i}
 			\end{equation}
         }}
@@ -272,10 +272,10 @@ Die Wahrscheinlichkeit $ pairHMM_{\eta}(a_{l_{j,query}} \, | \, a_{l_{j,ref}}) $
 
 Um später die Allele zu identifizieren, von denen die beobachteten Reads einer Zusammenhangskomponente am wahrscheinlichsten stammen, muss zunächst die Menge der Kandidatenallele $A=(a_{1}, \dots, a_{n}) \in \{A,\,C,\,G,\,T,\}^{k^n}$ bestimmt werden (\hyperref[step6]{Schritt 6\phantomsection\label{step6txt}} des Workflows). Bei größeren Clustern ist davon auszugehen, dass die Sequenzen solcher Kandidatenallele mehrfach in den Reads auftauchen. Um den Aufwand der Likelihoodberechnung bei größeren Cluster anpassen zu können, soll es möglich sein, selten auftretende Sequenzen herauszufiltern. Dies geschieht über Grenzwerte, welche die Mindestgröße der Cluster und die Mindesthäufigkeiten von Kandidatenallelsequenzen berücksichtigen sollen. \\
 
-Über der Menge der Kandidatenallele sollen nun mögliche Allelkombinationen erzeugt werden (\hyperref[step7]{Schritt 7\phantomsection\label{step7txt}}), die später den Loci zugeordnet werden. Die Länge dieser Kombinationen, also die erwartbare Anzahl von Allelen $n_{alleles}$, die auf einen oder mehrere Loci verteilt sind, ergibt sich dabei aus der Anzahl der Kandidatenallele $n_{cand}$ und der Ploidie $\phi$. Sie entspricht also entweder direkt der Ploidie, falls diese höher ist als die Anzahl der Kandidatenallele oder andernfalls gilt $n_{alleles} \geq n_{cand}$, so dass $n_{alleles}$ ein ganzzahliges Vielfaches der Ploidie ist. Dies ist in Formel \eqref{eqn:2-1} formal dargestellt, wobei gilt $d=n_{cand} \, mod \, \phi$.
+Über der Menge der Kandidatenallele sollen nun mögliche Allelkombinationen erzeugt werden (\hyperref[step7]{Schritt 7\phantomsection\label{step7txt}}), die später den Loci zugeordnet werden. Die Länge dieser Kombinationen, also die erwartbare Anzahl von Allelen $n_{alleles}$, die auf einen oder mehrere Loci verteilt sind, ergibt sich dabei aus der Anzahl der Kandidatenallele $n_{cand}$ und der Ploidie $\phi$. Sie entspricht also entweder direkt der Ploidie, falls diese höher ist als die Anzahl der Kandidatenallele oder andernfalls gilt $n_{alleles} \geq n_{cand}$, so dass $n_{alleles}$ ein ganzzahliges Vielfaches der Ploidie ist. Dies ist in Formel \eqref{eqn:2-8} formal dargestellt, wobei gilt $d=n_{cand} \, mod \, \phi$.
 
-\begin{equation} \label{eqn:2-1}
-\tag{2-1}
+\begin{equation} \label{eqn:2-8}
+\tag{2-8}
 n_{alleles} =
 \left\{
 \begin{array}{ll}
@@ -294,14 +294,14 @@ Für jede Allelkombination werden anschließend die relativen Häufigkeiten der 
 
 Für jeden Read wird nun in \hyperref[step9]{Schritt 9} des Workflows die Wahrscheinlichkeit bestimmt, dass er aus einem bestimmten Allel allein durch Sequenzierfehler hervorgegangen ist. Die genaue Berechnung der Likelihood wurde in Kap. \ref{pHMM_alleles} bereits vorgestellt. \\
 
-In Zusammenschau mit Formel \eqref{eqn:2-5} lässt sich beim paarweisen Vergleich eines Read mit der Sequenz $s_{r}$ und dem Kandidatenallel $a_{i} \in A $ die Likelihood $ Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) $ unter Berücksichtigung der Fehlerrate $\epsilon$ wie folgt errechnen:
+In Zusammenschau mit Formel \eqref{eqn:2-4} lässt sich beim paarweisen Vergleich eines Read mit der Sequenz $s_{r}$ und dem Kandidatenallel $a_{i} \in A $ die Likelihood $ Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) $ unter Berücksichtigung der Fehlerrate $\epsilon$ wie folgt errechnen:
 \vspace{-0.5cm}
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
 		\parbox{\textwidth}{
 			\begin{korollar*}[Likelihood eines Kandidatenallels gegeben ein Read]
-				\begin{equation} \label{eqn:2-15}
-				\tag{2-15}
+				\begin{equation} \label{eqn:2-9}
+				\tag{2-9}
 				Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) = pairHMM_{\epsilon,q_{r}}(a_{i}, s_{r})
 				\end{equation}
 			\end{korollar*}
@@ -310,16 +310,16 @@ In Zusammenschau mit Formel \eqref{eqn:2-5} lässt sich beim paarweisen Vergleic
 
 \subsubsection{Bestimmung der Likelihood einer Allele-Fraction im Bezug auf einen Read} \label{sol_vaf_one_reads}
 
-In \hyperref[step10]{Schritt 10\phantomsection\label{step10txt}} des Workflows wird anschließend die Wahrscheinlichkeit ermittelt, einen bestimmten Read $s_{r}$ anhand einer gegebenen Allele-Fraction $\Theta_{i} = (\theta_{1},\dots,\theta_{n}) \in [0,1]^{n}$, mit $n=n_{cand}$, zu beobachten. Hierzu wird die in Formel \eqref{eqn:2-15} ermittelte Likelihood auf die relativen Häufigkeiten aller Kandidatenallele $ (\theta_{1},\dots,\theta_{n}) $ der Allele-Fraction bezogen.\\
+In \hyperref[step10]{Schritt 10\phantomsection\label{step10txt}} des Workflows wird anschließend die Wahrscheinlichkeit ermittelt, einen bestimmten Read $s_{r}$ anhand einer gegebenen Allele-Fraction $\Theta_{i} = (\theta_{1},\dots,\theta_{n}) \in [0,1]^{n}$, mit $n=n_{cand}$, zu beobachten. Hierzu wird die in Formel \eqref{eqn:2-9} ermittelte Likelihood auf die relativen Häufigkeiten aller Kandidatenallele $ (\theta_{1},\dots,\theta_{n}) $ der Allele-Fraction bezogen.\\
 
-Da eine Zusammenhangskomponente auch mehrere Loci enthalten kann, sollen nun die Fractions in einer möglichen Menge von Loci ermittelt werden. Nach dem oben genannten Urnenmodell entspricht dies der Wahrscheinlichkeit, dass bei Auswahl von $n_{alleles}$ Elementen (siehe Kap. \ref{subsec:sol_allele_lh}) das Kandidatenallel $ a_{i}$ mit einer Häufigkeit von genau $\theta_{i}$ vorliegt. Es wird also die Multinomialverteilung der Kandidatenallele betrachtet. Dabei muss sich die Wahrscheinlichkeit aus den tatsächlichen Beobachtungen ergeben, so dass die Likelihood $Pr(s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n})$ aus der Multinomialverteilung $\theta_{i}$ im Bezug auf die individuelle Verteilung $Pr(T=s_{r} \, | \, S=a_{i}, \epsilon)$ nach Formel \eqref{eqn:2-17} bestimmt wird. Im Hinblick auf die Zuordnung zu einem oder mehreren möglichen Loci muss für jede Allele-Fraction gelten, dass $\sum \theta_{i} = 1$.
+Da eine Zusammenhangskomponente auch mehrere Loci enthalten kann, sollen nun die Fractions in einer möglichen Menge von Loci ermittelt werden. Nach dem oben genannten Urnenmodell entspricht dies der Wahrscheinlichkeit, dass bei Auswahl von $n_{alleles}$ Elementen (siehe Kap. \ref{subsec:sol_allele_lh}) das Kandidatenallel $ a_{i}$ mit einer Häufigkeit von genau $\theta_{i}$ vorliegt. Es wird also die Multinomialverteilung der Kandidatenallele betrachtet. Dabei muss sich die Wahrscheinlichkeit aus den tatsächlichen Beobachtungen ergeben, so dass die Likelihood $Pr(s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n})$ aus der Multinomialverteilung $\theta_{i}$ im Bezug auf die individuelle Verteilung $Pr(T=s_{r} \, | \, S=a_{i}, \epsilon)$ nach Formel \eqref{eqn:2-10} bestimmt wird. Im Hinblick auf die Zuordnung zu einem oder mehreren möglichen Loci muss für jede Allele-Fraction gelten, dass $\sum \theta_{i} = 1$.
 \vspace{-0.5cm}
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
 		\parbox{\textwidth}{
 			\begin{korollar*}[Likelihood einer Allele-Fraction gegeben ein Read]
-				\begin{equation} \label{eqn:2-17}
-				\tag{2-17}
+				\begin{equation} \label{eqn:2-10}
+				\tag{2-10}
 				Pr(s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n}) = \sum_{i=1}^{n}\theta_{i} \, \cdotp Pr(T=s_{r} \, | \, S=a_{i}, \epsilon)
 				\end{equation}
     		\end{korollar*}
@@ -333,8 +333,8 @@ Schließlich soll in \hyperref[step11]{Schritt 11\phantomsection\label{step11txt
 	\fcolorbox{black}{light-gray}{		
 		\parbox{\textwidth}{
  		\begin{korollar*}[Likelihood einer Allele-Fraction gegeben alle Reads]
-			\begin{equation} \label{eqn:2-18}
-			\tag{2-18}
+			\begin{equation} \label{eqn:2-11}
+			\tag{2-11}
 			L(\Theta=\theta_{1},\dots,\theta_{n} \, | \, D) = Pr(D \, | \, \Theta=\theta_{1},\dots,\theta_{n}) = \prod_{r=1}^{m}Pr (s_{r} \, | \, \Theta=\theta_{1},\dots,\theta_{n})
 			\end{equation}
 		\end{korollar*}
@@ -351,7 +351,7 @@ In diesem Kapitel sollen die in der Allel-Fraction mit maximaler Likelihood $\Th
 
 Um die Wahrscheinlichkeit zu bestimmen, inwieweit die einzelnen Allele aus $A_{max\_lh}$ hinsichtlich der Heterozygotiewahrscheinlichkeiten mit einander in Beziehung stehen, werden die Allele aus $A_{max\_lh}$ paarweise mit einander verglichen. Dies wurde bereits in Kap. \ref{pHMM_loci} ausführlich beschrieben. \\
 
-In Zusammenschau mit Formel \eqref{eqn:2-14} ergibt sich für \hyperref[step15]{Schritt 15} die Likelihood $ Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) $, dass zwei Allele $a_{l_{j,1}}$ und $a_{l_{j,2}}$ vom gleichen Locus $l_{j}$ stammen:
+In Zusammenschau mit Formel \eqref{eqn:2-7} ergibt sich für \hyperref[step15]{Schritt 15} die Likelihood $ Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) $, dass zwei Allele $a_{l_{j,1}}$ und $a_{l_{j,2}}$ vom gleichen Locus $l_{j}$ stammen:
 \vspace{-0.5cm}
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
@@ -375,8 +375,8 @@ Für jede Loci-Kombination muss nun geprüft werden, ob sie die durch $\Theta_{m
 	\fcolorbox{black}{light-gray}{		
 		\parbox{\textwidth}{
 			\begin{korollar*}[Indikatorfunktion]
-				\begin{equation} \label{eqn:2-19}
-				\tag{2-19}
+				\begin{equation} \label{eqn:2-13}
+				\tag{2-13}
 				z_{l}=\prod_{i=1}^{n}1_{\sum_{j=1}^{g}\sum_{k=1}^{\phi}1_{l_{j,k}=i} = \theta_{i} \, \cdotp g \, \cdotp \phi}
 				\end{equation}
 			\end{korollar*}
@@ -391,8 +391,8 @@ Für jede Loci-Kombination $L$, welche die ermittelte Allele-Fraction mit maxima
 	\fcolorbox{black}{light-gray}{		
 		\parbox{\textwidth}{
 			\begin{korollar*}[Likelihood einer Loci-Kombination]
-				\begin{equation} \label{eqn:2-21}
-				\tag{2-21}
+				\begin{equation} \label{eqn:2-14}
+				\tag{2-14}
 				Pr(\Theta,A \, | \, L=\{l_{j}\, |\, j=1,\dots,g\})=z_{l} \, \cdotp \prod_{j=1}^{g}Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}})
 				\end{equation}
             \end{korollar*}

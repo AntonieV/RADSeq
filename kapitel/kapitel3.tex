@@ -1,5 +1,6 @@
 % kapitel3.tex
 \tikzstyle{funtool}=[blue ,line  width =1pt]
+\tikzstyle{ur}=[draw, text centered, color=blue, minimum height=0.01em]
 \definecolor{light-gray}{gray}{0.93}
 \newcommand{\fun}[3]{%
 	\path [dashedline] (#1.east) -- node [above]
@@ -37,9 +38,9 @@ Als Input benötigt der Workflow eine Datei im FASTQ-Format (siehe Kap. \ref{sub
 		\path (p1.south)+(-2.5,-2.0) \blockitem{2}{\hyperref[schritt1txt]{\color{green!40}..}1. Adapter trimming};\phantomsection\label{schritt1}
 		\path (p2.south)+(2.5,-1.2) \blockitem{3}{\hyperref[schritt2txt]{\color{green!40}..}2.\phantomsection\label{schritt2} Quality \\control};
 		\path (p3.south)+(-2.5,-1.2) \blockitem{5}{\hyperref[schritt3txt]{\color{green!40}..}3.\phantomsection\label{schritt3} Sequence alignment};
-		\path (p3.east)+(+4.4, 1.801) node (ur1)[ur] {Cutadapt};
-		\path (p1.east)+(+5.0,-4.41) node (ur2)[ur] {FastQ, MultiQC};
-		\path (p2.east)+(+7.0,-3.59) node (ur3)[ur] {Minimap2};
+		\path (p3.east)+(+4.4, 1.801) node (ur1)[ur] {\color{black}Cutadapt};
+		\path (p1.east)+(+5.0,-4.42) node (ur2)[ur] {\color{black}FastQ, MultiQC};
+		\path (p2.east)+(+7.0,-3.59) node (ur3)[ur] {\color{black}Minimap2};
 		
 		
 		% Pfeile
@@ -99,8 +100,8 @@ Für die spätere Konstruktion eines Graphen basierend auf den Edit-Distanzen zw
 		\path (p3.west)+(3.25,-3.8) \blockitem{4}{\hyperref[schritt4txt]{ 4}.\phantomsection\label{schritt4} Build graph};
 		\path (p4.south)+(0.0,-1.5) \blockitem{6}{\hyperref[schritt5txt]{\color{green!40}..}5.\phantomsection\label{schritt5} Connected components};
 		
-		\path (p4.east)+(+3.5,0) node (ur2)[ur] {graph-tool};
-		\path (p6.east)+(+3.5,0) node (ur3)[ur] {graph-tool};		
+		\path (p4.east)+(+3.5,0) node (ur2)[ur] {\color{black}graph-tool};
+		\path (p6.east)+(+3.5,0) node (ur3)[ur] {\color{black}graph-tool};		
 		\path (p6.south)+(0.0,-1.4) \ioitem{8}{6. Candidate \\alleles};
 	
 		% Pfeile		
@@ -181,9 +182,9 @@ Zudem kann optional auch der gesamte Graph mit den Komponentenindizes als Knoten
 			\path [line] (p14.south) -- node [above, midway] {} (p15);
 			\path [line] (p15.south) -- node [above] {} (p16) ;   
 			
-			\path (p8.east)+(+4.4, 0.0) node (ur1)[ur] {\lstinline|get_candidate_alleles()|};
-			\path (p7.east)+(-1.92,2.2) node (ur2)[ur] {\lstinline|get_max_parsimony_n_alleles()|};
-			\path (p9.east)+(-8.2,0.0) node (ur3)[ur] {\lstinline|get_candidate_vafs()|};
+			\path (p8.east)+(+4.4, 0.0) node (ur1)[ur] {\color{black}\lstinline|get_candidate_alleles()|};
+			\path (p7.east)+(-1.92,2.2) node (ur2)[ur] {\color{black}\lstinline|get_max_parsimony_n_alleles()|};
+			\path (p9.east)+(-8.2,0.0) node (ur3)[ur] {\color{black}\lstinline|get_candidate_vafs()|};
 		
 			\path [dashedline] (p8.west) -- node [left] {} (p7);
 			\path [dashedline] (p7.south) -- node [above] {} (p9) ;
@@ -262,10 +263,10 @@ h_{a_{i}} = \frac{H_{a_{i}}} {n_{alleles}}
 		\path (p12.south)+(0.0,-1.5) \blockitem{14}{\hyperref[schritt11txt]{\color{green!40}.\color{black}1}1.\phantomsection\label{schritt11} Likelihood of allele fractions given all reads};
 		\path (p14.south)+(0.0,-1.5) \blockitem{15}{\hyperref[schritt12txt]{\color{green!40}.\color{black}1}2.\phantomsection\label{schritt12} Maximum likelihood allele fractions};
 		\path (p15.south)+(0.0,-2.0) \ioitem{16}{15. Likelihood \\of an allele given another allele};
-		\path (p10.east)+(+4.1,0.0) node (ur1)[ur] {\lstinline|get_allele_likelihood_read()|};
-		\path (ur1.east)+(-2.915,2.1) node (ur2)[ur] {\lstinline|get_alignment_likelihood()|};
-		\path (p12.east)+(8.0-4,0) node (ur3)[ur] {\lstinline|calc_vafs_likelihood_read()|};
-		\path (p14.east)+(9.5-6,0) node (ur4)[ur] {\lstinline|calc_vafs_likelihood()|};
+		\path (p10.east)+(+4.1,0.0) node (ur1)[ur] {\color{black}\lstinline|get_allele_likelihood_read()|};
+		\path (ur1.east)+(-2.915,2.1) node (ur2)[ur] {\color{black}\lstinline|get_alignment_likelihood()|};
+		\path (p12.east)+(8.0-4,0) node (ur3)[ur] {\color{black}\lstinline|calc_vafs_likelihood_read()|};
+		\path (p14.east)+(9.5-6,0) node (ur4)[ur] {\color{black}\lstinline|calc_vafs_likelihood()|};
 		
 		% Pfeile
 		\path [line] (p6.south) -- node [above] {} (p8);
@@ -338,7 +339,7 @@ Zur Veranschaulichung ist der beschriebene Algorithmus zudem in Pseudocode darge
 	\end{algorithmic}
 \end{algorithm}
 
-Die eigentliche Likelihoodberechnung erfolgt in der Methode \linebreak \lstinline|get_alignment_likelihood()| (Algorithmus \ref{alg:lh_read}) nach Formel \eqref{eqn:2-15} des Modells. Wie in Kap. \ref{subsec:phmm_minimap} beschrieben wird hierfür die Approximation des PairHMM aus den Sequenzalignments von Minimap2 verwendet.\\
+Die eigentliche Likelihoodberechnung erfolgt in der Methode \linebreak \lstinline|get_alignment_likelihood()| (Algorithmus \ref{alg:lh_read}) nach Formel \eqref{eqn:2-9} des Modells. Wie in Kap. \ref{subsec:phmm_minimap} beschrieben wird hierfür die Approximation des PairHMM aus den Sequenzalignments von Minimap2 verwendet.\\
 
 Von der in \lstinline|get_allele_likelihood_read()| ermittelten Kante zwischen Read und Kandidatenallel werden der Funktion die CIGAR-Tupel aus den Kanteneigenschaften, der Vektor mit dem  Phred Quality Scores $Q =(q_{1}, \dots, q_{m})$ aus den Knoteneigenschaften des Reads (siehe Kap. \ref {subsec:nodes}) sowie die Kantenrichtung als boolescher Wert übergeben. Aus den Phred Quality Scores des Reads wird zunächst die geschätzte Fehlerwahrscheinlichkeit $ P=(p_{1}, \dots, p_{m}) $ für jede Base nach Formel \eqref{eqn:3-3} errechnet ~\cite{ewing_1998}.  
 \begin{equation} \label{eqn:3-3}
@@ -346,7 +347,7 @@ Von der in \lstinline|get_allele_likelihood_read()| ermittelten Kante zwischen R
 p_{i} = 10^{\frac{-q_{i}}{10}}
 \end{equation}
 
-Im Anschluss wird aus den p-Werten der Basenqualität für jede Base des Reads die Wahrscheinlichkeit errechnet, dass es sich im Falle eines Matches um die korrekte Base handelt \eqref{eqn:2-6} bzw. im Falle eines Mismatches, dass sich der Read durch Sequenzierfehler aus dem Allel erklären lässt \eqref{eqn:2-8}. Für Indels werden die empirisch ermittelten Sequenzierfehlerraten von Illumina für Sequenzierplattformen~\cite{schirmer_2016} aus der Konfigurationsdatei unter dem Parameter \lstinline|errors-per-base| entnommen. Entsprechend den in den CIGAR-Tupeln angegebenen Operationen wird für jede Base die Likelihood berechnet. Das Produkt der Likelihoods der einzelnen Basen ergibt schließlich die Likelihood zwischen Read und Allel \eqref{eqn:2-5}.\\
+Im Anschluss wird aus den p-Werten der Basenqualität für jede Base des Reads die Wahrscheinlichkeit errechnet, dass es sich im Falle eines Matches um die korrekte Base handelt \eqref{eqn:2-6} bzw. im Falle eines Mismatches, dass sich der Read durch Sequenzierfehler aus dem Allel erklären lässt \eqref{eqn:2-3}. Für Indels werden die empirisch ermittelten Sequenzierfehlerraten von Illumina für Sequenzierplattformen~\cite{schirmer_2016} aus der Konfigurationsdatei unter dem Parameter \lstinline|errors-per-base| entnommen. Entsprechend den in den CIGAR-Tupeln angegebenen Operationen wird für jede Base die Likelihood berechnet. Das Produkt der Likelihoods der einzelnen Basen ergibt schließlich die Likelihood zwischen Read und Allel \eqref{eqn:2-4}.\\
 
 Bei Bedarf kann die Methode \lstinline|get_alignment_likelihood()| auch  die Likelihood der entgegengesetzt gerichteten Kante bestimmen. Dabei wird die Querysequenz als Referenzsequenz betrachtet und umgekehrt. Dies ist über das boolesche Argument \lstinline|reverse| steuerbar. Gilt \lstinline|reverse = True|, so werden für die übergebenen CIGAR-Tupel Insertionen zu Deletionen und Deletionen zu Insertionen umgewandelt.\\
 
@@ -385,9 +386,9 @@ Zur Veranschaulichung ist die Methode in Algorithmus \ref{alg:lh_read} zusätzli
 	\end{algorithmic}
 \end{algorithm}
 
-Durch \lstinline|get_allele_likelihood_read()| und \lstinline|get_alignment_likelihood()| wurden also die Wahrscheinlichkeiten jedes Reads bestimmt, dass er von den verschiedenen Allelen der Zusammenhangskomponente stammt (siehe oben). Die Wahrscheinlichkeiten im Bezug auf jedes Allel sollen nun in die zuvor bestimmten Allele-Fractions (siehe Kap. \ref{subsec:cand_allele}) nach Formel \eqref{eqn:2-17} einbezogen werden. In der Funktion \hyperref[schritt10]{\lstinline|calc_vafs_likelihood_read()|\phantomsection\label{schritt10txt}} wird nun für jeden Read die Wahrscheinlichkeit berechnet, diesen unter der gegebenen Allel-Fraction zu beobachten. Dazu wird über die relativen Häufigkeiten jedes Allels der Allele-Fraction iteriert und ihr Produkt mit der Readlikelihood aufsummiert. \\
+Durch \lstinline|get_allele_likelihood_read()| und \lstinline|get_alignment_likelihood()| wurden also die Wahrscheinlichkeiten jedes Reads bestimmt, dass er von den verschiedenen Allelen der Zusammenhangskomponente stammt (siehe oben). Die Wahrscheinlichkeiten im Bezug auf jedes Allel sollen nun in die zuvor bestimmten Allele-Fractions (siehe Kap. \ref{subsec:cand_allele}) nach Formel \eqref{eqn:2-10} einbezogen werden. In der Funktion \hyperref[schritt10]{\lstinline|calc_vafs_likelihood_read()|\phantomsection\label{schritt10txt}} wird nun für jeden Read die Wahrscheinlichkeit berechnet, diesen unter der gegebenen Allel-Fraction zu beobachten. Dazu wird über die relativen Häufigkeiten jedes Allels der Allele-Fraction iteriert und ihr Produkt mit der Readlikelihood aufsummiert. \\
 
-Aus dem Produkt über alle Reads wird anschließend für die Allele-Fraction nach Formel \eqref{eqn:2-18} in \hyperref[schritt11]{\lstinline|calc_vafs_likelihood()|\phantomsection\label{schritt11txt}} die Gesamtwahrscheinlichkeit errechnet. \\
+Aus dem Produkt über alle Reads wird anschließend für die Allele-Fraction nach Formel \eqref{eqn:2-11} in \hyperref[schritt11]{\lstinline|calc_vafs_likelihood()|\phantomsection\label{schritt11txt}} die Gesamtwahrscheinlichkeit errechnet. \\
 
 Auf diese Weise wird in \lstinline|noderad_main.py| für jede Allel-Fraction die Gesamtwahrscheinlichkeit über alle Reads und alle relativen Häufigkeiten der Allele berechnet und in einer Liste abgelegt. \\
 
@@ -411,7 +412,7 @@ In Abhängigkeit von der Anzahl der Kandidatenallele und der Ploidie können die
 		\path (p16.south)+(0.0,-1.8) \ioitem{17}{16. Likelihood of loci given alleles and fractions}; 
 		\path (p17.south)+(0.0,-1.3) \ioitem{18}{17. Maximum likelihood loci};
 		\path (p18.south)+(0.0,-1.7) \ioitem{19}{18. VCF \\ \includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}};
-		\path (p13.west)+(-4.5, 0.0) node (ur1)[ur] {\lstinline|get_candidate_loci()|};
+		\path (p13.west)+(-4.5, 0.0) node (ur1)[ur] {\color{black}\lstinline|get_candidate_loci()|};
 		% Pfeile
 		\path [line] (p15.south) -- node [above] {} (p16) ;     
 		\path [line] (p16.south) -- node [above] {} (p17) ;
@@ -461,7 +462,7 @@ Nach der Gruppierung werden die übergeordneten Tupel sowie die darin enthaltene
 		((0, 0), (0, 2)), ((1, 1), (1, 1)), ((0, 2), (0, 2)), ((1, 1), (2, 2)), ((0, 1), (0, 2)), ((1, 1), (1, 2)), ((1, 2), (2, 2)), ((1, 2), (1, 2)), ((0, 0), (1, 1)), ((0, 0), (2, 2)), ((0, 2), (1, 1)), ((0, 1), (1, 1)), ((0, 0), (0, 0)), ((0, 2), (2, 2)), ((0, 0), (1, 2)), ((0, 1), (2, 2)), ((2, 2), (2, 2)), ((0, 0), (0, 1)), ((0, 2), (1, 2)), ((0, 1), (1, 2)), ((0, 1), (0, 1)) \\
 }}\\
 \end{center}
-Für jede Loci-Kombination wird später in Kap. \ref{subsec:lh_loci} durch die \hyperref[schritt14a]{Indikatorfunktion\phantomsection\label{schritt14atxt}} nach Formel \eqref{eqn:2-19} geprüft, ob sie die Allele-Fraction mit maximaler Likelihood $\Theta_{max\_lh}$ überhaupt repräsentieren kann. Das heißt die Häufigkeit jedes Allels über alle Loci einer gegebenen Loci-Kombination muss unter Berücksichtigung der Ploidie und der zu erwartenden Anzahl der Allele $n_{alleles}$ die relativen Häufigkeiten der ermittelten Allele-Fraction mit maximaler Likelihood erklären können. \\
+Für jede Loci-Kombination wird später in Kap. \ref{subsec:lh_loci} durch die \hyperref[schritt14a]{Indikatorfunktion\phantomsection\label{schritt14atxt}} nach Formel \eqref{eqn:2-13} geprüft, ob sie die Allele-Fraction mit maximaler Likelihood $\Theta_{max\_lh}$ überhaupt repräsentieren kann. Das heißt die Häufigkeit jedes Allels über alle Loci einer gegebenen Loci-Kombination muss unter Berücksichtigung der Ploidie und der zu erwartenden Anzahl der Allele $n_{alleles}$ die relativen Häufigkeiten der ermittelten Allele-Fraction mit maximaler Likelihood erklären können. \\
 
 Die hier zunächst vorgestellte Bildung von Permutationen über alle Allelkombinationen führt bei großen Clustern zu einer enormen Anzahl von Kombinationen. Da diese später ohnehin durch die Indikatorfunktion wieder reduziert werden, ermöglicht die direkte Erzeugung passender Loci-Kombinationen eine weitaus effizientere Implementierung. Im Hinblick auf die relativen Häufigkeiten in der Allel-Fraction mit maximaler Likelihood gibt es also eine feste Anzahl für jedes Allel, wie oft es über die Loci hinweg in einer Loci-Kombination auftreten darf. Diese Anzahl wird für jedes Allel durch die Indikatorfunktion getestet.\\
 
@@ -506,7 +507,7 @@ Das Ergebnis der Indikatorfunktion hängt allein von der absoluten Häufigkeiten
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
 		\parbox{\textwidth}{
-			\begin{satz*}[1]{Unter allen Allelkombinationen mit Wiederholung und ohne Beachtung der Reihenfolge gibt es nur eine Kombination, welche die Indikatorfunktion \eqref{eqn:2-19} erfüllt.} \label{thm:comb_indicator}
+			\begin{satz*}[1]{Unter allen Allelkombinationen mit Wiederholung und ohne Beachtung der Reihenfolge gibt es nur eine Kombination, welche die Indikatorfunktion \eqref{eqn:2-13} erfüllt.} \label{thm:comb_indicator}
 			\end{satz*}
 			\begin{beweis}
 				Für Kombinationen der Länge $p$ mit Wiederholung aber ohne Beachtung der Reihenfolge gilt, dass sich jedes Element bis zu $p$ Mal wiederholen kann. Da die Reihenfolge nicht beachtet werden soll, gilt außerdem dass jede Häufigkeitsverteilung der Elemente innerhalb einer Kombination in der Menge aller erzeugten Kombinationen nur genau einmal vorkommen darf. Andernfalls wäre dies eine Beachtung der Reihenfolge. Daraus kann abgeleitet werden:
@@ -552,11 +553,11 @@ Das Ergebnis der Indikatorfunktion hängt allein von der absoluten Häufigkeiten
 		\path [dashedline] (p11.east) -- node [left] {} (p16.west);
 		\path [dashedline] (p13.north) -- node [left] {} (p11.south); 
 		
-		\path (p11.north)+(0.0, 2.0) node (ur1)[ur] {\lstinline|indicator_constrait()|};
-		\path (p11.north)+(-0.0, 3.5) node (ur2)[ur] {\lstinline|calc_loci_likelihoods()|};
-		\path (p16.east)+(4.0, 0.0) node (ur3)[ur] {\lstinline|get_heterozygosity()|};
-		\path (ur3.north)+(0.0, 1.5) node (ur4)[ur] {\lstinline|get_cigar_tuples()|};
-		\path (p17.east)+(5.1, 0.0) node (ur5)[ur] {\lstinline|get_allele_likelihood_alleles()|};
+		\path (p11.north)+(0.0, 2.0) node (ur1)[ur] {\color{black}\lstinline|indicator_constrait()|};
+		\path (p11.north)+(-0.0, 3.5) node (ur2)[ur] {\color{black}\lstinline|calc_loci_likelihoods()|};
+		\path (p16.east)+(4.0, 0.0) node (ur3)[ur] {\color{black}\lstinline|get_heterozygosity()|};
+		\path (ur3.north)+(0.0, 1.5) node (ur4)[ur] {\color{black}\lstinline|get_cigar_tuples()|};
+		\path (p17.east)+(5.1, 0.0) node (ur5)[ur] {\color{black}\lstinline|get_allele_likelihood_alleles()|};
 		
 		\path [dashedline] (ur2.south) -- node [left] {} (ur1.north);
 		\path [dashedline] (ur4.south) -- node [left] {} (ur3.north);
@@ -575,13 +576,13 @@ Das Ergebnis der Indikatorfunktion hängt allein von der absoluten Häufigkeiten
 
 In diesem Schritt sollen schließlich für die Allel-Fraction mit maximaler Likelihood (Kap. \ref{subsec:lh_allele}) die ermittelten Kandidatenloci (Kap. \ref{subsec:comb_loci}) unter Berücksichtigung der Heterozygotie analysiert werden und die wahrscheinlichste Kombination der Loci ermittelt werden.\\
 
-Für jede Loci-Kombination aus \lstinline|get_candidate_loci()| wird aus der Funktion \linebreak \lstinline|calc_loci_likelihoods()| heraus zunächst geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten Allelfraktion mit maximaler Likelihood zuordnen lassen. Dies geschieht mit Hilfe der Indikatorfunktion \hyperref[schritt14b]{\lstinline|indicator_constrait()|\phantomsection\label{schritt14btxt}} nach Formel \eqref{eqn:2-19}. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Likelihood der Loci-Kombination aus den Heterozygotiewahrscheinlichkeiten der darin enthaltenen Allele berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben. Wie bereits besprochen, ist durch die Änderungen an der Implementierung von \lstinline|get_candidate_loci()| dieser Schritt nicht mehr notwendig und wurde nur belassen, um das dahinterstehende Modell strukturierter zeigen zu können.\\
+Für jede Loci-Kombination aus \lstinline|get_candidate_loci()| wird aus der Funktion \linebreak \lstinline|calc_loci_likelihoods()| heraus zunächst geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten Allelfraktion mit maximaler Likelihood zuordnen lassen. Dies geschieht mit Hilfe der Indikatorfunktion \hyperref[schritt14b]{\lstinline|indicator_constrait()|\phantomsection\label{schritt14btxt}} nach Formel \eqref{eqn:2-13}. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Likelihood der Loci-Kombination aus den Heterozygotiewahrscheinlichkeiten der darin enthaltenen Allele berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben. Wie bereits besprochen, ist durch die Änderungen an der Implementierung von \lstinline|get_candidate_loci()| dieser Schritt nicht mehr notwendig und wurde nur belassen, um das dahinterstehende Modell strukturierter zeigen zu können.\\
 
 Für die Likelihoodberechnung müssen nun einer Loci-Kombination zunächst die passenden Allelsequenzen zugeordnet werden. Die einzelnen Allele innerhalb einer Loci-Kombina-tion werden durch Integerwerte repräsentiert, die dem Index des dazugehörigen Kandidatenalleles entsprechen (siehe Kap. \ref{subsec:cand_allele}). Zu jeder Loci-Kombination wird also eine Liste $ S_{\,loc,\, alleles} $ generiert, welche die Kandidatenallelsequenzen der einzelnen Loci als Sublisten beinhaltet.\\
 
-Die Berechnung der Likelihood ist im vorliegenden Modell zunächst nur für diploide Organismen möglich. Aanalog zur Likelihoodberechnung beim paarweisen Vergleich der Reads unter Berücksichtigung der Sequenzierfehlerwahrscheinlichkeit (Kap. \ref{subsec:edges}) erfolgt auch die Likelihoodberechnung für einer Loci-Kombination durch den paarweisen Vergleich der Allele im Sinne eines pair Hidden Markov Models $ pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}}) $ (vgl. Kap. \ref{subsec:phmm_minimap}). Allerdings werden nun die Heterozygotiewahrscheinlichkeiten $\eta_{sub}$, $\eta_{ins}$ und $\eta_{del}$ der Grapheigenschaften zur Ermittlung der Likelihood nach Formel \eqref{eqn:2-20} genutzt.  \\
+Die Berechnung der Likelihood ist im vorliegenden Modell zunächst nur für diploide Organismen möglich. Aanalog zur Likelihoodberechnung beim paarweisen Vergleich der Reads unter Berücksichtigung der Sequenzierfehlerwahrscheinlichkeit (Kap. \ref{subsec:edges}) erfolgt auch die Likelihoodberechnung für einer Loci-Kombination durch den paarweisen Vergleich der Allele im Sinne eines pair Hidden Markov Models $ pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}}) $ (vgl. Kap. \ref{subsec:phmm_minimap}). Allerdings werden nun die Heterozygotiewahrscheinlichkeiten $\eta_{sub}$, $\eta_{ins}$ und $\eta_{del}$ der Grapheigenschaften zur Ermittlung der Likelihood nach Formel \eqref{eqn:2-12} genutzt.  \\
 
-Hierzu werden zunächst in \hyperref[schritt16]{\lstinline|get_allele_likelihood_alleles()|\phantomsection\label{schritt16txt}} (Algorithmus \ref{alg:lh_loci}) auf jeweils einer der Listen $S_{\,loc,\, alleles}$ für jeden Locus $loc$ die darin enthaltenen Allelsequenzen $s_{a_{i}}, s_{a_{j}}$  der Allele ${a_{i}, a_{j}}$ paarweise mit einander kombiniert. Dies wird durch die Funktion \lstinline|combinations()| aus  \lstinline|itertools| realisiert, die Kombinationen ohne Wiederholung und ohne Beachtung der Reihenfolge erzeugt. Die paarweise Kombination der Allele ist allerdings nur für Daten diploider Organismen möglich, bei höherer Ploidie wird ein multiples Sequenzalignment benötigt (vgl. Kap \ref{sec:ausblick}). Für jedes Allelpaar werden dann die CIGAR-Tupel durch die Funktion \lstinline|get_cigar_tuples()| (Algorithmus \ref{alg:cig}) ermittelt und für die Likelihoodberechnung in \lstinline|get_heterozygosity()| verwendet (Algorithmus \ref{alg:lh_het}). Die Gesamtwahrscheinlichkeit errechnet sich aus dem Produkt der Likelihood aller Allelpaare nach \ref{eqn:2-21}. Analog zur Likelihoodberechnung der Allele (vgl. Algorithmus \ref{alg:r-a-lh}) werden auch die ermittelten Locilikelihoods für die verschiedenen Loci-Kombinationen mehrfach benötigt. Daher wird die Effizienz auch hier durch Integration eines Dictionary mit den bereits ermittelten Likelihoods deutlich erhöht. Die Einträge des Dictionary sollen dabei die Tupel aus den beiden Allelsequenzen als Keys und die bereits errechneten Likelihoods als Values verwenden. Für alle Allelsequenzpaare wird noch vor der Suche nach geeigneten CIGAR-Tupeln das Dictionary $ dict_{\,loc} $ auf bereits vorhandene Einträge überprüft.  Falls es einen Eintrag gibt, so wird auf eine erneute Likelihoodberechnung verzichtet und stattdessen der Wert des Dictionary verwendet. Falls kein Eintrag existiert, so wird im Anschluss an die Likelihoodberechnung ein entsprechender Eintrag dem Dictionary hinzugefügt.
+Hierzu werden zunächst in \hyperref[schritt16]{\lstinline|get_allele_likelihood_alleles()|\phantomsection\label{schritt16txt}} (Algorithmus \ref{alg:lh_loci}) auf jeweils einer der Listen $S_{\,loc,\, alleles}$ für jeden Locus $loc$ die darin enthaltenen Allelsequenzen $s_{a_{i}}, s_{a_{j}}$  der Allele ${a_{i}, a_{j}}$ paarweise mit einander kombiniert. Dies wird durch die Funktion \lstinline|combinations()| aus  \lstinline|itertools| realisiert, die Kombinationen ohne Wiederholung und ohne Beachtung der Reihenfolge erzeugt. Die paarweise Kombination der Allele ist allerdings nur für Daten diploider Organismen möglich, bei höherer Ploidie wird ein multiples Sequenzalignment benötigt (vgl. Kap \ref{sec:ausblick}). Für jedes Allelpaar werden dann die CIGAR-Tupel durch die Funktion \lstinline|get_cigar_tuples()| (Algorithmus \ref{alg:cig}) ermittelt und für die Likelihoodberechnung in \lstinline|get_heterozygosity()| verwendet (Algorithmus \ref{alg:lh_het}). Die Gesamtwahrscheinlichkeit errechnet sich aus dem Produkt der Likelihood aller Allelpaare nach \ref{eqn:2-14}. Analog zur Likelihoodberechnung der Allele (vgl. Algorithmus \ref{alg:r-a-lh}) werden auch die ermittelten Locilikelihoods für die verschiedenen Loci-Kombinationen mehrfach benötigt. Daher wird die Effizienz auch hier durch Integration eines Dictionary mit den bereits ermittelten Likelihoods deutlich erhöht. Die Einträge des Dictionary sollen dabei die Tupel aus den beiden Allelsequenzen als Keys und die bereits errechneten Likelihoods als Values verwenden. Für alle Allelsequenzpaare wird noch vor der Suche nach geeigneten CIGAR-Tupeln das Dictionary $ dict_{\,loc} $ auf bereits vorhandene Einträge überprüft.  Falls es einen Eintrag gibt, so wird auf eine erneute Likelihoodberechnung verzichtet und stattdessen der Wert des Dictionary verwendet. Falls kein Eintrag existiert, so wird im Anschluss an die Likelihoodberechnung ein entsprechender Eintrag dem Dictionary hinzugefügt.
 
 \begin{algorithm}[H]
 	\caption{Bestimmung der Likelihood der Allele innerhalb einer Loci-Kombination}  \label{alg:lh_loci}
@@ -616,7 +617,7 @@ Hierzu werden zunächst in \hyperref[schritt16]{\lstinline|get_allele_likelihood
 	\end{algorithmic}
 \end{algorithm}
 
-In \hyperref[schritt15]{\lstinline|get_heterozygosity()|\phantomsection\label{schritt15txt}} erfolgt die Likelihoodberechnung der paarweisen Kombinationen der Allelsequenzen eines Locus aus den CIGAR-Tupeln und den Heterozygotiewahrscheinlichkeiten. Dies beschränkt den Prototypen derzeit auf diploide Organismen (siehe auch Kap. \ref{sec:ausblick}). Wie in Algorithmus \ref{alg:lh_read} wird auch hier die Likelihood über aller Matches und Mismatches aus den Informationen der CIGAR-Tupel bestimmt. Die Likelihoodberechnung der Matches erfolgt dabei nach Formel \ref{eqn:2-11}, die der Mismatches nach Formel \ref{eqn:2-10}. Das Argument \lstinline|reverse| markiert zudem die Richtung der Kante, von der die CIGAR-Tupel stammen. Für  Kanten in Rückrichtung, die von der Referen- zur Query-Sequenz verlaufen gilt \lstinline|reverse=True|. In diesem Fall werden Deletionen als Insertionen behandelt und umgekehrt. \\
+In \hyperref[schritt15]{\lstinline|get_heterozygosity()|\phantomsection\label{schritt15txt}} erfolgt die Likelihoodberechnung der paarweisen Kombinationen der Allelsequenzen eines Locus aus den CIGAR-Tupeln und den Heterozygotiewahrscheinlichkeiten. Dies beschränkt den Prototypen derzeit auf diploide Organismen (siehe auch Kap. \ref{sec:ausblick}). Wie in Algorithmus \ref{alg:lh_read} wird auch hier die Likelihood über aller Matches und Mismatches aus den Informationen der CIGAR-Tupel bestimmt. Die Likelihoodberechnung der Matches erfolgt dabei nach Formel \ref{eqn:2-5}, die der Mismatches nach Formel \ref{eqn:2-6}. Das Argument \lstinline|reverse| markiert zudem die Richtung der Kante, von der die CIGAR-Tupel stammen. Für  Kanten in Rückrichtung, die von der Referen- zur Query-Sequenz verlaufen gilt \lstinline|reverse=True|. In diesem Fall werden Deletionen als Insertionen behandelt und umgekehrt. \\
 
 \begin{algorithm}[H]
 	\caption{Bestimmung der Likelihood zwischen zwei Kandidatenallelen hinsichtlich der Heterozygotiewahrscheinlichkeiten}  \label{alg:lh_het}
@@ -683,10 +684,10 @@ In den Log-Dateien werden zusätzlich einige Statistiken zur Berechnung der wahr
 		\begin{tikzpicture}[scale=0.64,transform shape]
 		\path (p17.south)+(0.0,-1.3) \ioitem{18}{17. Maximum likelihood loci};
 		\path (p18.south)+(0.0,-1.7) \blockitem{19}{\hyperref[schritt18txt]{\color{white}..}18.\phantomsection\label{schritt18} VCF \\ \includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}\hspace{0.1cm}\includegraphics[width=0.9cm]{bilder/list_icon_2.png}};
-		\path (p19.west)+(-4.1, 1.0) node (ur1)[ur] {\lstinline|get_sorted_loci_alleles()|};
-		\path (p19.west)+(-4.5, 0.0) node (ur2)[ur] {\lstinline|get_alleles_matched_to_loci()|};
-		\path (p19.west)+(-3.21, -1.0) node (ur3)[ur] {\lstinline|get_gt_indices()|};
-		\path (p19.west)+(-3.03, -2.0) node (ur4)[ur] {\lstinline|get_genotype()|};
+		\path (p19.west)+(-4.1, 1.0) node (ur1)[ur] {\color{black}\lstinline|get_sorted_loci_alleles()|};
+		\path (p19.west)+(-4.5, 0.0) node (ur2)[ur] {\color{black}\lstinline|get_alleles_matched_to_loci()|};
+		\path (p19.west)+(-3.21, -1.0) node (ur3)[ur] {\color{black}\lstinline|get_gt_indices()|};
+		\path (p19.west)+(-3.03, -2.0) node (ur4)[ur] {\color{black}\lstinline|get_genotype()|};
 		
 		% Pfeile
 		\path [line] (p18.south) -- node [above] {} (p19) ;		
