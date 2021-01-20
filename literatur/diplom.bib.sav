@@ -1125,16 +1125,22 @@
 }
 
 @Misc{tikz_schema,
-  author        = {Cristo J. Alanis},
-  title         = {{{Schema of Labs on a class}}},
-  note          = {source: \url{https://texample.net/tikz/examples/labs-schema/}},
-  __markedentry = {[tarja:]},
+  author = {Cristo J. Alanis},
+  title  = {{{Schema of Labs on a class}}},
+  note   = {source: \url{https://texample.net/tikz/examples/labs-schema/}},
 }
 
 @Misc{tikz_dna,
   author        = {Petar Veličković},
   title         = {{{Deoxyribonucleic acid (DNA)}}},
   note          = {source: \url{https://github.com/PetarV-/TikZ/tree/master/DNA}},
+  __markedentry = {[tarja:]},
+}
+
+@Misc{bootstrap,
+  author        = {Inc. Twitter and Mark Otto and the Bootstrap authors},
+  title         = {{{Bootstrap icons - receipt}}},
+  note          = {source: \url{https://github.com/twbs/icons/blob/main/icons/receipt.svg}},
   __markedentry = {[tarja:6]},
 }
 

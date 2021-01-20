@@ -160,6 +160,12 @@
 {\sc Veličković, Petar}: {\em {{Deoxyribonucleic acid (DNA)}}}.
 \newblock source: \url{https://github.com/PetarV-/TikZ/tree/master/DNA}.
 
+\bibitem{bootstrap}
+{\sc Twitter, Inc.}, {\sc Mark Otto}, \btxandlong{}\ {\sc the
+  Bootstrap~authors}: {\em {{Bootstrap icons - receipt}}}.
+\newblock source:
+  \url{https://github.com/twbs/icons/blob/main/icons/receipt.svg}.
+
 \bibitem{li_2018}
 {\sc Li, Heng}: {\em {Minimap2: pairwise alignment for nucleotide sequences}}.
 \newblock Bioinformatics, 34(18):3094--3100, 05 2018.
