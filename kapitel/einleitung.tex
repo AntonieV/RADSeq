@@ -3,8 +3,6 @@
 \section{Biologischer Hintergrund} \label{sec:biology}
 \subsection{Aufbau und Struktur der DNA} \label{subsec:dna}
 
-% Eine Referenz~\cite{AggarwalV88}.
-
 In den vergangenen Jahren wurden durch die molekulargenetische Methoden in Medizin und Biologie enorme Fortschritte erzielt. Heute sind sie nicht nur ein wesentliches Instrument bei der Erforschung, Diagnostik und Therapie verschiedenster Erkrankungen sondern sind auch bei der Entdeckung und Klassifikation von Organismen oder ganzen Ökosystemen von entscheidender Bedeutung.  \\
 
 %\hyperlink{repl}{DNA-Replikation} 
@@ -74,54 +72,38 @@ Die vier Proben werden nun nebeneinander auf ein Gel aufgetragen. Da DNA negativ
 
 \subsection{PCR}  \label{subsec:pcr}
 
-Zunächst waren für die Sanger-Sequenzierung große Mengen an Zellmaterial notwendig, um daraus ausreichend DNA für sichtbare Banden auf dem Gel extrahieren zu können. Die Sequenzierung mit nur geringen DNA-Mengen war nicht möglich. Durch die Entwicklung des Verfahrens der Polymerasekettenreaktion (PCR, polymerase chain reaction) ~\cite{mullis_1986} wurden die Möglichkeiten der Sequenzierung revolutioniert. Die PCR ermöglicht es aus kleinsten DNA-Proben multiple Kopien herzustellen. Und so ist es inzwischen möglich, selbst aus der DNA einer einzigen Zelle umfangreiche Analysen durchzuführen ~\cite{gawad_2016}. \\
+Zunächst waren für die Sanger-Sequenzierung große Mengen an Zellmaterial notwendig, um daraus ausreichend DNA für sichtbare Banden auf dem Gel extrahieren zu können. Die Sequenzierung mit nur geringen DNA-Mengen war nicht möglich. Durch die Entwicklung des Verfahrens der Polymerasekettenreaktion (PCR, polymerase chain reaction) ~\cite{mullis_1986} gelang es schließlich, aus einzelnen DNA-Abschnitten multiple Kopien herzustellen, so dass auch kleinste DNA-Proben der Analyse zugänglich wurden. In modernen Verfahren ist es dadurch inzwischen möglich an der DNA einer einzigen Zelle umfangreiche Analysen durchzuführen \cite{gawad_2016}. \\
+
+Auf den bereits beschriebenen Prozessen zur Herstellung einer Kopie mit modifizierten Nukleotiden bei der Sanger-Sequenzierung basiert auch die Herstellung vielfacher, jedoch unmodifizierter Kopien bei der PCR. Temperaturabhängig wechseln hierbei mehrere Zyklen von Aufspaltung des DNA-Doppelstrangs, Primeranlagerung und DNA-Synthese ab. Entscheidend hierbei war die Verwendung einer thermostabilen DNA-Polymerase (Taq-Polymerase) \cite{green_2019}. Dadurch war es möglich mehrfach Zyklen wechselnder Temperaturen nacheinander durchzuführen, ohne dass die für die Synthese notwendige Polymerase bei höheren Temperaturen zerstört wurde. Die verwendeten Primer binden auf beiden Strängen am 3'-Ende der zu amplifizierenden DNA-Sequenz, so dass die DNA-Synthese auf beiden Strängen in 5'-3'-Richtung erfolgen kann. Im Gegensatz zur natürlichen Replikation entstehen somit keine Okazaki-Fragmente. Pro PCR-Zyklus $c$ verdoppelt sich die durch die Primer eingegrenzte DNA-Sequenz, so dass die Anzahl der Kopien exponentiell mit $2^c$ ansteigt. \\
+
+Durch die PCR war es nun möglich verstärkt Sequenzierungen durchzuführen und so die  Erbinformation verschiedener Spezies, allen voran das Genom des Menschen im Rahmen des Human Genome Projects \cite{mcpherson_2001}, zu sequenzieren und zu kartieren. Es entstanden große Gendatenbanken (z.B. Ensembl genome database \cite{flicek_2008}, UCSC Genome Browser), welche die Referenzgenome vieler Spezies beinhalten.
+
+\section{Next Generation Sequencing} \label{subsec:ngs}
+
+Durch die PCR wurde also der Weg bereitet, immer umfangreichere DNA-Sequenzierungen durchführen zu können und so wurden die Sequenzierungsverfahren in den darauffolgenden Jahren zunehmend optimiert und parallelisiert \cite{shendure_2008}. Mit den heutigen Next-Generation-Sequencing-Methoden \cite{rizzo_2012, ambardar_2016} können auf geringsten DNA-Mengen kostengünstig und im Hochdurchsatzverfahren Sequenzierungen durchgeführt werden, die auch ohne vorherige spezifische Kenntnisse über die zu sequenzierenden DNA-Bereiche möglich ist \cite{dijk_2014} . Hierzu gehört unter anderem auch die RAD-Sequenzierung.
+
+\subsection{RAD-Sequencing} \label{sec:rad}
+
+Die RAD-Sequenzierung findet vor allem im Bereich der Populationsgenetik, Ökologie, Genotypisierung und Evolutionsforschung Anwendung. Das Prinzip der RAD-Sequenzierung basiert ursprünglich auf der Genotypisierung durch RAD-Marker \cite{miller_2007}. Dies ermöglichte das gleichzeitige Mapping natürlicher Varianten und induzierter Mutationen bei verschiedensten Organismen. RAD-Marker oder RAD-tags sind kleine DNA-Fragmenten, die durch Verdau der DNA durch sogenannte Restriktionsenzyme entstehen. \\
+
+Restriktionsenzyme sind molekulare Scheren, die in der Lage sind, die DNA an einer spezifischen DNA-Sequenz zu schneiden. Je nach verwendetem Restriktionsenzym können die Schnittstellen bezüglich des DNA-Doppelstrangs glatt oder versetzt sein \cite{roberts_2003}. Bei glatten Schnittstellen erfolgt die Aufspaltung beider DNA-Stränge an gleicher Position, so dass die entstehenden DNA-Fragmente keine Überhänge besitzen. Bei versetzten Schnittstellen erfolgt die Auftrennung auf beiden DNA-Strängen an verschiedenen Positionen, so dass bei den resultierenden DNA-Fragmenten einer der beiden Stränge gegenüber dem anderen länger hervorsteht. Diese überstehenden Sequenzen an den Fragmentenden werden häufig auch als sticky ends bezeichnet, da an ihnen besonders gut andere Sequenzen angefügt werden können. So werden beispielsweise für Sequenzierungen häufig Adaptersequenzen zur Bindung an Primer der Sequenzierplatte benötigt \cite{mardis_2017}. \\
+
+Neben der Nutzung der entstandenen DNA-Fragmente als Marker erkannte man auch bald die Vorteile ihrer Sequenzierung \cite{baird_2008}. Aufgrund der bekannten Sequenz der Schnittstellen der Restriktionsenzyme können die Adaptersequenzen insbesondere bei sticky ends problemlos an die DNA-Fragmente gebunden werden. Die Adapter werden zusätzlich mit Barcodesequenzen versehen, welche die untersuchten Individuen identifizieren. Dadurch ist es möglich gepoolte Proben mit DNA-Fragmenten verschiedener Individuen gleichzeitig zu sequenzieren. Die dabei ausgelesenen kurzen DNA-Fragmente (Reads) lassen sich dann über ihre Barcodesequenzen den einzelnen Individuen wieder zuordnen \cite{davey_2010}. Die gleichzeitige Analyse von Probengemischen verschiedener Individuen reduziert die Kosten und den Zeitaufwand der Sequenzierung erheblich. Insbesondere führt sie aber dazu, dass die Sequenzierung bei allen Individuen unter gleichen Versuchsbedingungen stattfindet, so dass die Reads der Individuen zuverlässiger mit einander vergleichbar sind. Durch die Sequenzspezifität der Restriktionsenzyme stammen bei Individuen evolutionär eng beieinander liegender oder gleicher Spezies die DNA-Fragmente vom gleichen genomischen Ort (Locus). Das Vorhandensein eines Referenzgenoms (siehe Kap. \ref{subsec:pcr}) ist hierbei keine Voraussetzung mehr, vielmehr können durch statistische Analysen für jedes Individuum mögliche Loci bestimmt \cite{leggett_2014} und hinsichtlich Varianten und Mutationen interindividuell für Diversitätsanalysen verwendet werden. Dies ermöglicht auch Untersuchungen von Spezies mit unbekanntem Genom. Auch das hier implementierte Tool NodeRAD dient der Identifizierung der Loci und den Genotyps der einzelnen Individuen (\ref{chapter:kap2}) und kann in abgewandelter Form auch für den Vergleich verschiedener Individuen untereinander genutzt werden (Kap. \ref{sec:ausblick}).  \\
+
+Für die Sequenzierung werden nur kleine Fragmente von wenigen hundert Basenpaaren Länge verwendet, größere Fragmente werden aussortiert. Dadurch kommt es zu deutlichen Verlusten bei den DNA-Fragmenten. Der Schritt der Größenselektion kann jedoch durch die Verwendung von zwei verschiedenen Restriktionsenzymen verbessert werden \cite{peterson_2012}. Bei diesem auch als ddRADSeq (double digest RADSeq) bezeichneten Verfahren werden die durch ein Restriktionsenzym erzeugten Framente an ihren Enden mit Adaptern versehen und anschließend ein weiteres mal mit einem anderen Restriktionenzym behandelt. Die freien Enden werden mit anderen Adapter belegt. Dadurch werden die Fragmente weiter verkleinert, so dass mehr Fragmente nach der Größenselektion zur Verfügung stehen und sequenziert werden können. Hierbei können Restriktionsenzyme, die häufig im Genom vorkommende Sequenzen schneiden mit Restriktionsenzymen kombiniert werden, die spezifisch für selternere Sequenzen sind. Dadurch lässt sich eine bessere Steuerbarkeit und  höhere Genauigkeit des Verfahrens erreichen. 
+
+Die DNA-Fragmente stammen aus dem gesamten Genom, ohne dieses vollständig abzudecken. Jedes der Fragmente wird in der Regel mehrfach sequenziert, so dass von jedem Abschnitt multiple, identische Reads entstehen. Dabei können in Abhängigkeit vom gewählten NGS-Verfahren die Reads von nur einem Ende (single-end) oder von beiden Enden aus (paired-end) sequenziert werden \cite{mardis_2017, rizzo_2012, ambardar_2016}.
 
 
 
-\noindent======================= draft =======================\\
-
-
-%PCR und Human genome project ~\cite{mcpherson_2001}
-
-
-\subsection{Next Generation Sequencing} \label{subsec:ngs}
-%Parallelisierung
-%kostengünstig 
-%highthroughput
-
-\section{RAD-Sequencing} \label{sec:rad}
-
-Kosteneffizienz, gepoolte Probengemische gleichzeitige testung im hochdurchsatzverfahren
-%genotypisierung, evolution, öklologie, genotyp/phenotyp, populationsgenetik, diversität, molekulare Ökologie, systematiken
-%
-%gleichzeitige Sequenzierung multipler Genomabschnitte (DNA)
-%Detektion von SNPs 
-%Restriktionsenzyme Restriction Endonucleases
-%Restriktionsstellen bei verwandten Arten sehr ähnlich => ermöglicht Sequenzierung vergleichbarer/ähnlicher Abschnitte des Genoms zw. verwanden Arten
-%ein oder mehrere Restriktionsenzyme
-%
-%Adapter + Barcode (Proben-ID, ist eine Sequenz), alle Amplifikate der Probe besitzen diese ID-Sequenz → können der Probe zugeordnet werden
-%
-%intra- und interspeziesvergleich dadurch möglich, Vergleich zwischen Individuen, ohne ihr gesamtes Genom zu sequenzieren möglich
-%
-%mehrere 100 Proben, 100-tausende loci genomweit und random => Flexibilität der Marker und ihrer Anzahl
-%
-%mehrere Proben werden gepoolt und dann sequenziert
-%die sequenzierten Abschnitte (ab Restriktionsstelle) sind ca. 100-150 bp lang
-%
-%bei NGS wird jeder dieser Abschnitte mehrfach sequenziert => von jedem Abschnitt werden multiple, identische Fragmente (Reads) 
-%
-%Aufbau: Restriktionsstelle – Barcode – ca. 100 bp Sequenzinformation
-%Loci werden anhand der Reads bestimmt, SNPs werden den Reads durch Clustering zugeordnet, Barcode ordnet die Proben den Reads und ihren SNPs zu
-%
-%=> Ergebnis: mehrere Milionen dieser Fragmente 
-%
-%
-%
-%Reference-free SNP Detection ~\cite{leggett_2014}.
 
 \section{Sequenzierungsdaten und -formate}
+
+Für die Speicherung und Verarbeitung der Daten aus genetischen Analysen haben sich eine Vielzahl verschiedener Formate für verschiedenste Anwendungsfälle etabliert. Daher soll im Folgenden kurz auf die in dieser Arbeit verwendeten Formate und ihre Besonderheiten eingegangen werden.
+
 \subsection{Reads} \label{subsec:fastq}
+
+Die bei den Sequenzierung ausgelesenen kurzen Nukleotidsequenzabschnitte werden als Reads bezeichnet. Sie werden in ihrer einfachsten Form im Fasta Format und mit informationen zur Sequenzierungsqualität im Fastq format 
 Identifikationsbezeichnungen, der Basensequenz, Basenqualität 
 
 \subsection{Sequenzalignments} \label{subsec:samformat}

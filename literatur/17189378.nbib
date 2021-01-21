@@ -1,0 +1,78 @@
+PMID- 17189378
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20070404
+LR  - 20181113
+IS  - 1088-9051 (Print)
+IS  - 1549-5477 (Electronic)
+IS  - 1088-9051 (Linking)
+VI  - 17
+IP  - 2
+DP  - 2007 Feb
+TI  - Rapid and cost-effective polymorphism identification and genotyping using 
+      restriction site associated DNA (RAD) markers.
+PG  - 240-8
+AB  - Restriction site associated DNA (RAD) tags are a genome-wide representation of every 
+      site of a particular restriction enzyme by short DNA tags. Most organisms segregate 
+      large numbers of DNA sequence polymorphisms that disrupt restriction sites, which 
+      allows RAD tags to serve as genetic markers spread at a high density throughout the 
+      genome. Here, we demonstrate the applicability of RAD markers for both individual 
+      and bulk-segregant genotyping. First, we show that these markers can be identified 
+      and typed on pre-existing microarray formats. Second, we present a method that uses 
+      RAD marker DNA to rapidly produce a low-cost microarray genotyping resource that can 
+      be used to efficiently identify and type thousands of RAD markers. We demonstrate 
+      the utility of the former approach by using a tiling path array for the fruit fly to 
+      map a recombination breakpoint, and the latter approach by creating and using an 
+      enriched RAD marker array for the threespine stickleback. The high number of RAD 
+      markers enabled localization of a previously identified region, as well as a second 
+      region also associated with the lateral plate phenotype. Taken together, our results 
+      demonstrate that RAD markers, and the method to develop a RAD marker microarray 
+      resource, allow high-throughput, high-resolution genotyping in both model and 
+      nonmodel systems.
+FAU - Miller, Michael R
+AU  - Miller MR
+AD  - Institute for Molecular Biology, University of Oregon, Eugene, Oregon 97403, USA.
+FAU - Dunham, Joseph P
+AU  - Dunham JP
+FAU - Amores, Angel
+AU  - Amores A
+FAU - Cresko, William A
+AU  - Cresko WA
+FAU - Johnson, Eric A
+AU  - Johnson EA
+LA  - eng
+GR  - R01 RR020833/RR/NCRR NIH HHS/United States
+GR  - 5R01RR020833/RR/NCRR NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, N.I.H., Extramural
+PT  - Research Support, Non-U.S. Gov't
+PT  - Research Support, U.S. Gov't, Non-P.H.S.
+DEP - 20061222
+TA  - Genome Res
+JT  - Genome research
+JID - 9518021
+RN  - 0 (Genetic Markers)
+RN  - 9007-49-2 (DNA)
+SB  - IM
+MH  - Animals
+MH  - Base Sequence
+MH  - Cost-Benefit Analysis
+MH  - DNA/*genetics
+MH  - Drosophila/genetics
+MH  - Gene Library
+MH  - Genetic Markers
+MH  - Genotype
+MH  - Oligonucleotide Array Sequence Analysis/economics/*methods
+MH  - Polymorphism, Single Nucleotide
+MH  - Smegmamorpha/genetics
+PMC - PMC1781356
+EDAT- 2006/12/26 09:00
+MHDA- 2007/04/05 09:00
+CRDT- 2006/12/26 09:00
+PHST- 2006/12/26 09:00 [pubmed]
+PHST- 2007/04/05 09:00 [medline]
+PHST- 2006/12/26 09:00 [entrez]
+AID - gr.5681207 [pii]
+AID - 10.1101/gr.5681207 [doi]
+PST - ppublish
+SO  - Genome Res. 2007 Feb;17(2):240-8. doi: 10.1101/gr.5681207. Epub 2006 Dec 22.

@@ -15,45 +15,45 @@ Too many commas in name 1 of "Voß, W, Sauerbier, T" for entry tb_stat
 while executing---line 1056 of file gerunsrt.bst
 Warning--can't use both author and editor fields in tb_stat
 Warning--can't use both author and editor fields in bronst
-You've used 49 entries,
+You've used 63 entries,
             2016 wiz_defined-function locations,
-            796 strings with 14249 characters,
-and the built_in function-call counts, 14461 in all, are:
-= -- 1189
-> -- 764
+            869 strings with 20149 characters,
+and the built_in function-call counts, 22313 in all, are:
+= -- 1545
+> -- 1565
 < -- 7
-+ -- 275
-- -- 226
-* -- 1473
-:= -- 2116
-add.period$ -- 101
-call.type$ -- 49
-change.case$ -- 47
++ -- 547
+- -- 484
+* -- 2682
+:= -- 3334
+add.period$ -- 129
+call.type$ -- 63
+change.case$ -- 61
 chr.to.int$ -- 0
-cite$ -- 51
-duplicate$ -- 680
-empty$ -- 1378
-format.name$ -- 226
-if$ -- 3346
+cite$ -- 65
+duplicate$ -- 1063
+empty$ -- 1951
+format.name$ -- 484
+if$ -- 4886
 int.to.chr$ -- 0
-int.to.str$ -- 49
-missing$ -- 74
-newline$ -- 201
-num.names$ -- 51
-pop$ -- 142
+int.to.str$ -- 63
+missing$ -- 102
+newline$ -- 257
+num.names$ -- 65
+pop$ -- 156
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 351
+skip$ -- 449
 stack$ -- 0
-substring$ -- 707
-swap$ -- 326
+substring$ -- 944
+swap$ -- 598
 text.length$ -- 7
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 2
-while$ -- 92
-width$ -- 51
-write$ -- 479
+while$ -- 119
+width$ -- 65
+write$ -- 619
 (There was 1 error message)

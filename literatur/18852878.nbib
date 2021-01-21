@@ -1,0 +1,90 @@
+PMID- 18852878
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20081218
+LR  - 20181113
+IS  - 1932-6203 (Electronic)
+IS  - 1932-6203 (Linking)
+VI  - 3
+IP  - 10
+DP  - 2008
+TI  - Rapid SNP discovery and genetic mapping using sequenced RAD markers.
+PG  - e3376
+LID - 10.1371/journal.pone.0003376 [doi]
+LID - e3376
+AB  - Single nucleotide polymorphism (SNP) discovery and genotyping are essential to 
+      genetic mapping. There remains a need for a simple, inexpensive platform that allows 
+      high-density SNP discovery and genotyping in large populations. Here we describe the 
+      sequencing of restriction-site associated DNA (RAD) tags, which identified more than 
+      13,000 SNPs, and mapped three traits in two model organisms, using less than half 
+      the capacity of one Illumina sequencing run. We demonstrated that different marker 
+      densities can be attained by choice of restriction enzyme. Furthermore, we developed 
+      a barcoding system for sample multiplexing and fine mapped the genetic basis of 
+      lateral plate armor loss in threespine stickleback by identifying recombinant 
+      breakpoints in F(2) individuals. Barcoding also facilitated mapping of a second 
+      trait, a reduction of pelvic structure, by in silico re-sorting of individuals. To 
+      further demonstrate the ease of the RAD sequencing approach we identified 
+      polymorphic markers and mapped an induced mutation in Neurospora crassa. Sequencing 
+      of RAD markers is an integrated platform for SNP discovery and genotyping. This 
+      approach should be widely applicable to genetic mapping in a variety of organisms.
+FAU - Baird, Nathan A
+AU  - Baird NA
+AD  - Institute of Molecular Biology, University of Oregon, Eugene, Oregon, United States 
+      of America.
+FAU - Etter, Paul D
+AU  - Etter PD
+FAU - Atwood, Tressa S
+AU  - Atwood TS
+FAU - Currey, Mark C
+AU  - Currey MC
+FAU - Shiver, Anthony L
+AU  - Shiver AL
+FAU - Lewis, Zachary A
+AU  - Lewis ZA
+FAU - Selker, Eric U
+AU  - Selker EU
+FAU - Cresko, William A
+AU  - Cresko WA
+FAU - Johnson, Eric A
+AU  - Johnson EA
+LA  - eng
+GR  - R21HG003834/HG/NHGRI NIH HHS/United States
+GR  - GM025690/GM/NIGMS NIH HHS/United States
+GR  - R21 HG003834/HG/NHGRI NIH HHS/United States
+GR  - R24 GM079486/GM/NIGMS NIH HHS/United States
+GR  - R24GM79486/GM/NIGMS NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, N.I.H., Extramural
+PT  - Research Support, U.S. Gov't, Non-P.H.S.
+DEP - 20081013
+TA  - PLoS One
+JT  - PloS one
+JID - 101285081
+RN  - 0 (Genetic Markers)
+SB  - IM
+MH  - Animals
+MH  - Chromosome Mapping/*methods
+MH  - Expressed Sequence Tags
+MH  - Genetic Markers
+MH  - Genome
+MH  - Genotype
+MH  - Methods
+MH  - Neurospora crassa/genetics
+MH  - *Polymorphism, Single Nucleotide
+MH  - Restriction Mapping
+MH  - Smegmamorpha/genetics
+PMC - PMC2557064
+COIS- Competing Interests: EAJ has patents filed on the RAD marker, and partial interest 
+      in a company commercializing the system. TSA is a paid employee of that company.
+EDAT- 2008/10/15 09:00
+MHDA- 2008/12/19 09:00
+CRDT- 2008/10/15 09:00
+PHST- 2008/06/30 00:00 [received]
+PHST- 2008/09/14 00:00 [accepted]
+PHST- 2008/10/15 09:00 [pubmed]
+PHST- 2008/12/19 09:00 [medline]
+PHST- 2008/10/15 09:00 [entrez]
+AID - 08-PONE-RA-05318R1 [pii]
+AID - 10.1371/journal.pone.0003376 [doi]
+PST - ppublish
+SO  - PLoS One. 2008;3(10):e3376. doi: 10.1371/journal.pone.0003376. Epub 2008 Oct 13.

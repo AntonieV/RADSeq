@@ -1,0 +1,51 @@
+PMID- 28055035
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20170530
+LR  - 20181113
+IS  - 1750-2799 (Electronic)
+IS  - 1750-2799 (Linking)
+VI  - 12
+IP  - 2
+DP  - 2017 Feb
+TI  - DNA sequencing technologies: 2006-2016.
+PG  - 213-218
+LID - 10.1038/nprot.2016.182 [doi]
+AB  - Recent advances in the field of genomics have largely been due to the ability to 
+      sequence DNA at increasing throughput and decreasing cost. DNA sequencing was first 
+      introduced in 1977, and next-generation sequencing technologies have been available 
+      only during the past decade, but the diverse experiments and corresponding analyses 
+      facilitated by these techniques have transformed biological and biomedical research. 
+      Here, I review developments in DNA sequencing technologies over the past 10 years 
+      and look to the future for further applications.
+FAU - Mardis, Elaine R
+AU  - Mardis ER
+AD  - McDonnell Genome Institute, Washington University, St. Louis, Missouri, USA.
+LA  - eng
+PT  - Journal Article
+PT  - Review
+DEP - 20170105
+PL  - England
+TA  - Nat Protoc
+JT  - Nature protocols
+JID - 101284307
+RN  - 9007-49-2 (DNA)
+SB  - IM
+MH  - Animals
+MH  - DNA/biosynthesis/genetics
+MH  - High-Throughput Nucleotide Sequencing
+MH  - Humans
+MH  - Sequence Analysis, DNA/*methods
+MH  - Statistics as Topic
+EDAT- 2017/01/06 06:00
+MHDA- 2017/05/31 06:00
+CRDT- 2017/01/06 06:00
+PHST- 2016/08/17 00:00 [received]
+PHST- 2016/10/20 00:00 [accepted]
+PHST- 2017/01/06 06:00 [entrez]
+PHST- 2017/01/06 06:00 [pubmed]
+PHST- 2017/05/31 06:00 [medline]
+AID - nprot.2016.182 [pii]
+AID - 10.1038/nprot.2016.182 [doi]
+PST - ppublish
+SO  - Nat Protoc. 2017 Feb;12(2):213-218. doi: 10.1038/nprot.2016.182. Epub 2017 Jan 5.

@@ -1,0 +1,54 @@
+PMID- 18846087
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20081229
+LR  - 20081010
+IS  - 1546-1696 (Electronic)
+IS  - 1087-0156 (Linking)
+VI  - 26
+IP  - 10
+DP  - 2008 Oct
+TI  - Next-generation DNA sequencing.
+PG  - 1135-45
+LID - 10.1038/nbt1486 [doi]
+AB  - DNA sequence represents a single format onto which a broad range of biological 
+      phenomena can be projected for high-throughput data collection. Over the past three 
+      years, massively parallel DNA sequencing platforms have become widely available, 
+      reducing the cost of DNA sequencing by over two orders of magnitude, and 
+      democratizing the field by putting the sequencing capacity of a major genome center 
+      in the hands of individual investigators. These new technologies are rapidly 
+      evolving, and near-term challenges include the development of robust protocols for 
+      generating sequencing libraries, building effective new approaches to data-analysis, 
+      and often a rethinking of experimental design. Next-generation DNA sequencing has 
+      the potential to dramatically accelerate biological and biomedical research, by 
+      enabling the comprehensive analysis of genomes, transcriptomes and interactomes to 
+      become inexpensive, routine and widespread, rather than requiring significant 
+      production-scale efforts.
+FAU - Shendure, Jay
+AU  - Shendure J
+AD  - Department of Genome Sciences, University of Washington, Seattle, Washington 
+      98195-5065, USA. shendure@u.washington.edu
+FAU - Ji, Hanlee
+AU  - Ji H
+LA  - eng
+PT  - Journal Article
+PL  - United States
+TA  - Nat Biotechnol
+JT  - Nature biotechnology
+JID - 9604648
+SB  - IM
+MH  - Chromosome Mapping/*trends
+MH  - *Forecasting
+MH  - Genomics/*trends
+MH  - Sequence Alignment/*trends
+MH  - Sequence Analysis, DNA/*trends
+EDAT- 2008/10/11 09:00
+MHDA- 2008/12/30 09:00
+CRDT- 2008/10/11 09:00
+PHST- 2008/10/11 09:00 [pubmed]
+PHST- 2008/12/30 09:00 [medline]
+PHST- 2008/10/11 09:00 [entrez]
+AID - nbt1486 [pii]
+AID - 10.1038/nbt1486 [doi]
+PST - ppublish
+SO  - Nat Biotechnol. 2008 Oct;26(10):1135-45. doi: 10.1038/nbt1486.

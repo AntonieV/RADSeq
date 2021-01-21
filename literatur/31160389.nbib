@@ -1,0 +1,51 @@
+PMID- 31160389
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20200729
+LR  - 20200729
+IS  - 1559-6095 (Electronic)
+IS  - 1559-6095 (Linking)
+VI  - 2019
+IP  - 6
+DP  - 2019 Jun 3
+TI  - Polymerase Chain Reaction.
+LID - 10.1101/pdb.top095109 [doi]
+AB  - The polymerase chain reaction (PCR) underlies almost all of modern molecular 
+      cloning. Using PCR, a defined target sequence that occurs once within a DNA of high 
+      complexity and large size-an entire mammalian genome, for example-can be rapidly and 
+      selectively amplified in a quasi-exponential chain reaction that generates millions 
+      of copies. The reaction is simple to set up, cheap, and undemanding, the only 
+      requirement being some knowledge of the nucleotide sequences of the target. In 
+      addition to its simplicity, PCR is robust, speedy, flexible, and sensitive.
+CI  - © 2019 Cold Spring Harbor Laboratory Press.
+FAU - Green, Michael R
+AU  - Green MR
+FAU - Sambrook, Joseph
+AU  - Sambrook J
+LA  - eng
+PT  - Journal Article
+PT  - Review
+DEP - 20190603
+PL  - United States
+TA  - Cold Spring Harb Protoc
+JT  - Cold Spring Harbor protocols
+JID - 101524530
+RN  - 0 (DNA Primers)
+RN  - 0 (Oligonucleotides)
+RN  - 0 (RNA, Messenger)
+SB  - IM
+MH  - DNA Contamination
+MH  - DNA Primers/metabolism
+MH  - Oligonucleotides/metabolism
+MH  - Polymerase Chain Reaction/*methods
+MH  - RNA, Messenger/genetics/metabolism
+EDAT- 2019/06/05 06:00
+MHDA- 2020/07/30 06:00
+CRDT- 2019/06/05 06:00
+PHST- 2019/06/05 06:00 [entrez]
+PHST- 2019/06/05 06:00 [pubmed]
+PHST- 2020/07/30 06:00 [medline]
+AID - 2019/6/pdb.top095109 [pii]
+AID - 10.1101/pdb.top095109 [doi]
+PST - epublish
+SO  - Cold Spring Harb Protoc. 2019 Jun 3;2019(6). doi: 10.1101/pdb.top095109.

@@ -1,0 +1,61 @@
+PMID- 21266344
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20110421
+LR  - 20181113
+IS  - 2041-2657 (Electronic)
+IS  - 2041-2649 (Print)
+IS  - 2041-2649 (Linking)
+VI  - 9
+IP  - 5-6
+DP  - 2010 Dec
+TI  - RADSeq: next-generation population genetics.
+PG  - 416-23
+LID - 10.1093/bfgp/elq031 [doi]
+AB  - Next-generation sequencing technologies are making a substantial impact on many 
+      areas of biology, including the analysis of genetic diversity in populations. 
+      However, genome-scale population genetic studies have been accessible only to 
+      well-funded model systems. Restriction-site associated DNA sequencing, a method that 
+      samples at reduced complexity across target genomes, promises to deliver high 
+      resolution population genomic data-thousands of sequenced markers across many 
+      individuals-for any organism at reasonable costs. It has found application in wild 
+      populations and non-traditional study species, and promises to become an important 
+      technology for ecological population genomics.
+FAU - Davey, John W
+AU  - Davey JW
+AD  - Institute of Evolutionary Biology, Edinburgh, UK. john.davey@ed.ac.uk
+FAU - Blaxter, Mark L
+AU  - Blaxter ML
+LA  - eng
+GR  - BB/F021135/1/Biotechnology and Biological Sciences Research Council/United Kingdom
+GR  - G0900740/Medical Research Council/United Kingdom
+PT  - Comparative Study
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+TA  - Brief Funct Genomics
+JT  - Briefings in functional genomics
+JID - 101528229
+SB  - IM
+EIN - Brief Funct Genomics. 2011 Mar;10(2):108. Davey, John L [corrected to Davey, John 
+      W]; Blaxter, Mark W [corrected to Blaxter, Mark L]
+MH  - Animals
+MH  - Base Sequence
+MH  - Genetic Variation
+MH  - *Genetics, Population
+MH  - Genome
+MH  - Humans
+MH  - Phylogeny
+MH  - Polymorphism, Single Nucleotide
+MH  - Restriction Mapping
+MH  - Sequence Analysis, DNA/*methods
+PMC - PMC3080771
+EDAT- 2011/01/27 06:00
+MHDA- 2011/04/22 06:00
+CRDT- 2011/01/27 06:00
+PHST- 2011/01/27 06:00 [entrez]
+PHST- 2011/01/27 06:00 [pubmed]
+PHST- 2011/04/22 06:00 [medline]
+AID - elq031 [pii]
+AID - 10.1093/bfgp/elq031 [doi]
+PST - ppublish
+SO  - Brief Funct Genomics. 2010 Dec;9(5-6):416-23. doi: 10.1093/bfgp/elq031.

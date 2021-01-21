@@ -126,6 +126,140 @@
   {\em Single-cell genome sequencing: current state of the science.}
 \newblock Nature reviews. Genetics, 17:175--88, Mar 2016.
 
+\bibitem{green_2019}
+{\sc Green, Michael~R.} \btxandlong{}\ {\sc Joseph Sambrook}: {\em Polymerase
+  chain reaction.}
+\newblock Cold Spring Harbor protocols, 2019, Jun 2019.
+
+\bibitem{mcpherson_2001}
+{\sc McPherson, J.~D.}, {\sc M.~Marra}, {\sc L.~Hillier}, {\sc R.~H.
+  Waterston}, {\sc A.~Chinwalla}, {\sc J.~Wallis}, {\sc M.~Sekhon}, {\sc
+  K.~Wylie}, {\sc E.~R. Mardis}, {\sc R.~K. Wilson}, {\sc R.~Fulton}, {\sc
+  T.~A. Kucaba}, {\sc C.~Wagner-McPherson}, {\sc W.~B. Barbazuk}, {\sc S.~G.
+  Gregory}, {\sc S.~J. Humphray}, {\sc L.~French}, {\sc R.~S. Evans}, {\sc
+  G.~Bethel}, {\sc A.~Whittaker}, {\sc J.~L. Holden}, {\sc O.~T. McCann}, {\sc
+  A.~Dunham}, {\sc C.~Soderlund}, {\sc C.~E. Scott}, {\sc D.~R. Bentley}, {\sc
+  G.~Schuler}, {\sc H.~C. Chen}, {\sc W.~Jang}, {\sc E.~D. Green}, {\sc J.~R.
+  Idol}, {\sc V.~V. Maduro}, {\sc K.~T. Montgomery}, {\sc E.~Lee}, {\sc
+  A.~Miller}, {\sc S.~Emerling}, {\sc Kucherlapati}, {\sc R.~Gibbs}, {\sc
+  S.~Scherer}, {\sc J.~H. Gorrell}, {\sc E.~Sodergren}, {\sc
+  K.~Clerc-Blankenburg}, {\sc P.~Tabor}, {\sc S.~Naylor}, {\sc D.~Garcia}, {\sc
+  P.~J. de~Jong}, {\sc J.~J. Catanese}, {\sc N.~Nowak}, {\sc K.~Osoegawa}, {\sc
+  S.~Qin}, {\sc L.~Rowen}, {\sc A.~Madan}, {\sc M.~Dors}, {\sc L.~Hood}, {\sc
+  B.~Trask}, {\sc C.~Friedman}, {\sc H.~Massa}, {\sc V.~G. Cheung}, {\sc I.~R.
+  Kirsch}, {\sc T.~Reid}, {\sc R.~Yonescu}, {\sc J.~Weissenbach}, {\sc
+  T.~Bruls}, {\sc R.~Heilig}, {\sc E.~Branscomb}, {\sc A.~Olsen}, {\sc
+  N.~Doggett}, {\sc J.~F. Cheng}, {\sc T.~Hawkins}, {\sc R.~M. Myers}, {\sc
+  J.~Shang}, {\sc L.~Ramirez}, {\sc J.~Schmutz}, {\sc O.~Velasquez}, {\sc
+  K.~Dixon}, {\sc N.~E. Stone}, {\sc D.~R. Cox}, {\sc D.~Haussler}, {\sc W.~J.
+  Kent}, {\sc T.~Furey}, {\sc S.~Rogic}, {\sc S.~Kennedy}, {\sc S.~Jones}, {\sc
+  A.~Rosenthal}, {\sc G.~Wen}, {\sc M.~Schilhabel}, {\sc G.~Gloeckner}, {\sc
+  G.~Nyakatura}, {\sc R.~Siebert}, {\sc B.~Schlegelberger}, {\sc J.~Korenberg},
+  {\sc X.~N. Chen}, {\sc A.~Fujiyama}, {\sc M.~Hattori}, {\sc A.~Toyoda}, {\sc
+  T.~Yada}, {\sc H.~S. Park}, {\sc Y.~Sakaki}, {\sc N.~Shimizu}, {\sc
+  S.~Asakawa}, {\sc K.~Kawasaki}, {\sc T.~Sasaki}, {\sc A.~Shintani}, {\sc
+  A.~Shimizu}, {\sc K.~Shibuya}, {\sc J.~Kudoh}, {\sc S.~Minoshima}, {\sc
+  J.~Ramser}, {\sc P.~Seranski}, {\sc C.~Hoff}, {\sc A.~Poustka}, {\sc
+  R.~Reinhardt}, \btxandlong{}\ {\sc H.~Lehrach}: {\em A physical map of the
+  human genome.}
+\newblock Nature, 409:934--41, Feb 2001.
+
+\bibitem{flicek_2008}
+{\sc Flicek, P.}, {\sc B.~L. Aken}, {\sc K.~Beal}, {\sc B.~Ballester}, {\sc
+  M.~Caccamo}, {\sc Y.~Chen}, {\sc L.~Clarke}, {\sc G.~Coates}, {\sc
+  F.~Cunningham}, {\sc T.~Cutts}, {\sc T.~Down}, {\sc S.~C. Dyer}, {\sc
+  T.~Eyre}, {\sc S.~Fitzgerald}, {\sc J.~Fernandez-Banet}, {\sc S.~Gräf}, {\sc
+  S.~Haider}, {\sc M.~Hammond}, {\sc R.~Holland}, {\sc K.~L. Howe}, {\sc
+  K.~Howe}, {\sc N.~Johnson}, {\sc A.~Jenkinson}, {\sc A.~Kähäri}, {\sc
+  D.~Keefe}, {\sc F.~Kokocinski}, {\sc E.~Kulesha}, {\sc D.~Lawson}, {\sc
+  I.~Longden}, {\sc K.~Megy}, {\sc P.~Meidl}, {\sc B.~Overduin}, {\sc
+  A.~Parker}, {\sc B.~Pritchard}, {\sc A.~Prlic}, {\sc S.~Rice}, {\sc D.~Rios},
+  {\sc M.~Schuster}, {\sc I.~Sealy}, {\sc G.~Slater}, {\sc D.~Smedley}, {\sc
+  G.~Spudich}, {\sc S.~Trevanion}, {\sc A.~J. Vilella}, {\sc J.~Vogel}, {\sc
+  S.~White}, {\sc M.~Wood}, {\sc E.~Birney}, {\sc T.~Cox}, {\sc V.~Curwen},
+  {\sc R.~Durbin}, {\sc X.~M. Fernandez-Suarez}, {\sc J.~Herrero}, {\sc
+  T.~J.~P. Hubbard}, {\sc A.~Kasprzyk}, {\sc G.~Proctor}, {\sc J.~Smith}, {\sc
+  A.~Ureta-Vidal}, \btxandlong{}\ {\sc S.~Searle}: {\em Ensembl 2008.}
+\newblock Nucleic acids research, 36:D707--14, Jan 2008.
+
+\bibitem{shendure_2008}
+{\sc Shendure, Jay} \btxandlong{}\ {\sc Hanlee Ji}: {\em Next-generation dna
+  sequencing.}
+\newblock Nature biotechnology, 26:1135--45, Oct 2008.
+
+\bibitem{rizzo_2012}
+{\sc Rizzo, Jason~M.} \btxandlong{}\ {\sc Michael~J. Buck}: {\em Key principles
+  and clinical applications of "next-generation" dna sequencing.}
+\newblock Cancer prevention research (Philadelphia, Pa.), 5:887--900, Jul 2012.
+
+\bibitem{ambardar_2016}
+{\sc Ambardar, Sheetal}, {\sc Rikita Gupta}, {\sc Deepika Trakroo}, {\sc Rup
+  Lal}, \btxandlong{}\ {\sc Jyoti Vakhlu}: {\em High throughput sequencing: An
+  overview of sequencing chemistry.}
+\newblock Indian journal of microbiology, 56:394--404, Dec 2016.
+
+\bibitem{dijk_2014}
+{\sc Dijk, Erwin~L.~van}, {\sc Hélène Auger}, {\sc Yan Jaszczyszyn},
+  \btxandlong{}\ {\sc Claude Thermes}: {\em Ten years of next-generation
+  sequencing technology.}
+\newblock Trends in genetics : TIG, 30:418--26, Sep 2014.
+
+\bibitem{miller_2007}
+{\sc Miller, Michael~R.}, {\sc Joseph~P. Dunham}, {\sc Angel Amores}, {\sc
+  William~A. Cresko}, \btxandlong{}\ {\sc Eric~A. Johnson}: {\em Rapid and
+  cost-effective polymorphism identification and genotyping using restriction
+  site associated dna (rad) markers.}
+\newblock Genome research, 17:240--8, Feb 2007.
+
+\bibitem{roberts_2003}
+{\sc Roberts, Richard~J.}, {\sc Marlene Belfort}, {\sc Timothy Bestor}, {\sc
+  Ashok~S. Bhagwat}, {\sc Thomas~A. Bickle}, {\sc Jurate Bitinaite}, {\sc
+  Robert~M. Blumenthal}, {\sc Sergey~Kh Degtyarev}, {\sc David T.~F. Dryden},
+  {\sc Kevin Dybvig}, {\sc Keith Firman}, {\sc Elizaveta~S. Gromova}, {\sc
+  Richard~I. Gumport}, {\sc Stephen~E. Halford}, {\sc Stanley Hattman}, {\sc
+  Joseph Heitman}, {\sc David~P. Hornby}, {\sc Arvydas Janulaitis}, {\sc Albert
+  Jeltsch}, {\sc Jytte Josephsen}, {\sc Antal Kiss}, {\sc Todd~R. Klaenhammer},
+  {\sc Ichizo Kobayashi}, {\sc Huimin Kong}, {\sc Detlev~H. Krüger}, {\sc
+  Sanford Lacks}, {\sc Martin~G. Marinus}, {\sc Michiko Miyahara}, {\sc
+  Richard~D. Morgan}, {\sc Noreen~E. Murray}, {\sc Valakunja Nagaraja}, {\sc
+  Andrzej Piekarowicz}, {\sc Alfred Pingoud}, {\sc Elisabeth Raleigh}, {\sc
+  Desirazu~N. Rao}, {\sc Norbert Reich}, {\sc Vladimir~E. Repin}, {\sc Eric~U.
+  Selker}, {\sc Pang-Chui Shaw}, {\sc Daniel~C. Stein}, {\sc Barry~L.
+  Stoddard}, {\sc Waclaw Szybalski}, {\sc Thomas~A. Trautner}, {\sc James~L.
+  Van~Etten}, {\sc Jorge M.~B. Vitor}, {\sc Geoffrey~G. Wilson}, \btxandlong{}\
+  {\sc Shuang-yong Xu}: {\em A nomenclature for restriction enzymes, dna
+  methyltransferases, homing endonucleases and their genes.}
+\newblock Nucleic acids research, 31:1805--12, Apr 2003.
+
+\bibitem{mardis_2017}
+{\sc Mardis, Elaine~R.}: {\em Dna sequencing technologies: 2006-2016.}
+\newblock Nature protocols, 12:213--218, Feb 2017.
+
+\bibitem{baird_2008}
+{\sc Baird, Nathan~A.}, {\sc Paul~D. Etter}, {\sc Tressa~S. Atwood}, {\sc
+  Mark~C. Currey}, {\sc Anthony~L. Shiver}, {\sc Zachary~A. Lewis}, {\sc
+  Eric~U. Selker}, {\sc William~A. Cresko}, \btxandlong{}\ {\sc Eric~A.
+  Johnson}: {\em Rapid snp discovery and genetic mapping using sequenced rad
+  markers.}
+\newblock PloS one, 3:e3376, 2008.
+
+\bibitem{davey_2010}
+{\sc Davey, John~W.} \btxandlong{}\ {\sc Mark~L. Blaxter}: {\em Radseq:
+  next-generation population genetics.}
+\newblock Briefings in functional genomics, 9:416--23, Dec 2010.
+
+\bibitem{leggett_2014}
+{\sc Leggett, Richard~M.} \btxandlong{}\ {\sc Dan MacLean}: {\em Reference-free
+  snp detection: dealing with the data deluge.}
+\newblock BMC genomics, 15 Suppl 4:S10, 2014.
+
+\bibitem{peterson_2012}
+{\sc Peterson, Brant~K.}, {\sc Jesse~N. Weber}, {\sc Emily~H. Kay}, {\sc
+  Heidi~S. Fisher}, \btxandlong{}\ {\sc Hopi~E. Hoekstra}: {\em Double digest
+  radseq: an inexpensive method for de novo snp discovery and genotyping in
+  model and non-model species.}
+\newblock PloS one, 7:e37135, 2012.
+
 \bibitem{sam_bam}
 {\sc Group, The SAM/BAM Format Specification~Working}: {\em {{Sequence
   Alignment/Map Format Specfication}}}.

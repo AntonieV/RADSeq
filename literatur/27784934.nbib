@@ -1,0 +1,76 @@
+PMID- 27784934
+OWN - NLM
+STAT- PubMed-not-MEDLINE
+LR  - 20201001
+IS  - 0046-8991 (Print)
+IS  - 0973-7715 (Electronic)
+IS  - 0046-8991 (Linking)
+VI  - 56
+IP  - 4
+DP  - 2016 Dec
+TI  - High Throughput Sequencing: An Overview of Sequencing Chemistry.
+PG  - 394-404
+AB  - In the present century sequencing is to the DNA science, what gel electrophoresis 
+      was to it in the last century. From 1977 to 2016 three generation of the sequencing 
+      technologies of various types have been developed. Second and third generation 
+      sequencing technologies referred commonly to as next generation sequencing 
+      technology, has evolved significantly with increase in sequencing speed, decrease in 
+      sequencing cost, since its inception in 2004. GS FLX by 454 Life Sciences/Roche 
+      diagnostics, Genome Analyzer, HiSeq, MiSeq and NextSeq by Illumina, Inc., SOLiD by 
+      ABI, Ion Torrent by Life Technologies are various type of the sequencing platforms 
+      available for second generation sequencing. The platforms available for the third 
+      generation sequencing are Helicos™ Genetic Analysis System by SeqLL, LLC, SMRT 
+      Sequencing by Pacific Biosciences, Nanopore sequencing by Oxford Nanopore's, 
+      Complete Genomics by Beijing Genomics Institute and GnuBIO by BioRad, to name few. 
+      The present article is an overview of the principle and the sequencing chemistry of 
+      these high throughput sequencing technologies along with brief comparison of various 
+      types of sequencing platforms available.
+FAU - Ambardar, Sheetal
+AU  - Ambardar S
+AD  - Metagenomics Laboratory, School of Biotechnology, University of Jammu, Jammu, J&K 
+      India ; Centre for Cellular and Molecular Platform, National Centre for Biological 
+      Sciences, TIFR Bangalore, Bangalore, India ; Institute of Trans-Disciplinary Health 
+      Sciences and Technology, Trans-Disciplinary University, Bangalore, 560064 India.
+FAU - Gupta, Rikita
+AU  - Gupta R
+AD  - Metagenomics Laboratory, School of Biotechnology, University of Jammu, Jammu, J&K 
+      India.
+FAU - Trakroo, Deepika
+AU  - Trakroo D
+AD  - Metagenomics Laboratory, School of Biotechnology, University of Jammu, Jammu, J&K 
+      India.
+FAU - Lal, Rup
+AU  - Lal R
+AD  - Molecular Biology Laboratory, Department of Zoology, South Campus, University of 
+      Delhi, Delhi, India.
+FAU - Vakhlu, Jyoti
+AU  - Vakhlu J
+AD  - Metagenomics Laboratory, School of Biotechnology, University of Jammu, Jammu, J&K 
+      India.
+LA  - eng
+PT  - Journal Article
+PT  - Review
+DEP - 20160709
+TA  - Indian J Microbiol
+JT  - Indian journal of microbiology
+JID - 0374703
+PMC - PMC5061697
+OTO - NOTNLM
+OT  - High throughput sequencing
+OT  - NGS
+OT  - Second generation sequencing
+OT  - Sequencing platforms
+OT  - Third generation sequencing
+EDAT- 2016/10/28 06:00
+MHDA- 2016/10/28 06:01
+CRDT- 2016/10/28 06:00
+PHST- 2015/12/16 00:00 [received]
+PHST- 2016/06/22 00:00 [accepted]
+PHST- 2016/10/28 06:00 [pubmed]
+PHST- 2016/10/28 06:01 [medline]
+PHST- 2016/10/28 06:00 [entrez]
+AID - 606 [pii]
+AID - 10.1007/s12088-016-0606-4 [doi]
+PST - ppublish
+SO  - Indian J Microbiol. 2016 Dec;56(4):394-404. doi: 10.1007/s12088-016-0606-4. Epub 
+      2016 Jul 9.

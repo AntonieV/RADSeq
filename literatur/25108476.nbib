@@ -1,0 +1,79 @@
+PMID- 25108476
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20150406
+LR  - 20140902
+IS  - 0168-9525 (Print)
+IS  - 0168-9525 (Linking)
+VI  - 30
+IP  - 9
+DP  - 2014 Sep
+TI  - Ten years of next-generation sequencing technology.
+PG  - 418-26
+LID - S0168-9525(14)00112-7 [pii]
+LID - 10.1016/j.tig.2014.07.001 [doi]
+AB  - Ten years ago next-generation sequencing (NGS) technologies appeared on the market. 
+      During the past decade, tremendous progress has been made in terms of speed, read 
+      length, and throughput, along with a sharp reduction in per-base cost. Together, 
+      these advances democratized NGS and paved the way for the development of a large 
+      number of novel NGS applications in basic science as well as in translational 
+      research areas such as clinical diagnostics, agrigenomics, and forensic science. 
+      Here we provide an overview of the evolution of NGS and discuss the most significant 
+      improvements in sequencing technologies and library preparation protocols. We also 
+      explore the current landscape of NGS applications and provide a perspective for 
+      future developments.
+CI  - Copyright © 2014 Elsevier Ltd. All rights reserved.
+FAU - van Dijk, Erwin L
+AU  - van Dijk EL
+AD  - Centre de Génétique Moléculaire - CNRS, Avenue de la Terrasse, 91198 Gif sur Yvette, 
+      France. Electronic address: vandijk@cgm.cnrs-gif.fr.
+FAU - Auger, Hélène
+AU  - Auger H
+AD  - Centre de Génétique Moléculaire - CNRS, Avenue de la Terrasse, 91198 Gif sur Yvette, 
+      France.
+FAU - Jaszczyszyn, Yan
+AU  - Jaszczyszyn Y
+AD  - Plateforme Intégrée IMAGIF - CNRS, Avenue de la Terrasse, 91198 Gif sur Yvette, 
+      France.
+FAU - Thermes, Claude
+AU  - Thermes C
+AD  - Centre de Génétique Moléculaire - CNRS, Avenue de la Terrasse, 91198 Gif sur Yvette, 
+      France.
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Review
+DEP - 20140806
+PL  - England
+TA  - Trends Genet
+JT  - Trends in genetics : TIG
+JID - 8507085
+SB  - IM
+MH  - *Genome, Human
+MH  - Genomics/*methods
+MH  - High-Throughput Nucleotide Sequencing/*methods
+MH  - Humans
+MH  - *Sequence Analysis, DNA
+MH  - *Sequence Analysis, RNA
+MH  - *Translational Medical Research
+OTO - NOTNLM
+OT  - ChIP-seq
+OT  - DNA-seq
+OT  - NGS library preparation
+OT  - Next-generation sequencing (NGS)
+OT  - RNA-seq
+OT  - genomics
+EDAT- 2014/08/12 06:00
+MHDA- 2015/04/07 06:00
+CRDT- 2014/08/11 06:00
+PHST- 2014/05/28 00:00 [received]
+PHST- 2014/07/08 00:00 [revised]
+PHST- 2014/07/09 00:00 [accepted]
+PHST- 2014/08/11 06:00 [entrez]
+PHST- 2014/08/12 06:00 [pubmed]
+PHST- 2015/04/07 06:00 [medline]
+AID - S0168-9525(14)00112-7 [pii]
+AID - 10.1016/j.tig.2014.07.001 [doi]
+PST - ppublish
+SO  - Trends Genet. 2014 Sep;30(9):418-26. doi: 10.1016/j.tig.2014.07.001. Epub 2014 Aug 
+      6.

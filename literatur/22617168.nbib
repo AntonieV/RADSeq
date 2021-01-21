@@ -1,0 +1,68 @@
+PMID- 22617168
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20121207
+LR  - 20120709
+IS  - 1940-6215 (Electronic)
+IS  - 1940-6215 (Linking)
+VI  - 5
+IP  - 7
+DP  - 2012 Jul
+TI  - Key principles and clinical applications of "next-generation" DNA sequencing.
+PG  - 887-900
+LID - 10.1158/1940-6207.CAPR-11-0432 [doi]
+AB  - Demand for fast, inexpensive, and accurate DNA sequencing data has led to the birth 
+      and dominance of a new generation of sequencing technologies. So-called 
+      "next-generation" sequencing technologies enable rapid generation of data by 
+      sequencing massive amounts of DNA in parallel using diverse methodologies which 
+      overcome the limitations of Sanger sequencing methods used to sequence the first 
+      human genome. Despite opening new frontiers of genomics research, the fundamental 
+      shift away from the Sanger sequencing that next-generation technologies has created 
+      has also left many unaware of the capabilities and applications of these new 
+      technologies, especially those in the clinical realm. Moreover, the brisk evolution 
+      of sequencing technologies has flooded the market with commercially available 
+      sequencing platforms, whose unique chemistries and diverse applications stand as 
+      another obstacle restricting the potential of next-generation sequencing. This 
+      review serves to provide a primer on next-generation sequencing technologies for 
+      clinical researchers and physician scientists. We provide an overview of the 
+      capabilities and clinical applications of DNA sequencing technologies to raise 
+      awareness among researchers about the power of these novel genomic tools. In 
+      addition, we discuss that key sequencing principles provide a comparison between 
+      existing and near-term technologies and outline key advantages and disadvantages 
+      between different sequencing platforms to help researchers choose an appropriate 
+      platform for their research interests.
+CI  - ©2012 AACR.
+FAU - Rizzo, Jason M
+AU  - Rizzo JM
+AD  - Department of Biochemistry and Center of Excellence in Bioinformatics and Life 
+      Sciences, State University of New York at Buffalo, 701 Elicott St., Buffalo, NY 
+      14203, USA. mjbuck@buffalo.edu
+FAU - Buck, Michael J
+AU  - Buck MJ
+LA  - eng
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+PT  - Research Support, U.S. Gov't, Non-P.H.S.
+PT  - Review
+DEP - 20120522
+PL  - United States
+TA  - Cancer Prev Res (Phila)
+JT  - Cancer prevention research (Philadelphia, Pa.)
+JID - 101479409
+SB  - IM
+MH  - *Genome, Human
+MH  - *Genomics
+MH  - Humans
+MH  - *Sequence Analysis, DNA
+MH  - *Translational Medical Research
+EDAT- 2012/05/24 06:00
+MHDA- 2012/12/12 06:00
+CRDT- 2012/05/24 06:00
+PHST- 2012/05/24 06:00 [entrez]
+PHST- 2012/05/24 06:00 [pubmed]
+PHST- 2012/12/12 06:00 [medline]
+AID - 1940-6207.CAPR-11-0432 [pii]
+AID - 10.1158/1940-6207.CAPR-11-0432 [doi]
+PST - ppublish
+SO  - Cancer Prev Res (Phila). 2012 Jul;5(7):887-900. doi: 10.1158/1940-6207.CAPR-11-0432. 
+      Epub 2012 May 22.

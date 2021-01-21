@@ -1,0 +1,55 @@
+PMID- 25056481
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20150309
+LR  - 20181113
+IS  - 1471-2164 (Electronic)
+IS  - 1471-2164 (Linking)
+VI  - 15 Suppl 4
+IP  - Suppl 4
+DP  - 2014
+TI  - Reference-free SNP detection: dealing with the data deluge.
+PG  - S10
+LID - 10.1186/1471-2164-15-S4-S10 [doi]
+AB  - Reference-free SNP detection, that is identifying SNPs between samples directly from 
+      comparison of primary sequencing data with other primary sequencing data and not to 
+      a pre-assembled reference genome is an emergent and potentially disruptive 
+      technology that is beginning to open up new vistas in variant identification that 
+      reveals new applications in non-model organisms and metagenomics. The modern, 
+      efficient data structures these tools use enables researchers with a reference 
+      sequence to sample many more individuals with lower computing storage and processing 
+      overhead. In this article we will discuss the technologies and tools implementing 
+      reference-free SNP detection and the potential impact on studies of genetic 
+      variation in model and non-model organisms, metagenomics and personal genomics and 
+      medicine.
+FAU - Leggett, Richard M
+AU  - Leggett RM
+FAU - MacLean, Dan
+AU  - MacLean D
+LA  - eng
+PT  - Journal Article
+PT  - Review
+DEP - 20140520
+TA  - BMC Genomics
+JT  - BMC genomics
+JID - 100965258
+SB  - IM
+MH  - Animals
+MH  - Contig Mapping
+MH  - Genetic Variation
+MH  - Humans
+MH  - Metagenomics
+MH  - *Models, Theoretical
+MH  - *Polymorphism, Single Nucleotide
+PMC - PMC4083407
+EDAT- 2014/07/25 06:00
+MHDA- 2015/03/10 06:00
+CRDT- 2014/07/25 06:00
+PHST- 2014/07/25 06:00 [entrez]
+PHST- 2014/07/25 06:00 [pubmed]
+PHST- 2015/03/10 06:00 [medline]
+AID - 1471-2164-15-S4-S10 [pii]
+AID - 10.1186/1471-2164-15-S4-S10 [doi]
+PST - ppublish
+SO  - BMC Genomics. 2014;15 Suppl 4(Suppl 4):S10. doi: 10.1186/1471-2164-15-S4-S10. Epub 
+      2014 May 20.

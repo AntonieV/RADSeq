@@ -1,0 +1,185 @@
+PMID- 18000006
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20080317
+LR  - 20191008
+IS  - 1362-4962 (Electronic)
+IS  - 0305-1048 (Print)
+IS  - 0305-1048 (Linking)
+VI  - 36
+IP  - Database issue
+DP  - 2008 Jan
+TI  - Ensembl 2008.
+PG  - D707-14
+AB  - The Ensembl project (http://www.ensembl.org) is a comprehensive genome information 
+      system featuring an integrated set of genome annotation, databases and other 
+      information for chordate and selected model organism and disease vector genomes. As 
+      of release 47 (October 2007), Ensembl fully supports 35 species, with preliminary 
+      support for six additional species. New species in the past year include platypus 
+      and horse. Major additions and improvements to Ensembl since our previous report 
+      include extensive support for functional genomics data in the form of a specialized 
+      functional genomics database, genome-wide maps of protein-DNA interactions and the 
+      Ensembl regulatory build; support for customization of the Ensembl web interface 
+      through the addition of user accounts and user groups; and increased support for 
+      genome resequencing. We have also introduced new comparative genomics-based data 
+      mining options and report on the continued development of our software 
+      infrastructure.
+FAU - Flicek, P
+AU  - Flicek P
+AD  - European Bioinformatics Institute (EMBL-EBI), Wellcome Trust Genome Campus, Hinxton, 
+      Cambridge, CB10 1SD, UK. flicek@ebi.ac.uk
+FAU - Aken, B L
+AU  - Aken BL
+FAU - Beal, K
+AU  - Beal K
+FAU - Ballester, B
+AU  - Ballester B
+FAU - Caccamo, M
+AU  - Caccamo M
+FAU - Chen, Y
+AU  - Chen Y
+FAU - Clarke, L
+AU  - Clarke L
+FAU - Coates, G
+AU  - Coates G
+FAU - Cunningham, F
+AU  - Cunningham F
+FAU - Cutts, T
+AU  - Cutts T
+FAU - Down, T
+AU  - Down T
+FAU - Dyer, S C
+AU  - Dyer SC
+FAU - Eyre, T
+AU  - Eyre T
+FAU - Fitzgerald, S
+AU  - Fitzgerald S
+FAU - Fernandez-Banet, J
+AU  - Fernandez-Banet J
+FAU - Gräf, S
+AU  - Gräf S
+FAU - Haider, S
+AU  - Haider S
+FAU - Hammond, M
+AU  - Hammond M
+FAU - Holland, R
+AU  - Holland R
+FAU - Howe, K L
+AU  - Howe KL
+FAU - Howe, K
+AU  - Howe K
+FAU - Johnson, N
+AU  - Johnson N
+FAU - Jenkinson, A
+AU  - Jenkinson A
+FAU - Kähäri, A
+AU  - Kähäri A
+FAU - Keefe, D
+AU  - Keefe D
+FAU - Kokocinski, F
+AU  - Kokocinski F
+FAU - Kulesha, E
+AU  - Kulesha E
+FAU - Lawson, D
+AU  - Lawson D
+FAU - Longden, I
+AU  - Longden I
+FAU - Megy, K
+AU  - Megy K
+FAU - Meidl, P
+AU  - Meidl P
+FAU - Overduin, B
+AU  - Overduin B
+FAU - Parker, A
+AU  - Parker A
+FAU - Pritchard, B
+AU  - Pritchard B
+FAU - Prlic, A
+AU  - Prlic A
+FAU - Rice, S
+AU  - Rice S
+FAU - Rios, D
+AU  - Rios D
+FAU - Schuster, M
+AU  - Schuster M
+FAU - Sealy, I
+AU  - Sealy I
+FAU - Slater, G
+AU  - Slater G
+FAU - Smedley, D
+AU  - Smedley D
+FAU - Spudich, G
+AU  - Spudich G
+FAU - Trevanion, S
+AU  - Trevanion S
+FAU - Vilella, A J
+AU  - Vilella AJ
+FAU - Vogel, J
+AU  - Vogel J
+FAU - White, S
+AU  - White S
+FAU - Wood, M
+AU  - Wood M
+FAU - Birney, E
+AU  - Birney E
+FAU - Cox, T
+AU  - Cox T
+FAU - Curwen, V
+AU  - Curwen V
+FAU - Durbin, R
+AU  - Durbin R
+FAU - Fernandez-Suarez, X M
+AU  - Fernandez-Suarez XM
+FAU - Herrero, J
+AU  - Herrero J
+FAU - Hubbard, T J P
+AU  - Hubbard TJ
+FAU - Kasprzyk, A
+AU  - Kasprzyk A
+FAU - Proctor, G
+AU  - Proctor G
+FAU - Smith, J
+AU  - Smith J
+FAU - Ureta-Vidal, A
+AU  - Ureta-Vidal A
+FAU - Searle, S
+AU  - Searle S
+LA  - eng
+GR  - BBS/B/13470/Biotechnology and Biological Sciences Research Council/United Kingdom
+GR  - BBS/B/13446/Biotechnology and Biological Sciences Research Council/United Kingdom
+GR  - BBS/B/13438/Biotechnology and Biological Sciences Research Council/United Kingdom
+GR  - BBS/B/13462/Biotechnology and Biological Sciences Research Council/United Kingdom
+GR  - BB/E011640/1/Biotechnology and Biological Sciences Research Council/United Kingdom
+GR  - BBE0116401/Biotechnology and Biological Sciences Research Council/United Kingdom
+GR  - 077198/Wellcome Trust/United Kingdom
+GR  - 062023/Wellcome Trust/United Kingdom
+GR  - BB/E010768/1/Biotechnology and Biological Sciences Research Council/United Kingdom
+PT  - Journal Article
+PT  - Research Support, Non-U.S. Gov't
+DEP - 20071113
+TA  - Nucleic Acids Res
+JT  - Nucleic acids research
+JID - 0411011
+SB  - IM
+MH  - Animals
+MH  - Computer Graphics
+MH  - *Databases, Genetic
+MH  - *Genomics
+MH  - Humans
+MH  - Internet
+MH  - Mice
+MH  - Regulatory Elements, Transcriptional
+MH  - Software
+MH  - User-Computer Interface
+PMC - PMC2238821
+EDAT- 2007/11/15 09:00
+MHDA- 2008/03/18 09:00
+CRDT- 2007/11/15 09:00
+PHST- 2007/11/15 09:00 [pubmed]
+PHST- 2008/03/18 09:00 [medline]
+PHST- 2007/11/15 09:00 [entrez]
+AID - gkm988 [pii]
+AID - 10.1093/nar/gkm988 [doi]
+PST - ppublish
+SO  - Nucleic Acids Res. 2008 Jan;36(Database issue):D707-14. doi: 10.1093/nar/gkm988. 
+      Epub 2007 Nov 13.

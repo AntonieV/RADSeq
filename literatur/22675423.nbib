@@ -1,0 +1,87 @@
+PMID- 22675423
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20120917
+LR  - 20181113
+IS  - 1932-6203 (Electronic)
+IS  - 1932-6203 (Linking)
+VI  - 7
+IP  - 5
+DP  - 2012
+TI  - Double digest RADseq: an inexpensive method for de novo SNP discovery and genotyping 
+      in model and non-model species.
+PG  - e37135
+LID - 10.1371/journal.pone.0037135 [doi]
+LID - e37135
+AB  - The ability to efficiently and accurately determine genotypes is a keystone 
+      technology in modern genetics, crucial to studies ranging from clinical diagnostics, 
+      to genotype-phenotype association, to reconstruction of ancestry and the detection 
+      of selection. To date, high capacity, low cost genotyping has been largely achieved 
+      via "SNP chip" microarray-based platforms which require substantial prior knowledge 
+      of both genome sequence and variability, and once designed are suitable only for 
+      those targeted variable nucleotide sites. This method introduces substantial 
+      ascertainment bias and inherently precludes detection of rare or population-specific 
+      variants, a major source of information for both population history and 
+      genotype-phenotype association. Recent developments in reduced-representation genome 
+      sequencing experiments on massively parallel sequencers (commonly referred to as 
+      RAD-tag or RADseq) have brought direct sequencing to the problem of population 
+      genotyping, but increased cost and procedural and analytical complexity have limited 
+      their widespread adoption. Here, we describe a complete laboratory protocol, 
+      including a custom combinatorial indexing method, and accompanying software tools to 
+      facilitate genotyping across large numbers (hundreds or more) of individuals for a 
+      range of markers (hundreds to hundreds of thousands). Our method requires no prior 
+      genomic knowledge and achieves per-site and per-individual costs below that of 
+      current SNP chip technology, while requiring similar hands-on time investment, 
+      comparable amounts of input DNA, and downstream analysis times on the order of 
+      hours. Finally, we provide empirical results from the application of this method to 
+      both genotyping in a laboratory cross and in wild populations. Because of its 
+      flexibility, this modified RADseq approach promises to be applicable to a diversity 
+      of biological questions in a wide range of organisms.
+FAU - Peterson, Brant K
+AU  - Peterson BK
+AD  - Department of Organismic & Evolutionary Biology, Museum of Comparative Zoology, 
+      Harvard University, Cambridge, Massachusetts, United States of America. 
+      bpeterson@oeb.harvard.edu
+FAU - Weber, Jesse N
+AU  - Weber JN
+FAU - Kay, Emily H
+AU  - Kay EH
+FAU - Fisher, Heidi S
+AU  - Fisher HS
+FAU - Hoekstra, Hopi E
+AU  - Hoekstra HE
+LA  - eng
+GR  - F32 GM084719/GM/NIGMS NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, N.I.H., Extramural
+PT  - Research Support, Non-U.S. Gov't
+PT  - Research Support, U.S. Gov't, Non-P.H.S.
+DEP - 20120531
+TA  - PLoS One
+JT  - PloS one
+JID - 101285081
+RN  - EC 3.1.21.- (DNA Restriction Enzymes)
+SB  - IM
+MH  - Animals
+MH  - Animals, Outbred Strains
+MH  - DNA Restriction Enzymes/*metabolism
+MH  - Genome
+MH  - *Genotype
+MH  - *Polymorphism, Single Nucleotide
+MH  - Reproducibility of Results
+MH  - Rodentia
+MH  - Sequence Analysis, DNA/*methods
+PMC - PMC3365034
+COIS- Competing Interests: The authors have declared that no competing interests exist.
+EDAT- 2012/06/08 06:00
+MHDA- 2012/09/18 06:00
+CRDT- 2012/06/08 06:00
+PHST- 2012/02/01 00:00 [received]
+PHST- 2012/04/13 00:00 [accepted]
+PHST- 2012/06/08 06:00 [entrez]
+PHST- 2012/06/08 06:00 [pubmed]
+PHST- 2012/09/18 06:00 [medline]
+AID - PONE-D-12-03735 [pii]
+AID - 10.1371/journal.pone.0037135 [doi]
+PST - ppublish
+SO  - PLoS One. 2012;7(5):e37135. doi: 10.1371/journal.pone.0037135. Epub 2012 May 31.
