@@ -713,5 +713,5 @@ Da jeweils die vollständige Sequenz der Allele für den Eintag in die VCF-Datei
 In der FORMAT-Spalte wird durch den Eintrag ``GT'' festgelegt, dass in der Probenspalte der Genotyp spezifiziert wird. Da die Indizes der Loci der Liste der Kandidatenallele zugeordnet sind, aber nicht alle Allele dieser Liste auch in $Loc_{max}$ vorkommen, muss ihre Indizierung nun auf die bereits erstellte Liste mit den zu $Loc_{max}$ gehörigen Allelsequenzen $A_{res}$ angepasst werden. \\
 
 Hierfür werden in der Funktion \lstinline|get_alleles_matched_to_loci()| zunächst jedem Locus aus $Loc_{max}$ die entsprechenden Sequenzen aus der Liste der Kandidatenallele zugeordnet. Anschließend werden diese Sequenzen in \lstinline|get_gt_indices()| den Indizes der passenden Sequenz aus $A_{res}$ zugeordnet. Dadurch wird das lexikographisch erste Allel, also REF mit 0 im Genotyp indiziert, die Allele aus ALT erhalten höhere Indizes entsprechend ihrer Sortierung in $A_{res}$. Nun lässt sich der Genotyp im Bezug auf die Sequenzen in REF und ALT aus diesen Indizes und getrennt durch Slashes direkt angeben. Dies geschieht in der Funktion \lstinline|get_genotype()|, deren Ergebnis dann in die Probenspalte eingetragen wird.\\
-
+\let\cleardoublepage\clearpage
 
