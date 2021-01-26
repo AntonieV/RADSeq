@@ -2,7 +2,15 @@
 \definecolor{light-gray}{gray}{0.93}
 \chapter{Evaluation an simulierten Datensätzen} \label{sec:}
 
+\section{Simulation} \label{sec:sim}
 
-\section{} \label{sec:}
+Zur Evaluation wurde durch das Tool ddRAGE \cite{timm_2018, ddrage} ein simulierter Testdatensatz von ddRADSeq-Daten für drei Individuen erzeugt. Der Testdatensatz umfasst 6965 single-end Reads mit 100 Basenpaaren Readlänge für 50 Loci und mit Mutationswahrscheinlichkeiten von 0.8999 für Substitutionen, 0.05 für Insertionen und 0.05 für Deletionen. Die Simulation liefert neben zusätzlichen Informationen zu verschiedenen Parametern auch die Sequenzen der simulierten Loci. \\
+
+Für die Analyse mit NodeRAD wurde eine Heterozygotiewahrscheinlichkeit von jeweils 0.01 für Substitutionen, Insertionen und Deletionen festgelegt. Die Sequenzierfehlerrate für Substitutionen wurde über die Basenqualität der Reads bestimmt (siehe Kap. \ref{pHMM_alleles}), für Indels wurden empirisch ermittelte Sequenzierfehlerraten von Illumina Sequenzierplattformen \cite{schirmer_2016} verwendet. Die Sequenzierfehlerraten betrugen dabei $ 2.8 \, \cdotp 10^{-6} $ für Insertionen und $ 5.1 \, \cdotp 10^{-6} $ für Deletionen. \\
+
+Für jedes der drei Individuen $A$, $B$ und $C$ wurden durch NodeRAD die wahrscheinlichsten Loci ermittelt und mit den Sequenzen der tatsächlich simulierten Loci aus den Zusatzinformationen von ddRAGE verglichen. Der Vergleich erfolgte durch BLAST (Basic Local Alignment Search Tool) \cite{altschul_1990}
+
+
+
 \subsection{} \label{subsec:}
 

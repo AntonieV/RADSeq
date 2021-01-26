@@ -1,0 +1,63 @@
+PMID- 2231712
+OWN - NLM
+STAT- MEDLINE
+DCOM- 19901205
+LR  - 20071114
+IS  - 0022-2836 (Print)
+IS  - 0022-2836 (Linking)
+VI  - 215
+IP  - 3
+DP  - 1990 Oct 5
+TI  - Basic local alignment search tool.
+PG  - 403-10
+AB  - A new approach to rapid sequence comparison, basic local alignment search tool 
+      (BLAST), directly approximates alignments that optimize a measure of local 
+      similarity, the maximal segment pair (MSP) score. Recent mathematical results on the 
+      stochastic properties of MSP scores allow an analysis of the performance of this 
+      method as well as the statistical significance of alignments it generates. The basic 
+      algorithm is simple and robust; it can be implemented in a number of ways and 
+      applied in a variety of contexts including straightforward DNA and protein sequence 
+      database searches, motif searches, gene identification searches, and in the analysis 
+      of multiple regions of similarity in long DNA sequences. In addition to its 
+      flexibility and tractability to mathematical analysis, BLAST is an order of 
+      magnitude faster than existing sequence comparison tools of comparable sensitivity.
+FAU - Altschul, S F
+AU  - Altschul SF
+AD  - National Center for Biotechnology Information, National Library of Medicine, 
+      National Institutes of Health, Bethesda, MD 20894.
+FAU - Gish, W
+AU  - Gish W
+FAU - Miller, W
+AU  - Miller W
+FAU - Myers, E W
+AU  - Myers EW
+FAU - Lipman, D J
+AU  - Lipman DJ
+LA  - eng
+GR  - LM04960/LM/NLM NIH HHS/United States
+GR  - LM05110/LM/NLM NIH HHS/United States
+PT  - Journal Article
+PT  - Research Support, U.S. Gov't, P.H.S.
+PL  - England
+TA  - J Mol Biol
+JT  - Journal of molecular biology
+JID - 2985088R
+SB  - IM
+MH  - Algorithms
+MH  - Amino Acid Sequence
+MH  - *Base Sequence
+MH  - Databases, Factual
+MH  - *Mutation
+MH  - Sensitivity and Specificity
+MH  - Sequence Homology, Nucleic Acid
+MH  - *Software
+EDAT- 1990/10/05 00:00
+MHDA- 2001/07/11 10:01
+CRDT- 1990/10/05 00:00
+PHST- 1990/10/05 00:00 [pubmed]
+PHST- 2001/07/11 10:01 [medline]
+PHST- 1990/10/05 00:00 [entrez]
+AID - S0022-2836(05)80360-2 [pii]
+AID - 10.1016/S0022-2836(05)80360-2 [doi]
+PST - ppublish
+SO  - J Mol Biol. 1990 Oct 5;215(3):403-10. doi: 10.1016/S0022-2836(05)80360-2.

@@ -1,0 +1,94 @@
+PMID- 29194981
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20181003
+LR  - 20181004
+IS  - 1755-0998 (Electronic)
+IS  - 1755-098X (Linking)
+VI  - 18
+IP  - 3
+DP  - 2018 May
+TI  - ddrage: A data set generator to evaluate ddRADseq analysis software.
+PG  - 681-690
+LID - 10.1111/1755-0998.12743 [doi]
+AB  - High-throughput sequencing makes it possible to evaluate thousands of genetic 
+      markers across genomes and populations. Reduced-representation sequencing 
+      approaches, like double-digest restriction site-associated DNA sequencing 
+      (ddRADseq), are frequently applied to screen for genetic variation. In particular in 
+      nonmodel organisms where whole-genome sequencing is not yet feasible, ddRADseq has 
+      become popular as it allows genomewide assessment of variation patterns even in the 
+      absence of other genomic resources. However, while many tools are available for the 
+      analysis of ddRADseq data, few options exist to simulate ddRADseq data in order to 
+      evaluate the accuracy of downstream tools. The available tools either focus on the 
+      optimization of ddRAD experiment design or do not provide the information necessary 
+      for a detailed evaluation of different ddRAD analysis tools. For this task, a ground 
+      truth, that is, the underlying information of all effects in the data set, is 
+      required. Therefore, we here present ddrage, the ddRAD Data Set Generator, that 
+      allows both developers and users to evaluate their ddRAD analysis software. ddrage 
+      allows the user to adjust many parameters such as coverage and rates of mutations, 
+      sequencing errors or allelic dropouts, in order to generate a realistic simulated 
+      ddRADseq data set for given experimental scenarios and organisms. The simulated 
+      reads can be easily processed with available analysis software such as stacks or 
+      pyrad and evaluated against the underlying parameters used to generate the data to 
+      gauge the impact of different parameter values used during downstream data 
+      processing.
+CI  - © 2017 John Wiley & Sons Ltd.
+FAU - Timm, Henning
+AU  - Timm H
+AUID- ORCID: 0000-0002-5345-7122
+AD  - Genome Informatics, Institute of Human Genetics, University of Duisburg-Essen, 
+      University Hospital Essen, Essen, Germany.
+FAU - Weigand, Hannah
+AU  - Weigand H
+AUID- ORCID: 0000-0001-7533-8063
+AD  - Aquatic Ecosystem Research, Faculty of Biology, University of Duisburg-Essen, Essen, 
+      Germany.
+FAU - Weiss, Martina
+AU  - Weiss M
+AUID- ORCID: 0000-0002-7088-4644
+AD  - Aquatic Ecosystem Research, Faculty of Biology, University of Duisburg-Essen, Essen, 
+      Germany.
+FAU - Leese, Florian
+AU  - Leese F
+AUID- ORCID: 0000-0002-5465-913X
+AD  - Aquatic Ecosystem Research, Faculty of Biology, University of Duisburg-Essen, Essen, 
+      Germany.
+FAU - Rahmann, Sven
+AU  - Rahmann S
+AUID- ORCID: 0000-0002-8536-6065
+AD  - Genome Informatics, Institute of Human Genetics, University of Duisburg-Essen, 
+      University Hospital Essen, Essen, Germany.
+LA  - eng
+PT  - Journal Article
+DEP - 20171227
+PL  - England
+TA  - Mol Ecol Resour
+JT  - Molecular ecology resources
+JID - 101465604
+SB  - IM
+MH  - Computer Simulation
+MH  - *Datasets as Topic
+MH  - Models, Genetic
+MH  - Models, Theoretical
+MH  - Sequence Analysis/*methods
+MH  - *Software
+OTO - NOTNLM
+OT  - RAD
+OT  - coverage
+OT  - dropout
+OT  - evaluation
+OT  - in silico simulation
+OT  - mathematical modelling
+EDAT- 2017/12/02 06:00
+MHDA- 2018/10/04 06:00
+CRDT- 2017/12/02 06:00
+PHST- 2017/07/12 00:00 [received]
+PHST- 2017/11/21 00:00 [revised]
+PHST- 2017/11/24 00:00 [accepted]
+PHST- 2017/12/02 06:00 [pubmed]
+PHST- 2018/10/04 06:00 [medline]
+PHST- 2017/12/02 06:00 [entrez]
+AID - 10.1111/1755-0998.12743 [doi]
+PST - ppublish
+SO  - Mol Ecol Resour. 2018 May;18(3):681-690. doi: 10.1111/1755-0998.12743. Epub 2017 Dec 
+      27.

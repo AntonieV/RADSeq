@@ -431,6 +431,21 @@
   Python — timecomplexity of various operations}.
 \newblock source: \url{https://wiki.python.org/moin/TimeComplexity}.
 
+\bibitem{timm_2018}
+{\sc Timm, Henning}, {\sc Hannah Weigand}, {\sc Martina Weiss}, {\sc Florian
+  Leese}, \btxandlong{}\ {\sc Sven Rahmann}: {\em ddrage: A data set generator
+  to evaluate ddradseq analysis software.}
+\newblock Molecular ecology resources, 18:681--690, May 2018.
+
+\bibitem{ddrage}
+{\sc Timm, Henning}: {\em {{ragge 1.7.1 documentation}}}.
+\newblock source: \url{https://ddrage.readthedocs.io/en/latest/}.
+
+\bibitem{altschul_1990}
+{\sc Altschul, S.~F.}, {\sc W.~Gish}, {\sc W.~Miller}, {\sc E.~W. Myers},
+  \btxandlong{}\ {\sc D.~J. Lipman}: {\em Basic local alignment search tool.}
+\newblock Journal of molecular biology, 215:403--10, Oct 1990.
+
 \bibitem{liu_2010}
 {\sc Liu, Yongchao}, {\sc Bertil Schmidt}, \btxandlong{}\ {\sc Douglas~L.
   Maskell}: {\em Msaprobs: multiple sequence alignment based on pair hidden
