@@ -1547,10 +1547,9 @@
 }
 
 @Misc{ddrage,
-  author        = {Henning Timm},
-  title         = {{{ragge 1.7.1 documentation}}},
-  note          = {source: \url{https://ddrage.readthedocs.io/en/latest/}},
-  __markedentry = {[tarja:]},
+  author = {Henning Timm},
+  title  = {{{ragge 1.7.1 documentation}}},
+  note   = {source: \url{https://ddrage.readthedocs.io/en/latest/}},
 }
 
 @Article{altschul_1990,
@@ -1561,7 +1560,7 @@
   volume             = {215},
   pages              = {403-10},
   month              = {Oct},
-  __markedentry      = {[tarja:6]},
+  __markedentry      = {[tarja:]},
   abstract           = {A new approach to rapid sequence comparison, basic local alignment search tool (BLAST), directly approximates alignments that optimize a measure of local similarity, the maximal segment pair (MSP) score. Recent mathematical results on the stochastic properties of MSP scores allow an analysis of the performance of this method as well as the statistical significance of alignments it generates. The basic algorithm is simple and robust; it can be implemented in a number of ways and applied in a variety of contexts including straightforward DNA and protein sequence database searches, motif searches, gene identification searches, and in the analysis of multiple regions of similarity in long DNA sequences. In addition to its flexibility and tractability to mathematical analysis, BLAST is an order of magnitude faster than existing sequence comparison tools of comparable sensitivity.},
   address            = {England},
   article-doi        = {10.1016/S0022-2836(05)80360-2},
@@ -1582,6 +1581,12 @@
   status             = {MEDLINE},
   subset             = {IM},
   title-abbreviation = {J Mol Biol},
+}
+
+@Misc{testdata,
+  title         = {{{Test dataset simulated by ddRAGE}}},
+  note          = {source: \url{https://github.com/AntonieV/NodeRAD/tree/master/.test/data/small_dataset}},
+  __markedentry = {[tarja:6]},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

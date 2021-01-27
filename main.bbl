@@ -441,6 +441,11 @@
 {\sc Timm, Henning}: {\em {{ragge 1.7.1 documentation}}}.
 \newblock source: \url{https://ddrage.readthedocs.io/en/latest/}.
 
+\bibitem{testdata}
+{\em {{Test dataset simulated by ddRAGE}}}.
+\newblock source:
+  \url{https://github.com/AntonieV/NodeRAD/tree/master/.test/data/small_dataset}.
+
 \bibitem{altschul_1990}
 {\sc Altschul, S.~F.}, {\sc W.~Gish}, {\sc W.~Miller}, {\sc E.~W. Myers},
   \btxandlong{}\ {\sc D.~J. Lipman}: {\em Basic local alignment search tool.}

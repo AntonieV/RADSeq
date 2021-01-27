@@ -2,15 +2,34 @@
 \definecolor{light-gray}{gray}{0.93}
 \chapter{Evaluation an simulierten Datensätzen} \label{sec:}
 
-\section{Simulation} \label{sec:sim}
+\section{Simulation und Workflow-Run} \label{sec:sim}
 
-Zur Evaluation wurde durch das Tool ddRAGE \cite{timm_2018, ddrage} ein simulierter Testdatensatz von ddRADSeq-Daten für drei Individuen erzeugt. Der Testdatensatz umfasst 6965 single-end Reads mit 100 Basenpaaren Readlänge für 50 Loci und mit Mutationswahrscheinlichkeiten von 0.8999 für Substitutionen, 0.05 für Insertionen und 0.05 für Deletionen. Die Simulation liefert neben zusätzlichen Informationen zu verschiedenen Parametern auch die Sequenzen der simulierten Loci. \\
+Zur Evaluation wurde durch das Tool ddRAGE \cite{timm_2018, ddrage} ein simulierter Testdatensatz \cite{testdata} von ddRADSeq-Daten für drei Individuen erzeugt. Der Testdatensatz umfasst 6965 single-end Reads mit 100 Basenpaaren Readlänge für 50 Loci und mit Mutationswahrscheinlichkeiten von 0.8999 für Substitutionen, 0.05 für Insertionen und 0.05 für Deletionen. DdRAGE liefert neben verschiedenen zusätzlichen Informationen zur Simulation auch die Sequenzen der simulierten Loci. Zur Evaluation sollen diese mit den durch NodeRAD identifizierten Loci verglichen werden.\\
 
-Für die Analyse mit NodeRAD wurde eine Heterozygotiewahrscheinlichkeit von jeweils 0.01 für Substitutionen, Insertionen und Deletionen festgelegt. Die Sequenzierfehlerrate für Substitutionen wurde über die Basenqualität der Reads bestimmt (siehe Kap. \ref{pHMM_alleles}), für Indels wurden empirisch ermittelte Sequenzierfehlerraten von Illumina Sequenzierplattformen \cite{schirmer_2016} verwendet. Die Sequenzierfehlerraten betrugen dabei $ 2.8 \, \cdotp 10^{-6} $ für Insertionen und $ 5.1 \, \cdotp 10^{-6} $ für Deletionen. \\
+Für die Analyse mit NodeRAD wurde eine Heterozygotiewahrscheinlichkeit von jeweils 0.01 für Substitutionen, Insertionen und Deletionen festgelegt. Die Sequenzierfehlerrate für Substitutionen $L_{sub}$ wurde für über die geschätzte Fehlerrate $p_{i}$ der Basenqualität der Reads bestimmt (siehe Kap. \ref{pHMM_alleles}). Für Indels wurden empirisch ermittelte Sequenzierfehlerraten der Illumina Sequenzierplattformen \cite{schirmer_2016} verwendet. Diese in der Konfigurationsdatei festgelegten Konstanten sowie die angewendeten Schwellenwerte des Workflow-Runs sind in Tab. \ref{tbl:config} aufgelistet. \\
 
-Für jedes der drei Individuen $A$, $B$ und $C$ wurden durch NodeRAD die wahrscheinlichsten Loci ermittelt und mit den Sequenzen der tatsächlich simulierten Loci aus den Zusatzinformationen von ddRAGE verglichen. Der Vergleich erfolgte durch BLAST (Basic Local Alignment Search Tool) \cite{altschul_1990}
+\begin{table}[H]
+	\begin{center}
+		\begin{tabular}{lccc}
+			\hline
+			\multicolumn{4}{|c|}{\cellcolor{light-gray}\textbf{Konfigurierte Schwellenwerte}}                                                                                                                                                                                     \\ \hline \hline
+			\multicolumn{1}{|c|}{\textbf{\begin{tabular}[c]{@{}c@{}}threshold max \\ edit distance\end{tabular}}} & \multicolumn{2}{c|}{\textbf{treshold-seq-noise}} & \multicolumn{1}{c|}{\textbf{treshold-cluster-size}} \\ \hline \hline
+			\multicolumn{1}{|l|}{} & \multicolumn{1}{c|}{small-clusters} & \multicolumn{1}{c|}{large-clusters} & \multicolumn{1}{l|}{} \\ \hline
+			\multicolumn{1}{|c|}{9} & \multicolumn{1}{c|}{2} & \multicolumn{1}{c|}{4} & \multicolumn{1}{c|}{300} \\ \hline
+			\multicolumn{4}{l}{} \\ \hline
+			\multicolumn{4}{|c|}{\cellcolor{light-gray}\textbf{Konfigurierte Konstanten}} \\ \hline \hline
+			\multicolumn{1}{|l|}{} & \multicolumn{1}{c|}{\textbf{insertion}} & \multicolumn{1}{c|}{\textbf{deletion}} & \multicolumn{1}{c|}{\textbf{substitution}} \\ \hline
+			\multicolumn{1}{|l|}{\textbf{error-per-base}} & \multicolumn{1}{c|}{$ 2.8 \, \cdotp 10^{-6} $} & \multicolumn{1}{c|}{$ 5.1 \, \cdotp 10^{-6} $} & \multicolumn{1}{c|}{$L_{i} = \frac{1}{3} \; \cdotp \; p_{i}$} \\ \hline
+			\multicolumn{1}{|l|}{\textbf{heterozygosity}} & \multicolumn{1}{c|}{0.01} & \multicolumn{1}{c|}{0.01} & \multicolumn{1}{c|}{0.01} \\ \hline
+		\end{tabular}
+	\caption{Konfiguration des Workflow-Runs.}
+	\label{tbl:config}
+	\end{center}
+\end{table}	
+
+Für jedes der drei Individuen $A$, $B$ und $C$ wurden durch NodeRAD die wahrscheinlichsten Loci ermittelt und mit den Sequenzen der tatsächlich simulierten Loci aus den Zusatzinformationen von ddRAGE verglichen. Der Vergleich erfolgte durch das Tool BLAST (Basic Local Alignment Search Tool) \cite{altschul_1990}. Hierfür wurden sowohl die Loci der Simualtion als auch die Resultate des Workflows in das FASTA-Format geparsed. Um die Daten lokal gegeneinander zu vergleichen wurde anschließend für die Loci der Simulation eine BLAST-Datenbank erzeugt. Gegen diese Datenbank erfolgte dann die BLAST-Analyse mit den identifizierten Loci des Workflows. Aus den Ergebnissen der BLAST-Analyse wurden anschließend verschiedene Plots in der Programmiersprache R erzeugt, die Kap. \ref{sec:res} zu finden sind. Die Regeln und Scripte der Evaluation sind in NodeRAD integriert und können über die Konfigurationsdatei durch Angabe eines Pfades zu den durch ddRAGE simulierten Loci im yaml-Format aktiviert werden.
+
+\section{Ergebnisse} \label{sec:res}
 
 
-
-\subsection{} \label{subsec:}
 
