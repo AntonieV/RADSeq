@@ -451,10 +451,10 @@
   \btxandlong{}\ {\sc D.~J. Lipman}: {\em Basic local alignment search tool.}
 \newblock Journal of molecular biology, 215:403--10, Oct 1990.
 
-\bibitem{liu_2010}
-{\sc Liu, Yongchao}, {\sc Bertil Schmidt}, \btxandlong{}\ {\sc Douglas~L.
-  Maskell}: {\em Msaprobs: multiple sequence alignment based on pair hidden
-  markov models and partition function posterior probabilities.}
-\newblock Bioinformatics (Oxford, England), 26:1958--64, Aug 2010.
+\bibitem{gaedeke_2007}
+{\sc Gaedeke, Nicola}: {\em Sequenz{\"a}hnlichkeitssuche mit Hilfe des „Basic
+  Local Alignment Search Tool`` (BLAST) in den Sequenzdatenbanken des NCBI},
+  \btxpageslong{}\ 79--112.
+\newblock Birkh{\"a}user Basel, Basel, 2007.
 
 \end{thebibliography}

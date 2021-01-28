@@ -8,6 +8,7 @@ A level-1 auxiliary file: kapitel/kapitel3.aux
 A level-1 auxiliary file: kapitel/kapitel4.aux
 A level-1 auxiliary file: kapitel/kapitel5.aux
 A level-1 auxiliary file: kapitel/kapitel6.aux
+A level-1 auxiliary file: kapitel/anhang.aux
 The style file: gerunsrt.bst
 A level-1 auxiliary file: kapitel/erklaerung.aux
 Database file #1: literatur/diplom.bib
@@ -17,43 +18,43 @@ Warning--can't use both author and editor fields in tb_stat
 Warning--can't use both author and editor fields in bronst
 You've used 67 entries,
             2016 wiz_defined-function locations,
-            887 strings with 20718 characters,
-and the built_in function-call counts, 23216 in all, are:
-= -- 1622
-> -- 1604
-< -- 7
-+ -- 562
-- -- 495
-* -- 2758
-:= -- 3460
+            891 strings with 20838 characters,
+and the built_in function-call counts, 23249 in all, are:
+= -- 1629
+> -- 1597
+< -- 8
++ -- 560
+- -- 493
+* -- 2748
+:= -- 3455
 add.period$ -- 137
 call.type$ -- 67
-change.case$ -- 65
+change.case$ -- 64
 chr.to.int$ -- 0
 cite$ -- 69
-duplicate$ -- 1104
-empty$ -- 2049
-format.name$ -- 495
-if$ -- 5104
+duplicate$ -- 1111
+empty$ -- 2057
+format.name$ -- 493
+if$ -- 5117
 int.to.chr$ -- 0
 int.to.str$ -- 67
 missing$ -- 106
 newline$ -- 273
 num.names$ -- 68
-pop$ -- 175
+pop$ -- 180
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 474
+skip$ -- 480
 stack$ -- 0
-substring$ -- 983
-swap$ -- 615
-text.length$ -- 7
+substring$ -- 989
+swap$ -- 620
+text.length$ -- 8
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 2
-while$ -- 124
+while$ -- 126
 width$ -- 69
-write$ -- 654
+write$ -- 655
 (There was 1 error message)

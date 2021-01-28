@@ -1,0 +1,13 @@
+@Inbook{Gaedeke2007,
+title="Sequenz{\"a}hnlichkeitssuche mit Hilfe des „Basic Local Alignment Search Tool`` (BLAST) in den Sequenzdatenbanken des NCBI",
+bookTitle="Biowissenschaftlich recherchieren: {\"U}ber den Einsatz von Datenbanken und anderen Ressourcen der Bioinformatik",
+year="2007",
+publisher="Birkh{\"a}user Basel",
+address="Basel",
+pages="79--112",
+abstract="{\"U}ber eine Sequenz{\"a}hnlichkeit von einer unbekannten und einer bereits beschriebenen Sequenz k{\"o}nnen wichtige Informationen f{\"u}r die Charakterisierung der unbekannten Sequenz erlangt werden. So k{\"o}nnen Gen- und Proteinfunktionen {\"u}ber eine Sequenz{\"a}hnlichkeit abgeleitet werden, konservierte Regionen und Dom{\"a}nen in einer Sequenz identifiziert werden oder auch Vektorsequenzen eines Klonierungsplasmides gefunden und eliminiert werden. In diesem Kapitel geht es um Datenbankrecherchen in den Sequenzdatenbanken, die auch in den vorherigen Kapiteln besprochen wurden, wie z.B. GenBank, RefSeq und Swiss-Prot. Es behandelt jedoch nicht die Suchanfrage mit Suchworten, sondern die Suchanfrage mit einer Sequenz als Ausgangspunkt. F{\"u}r eine Sequenz{\"a}hnlichkeitssuche sind verschiedene Algorithmen entwickelt worden. Der am weitesten verbreitete Suchalgorithmus ist in BLAST, dem „Basic Local Alignment Search Tool``, integriert und wurde 1990 von Stephen F. Altschul (amerikan. Mathematiker) zun{\"a}chst f{\"u}r einen Vergleich von Proteinsequenzen publiziert. Die St{\"a}rken von BLAST sind der schnelle Sequenzvergleich und die genaue Berechnung der statistischen Signifikanz der Sequenz{\"a}hnlichkeit. Beim BLAST-Algorithmus wird eine hohe Empfindlichkeit (sensitivity) mit einer sehr guten hohen Selektivit{\"a}t (selectivity) kombiniert. BLAST errechnet selten die Werte f{\"u}r nicht-{\"a}hnliche Sequenzen, es sei denn, die Sequenz enth{\"a}lt Regionen niedriger Komplexit{\"a}t (low-complexity regions). BLAST Scores haben statistische Signifikanz und echte Treffer k{\"o}nnen von Hintergrund-Ergebnissen unterschieden werden.",
+isbn="978-3-7643-8526-2",
+doi="10.1007/978-3-7643-8526-2_6",
+url="https://doi.org/10.1007/978-3-7643-8526-2_6"
+}
+

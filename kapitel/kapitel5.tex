@@ -1,6 +1,6 @@
 % kapitel5.tex
 \definecolor{light-gray}{gray}{0.93}
-\chapter{Evaluation an simulierten Datensätzen} \label{sec:}
+\chapter{Evaluation an simulierten Datensätzen} \label{sec:eval}
 
 \section{Simulation und Workflow-Run} \label{sec:sim}
 
@@ -12,7 +12,7 @@ Für die Analyse mit NodeRAD wurde eine Heterozygotiewahrscheinlichkeit von jewe
 	\begin{center}
 		\begin{tabular}{lccc}
 			\hline
-			\multicolumn{4}{|c|}{\cellcolor{light-gray}\textbf{Konfigurierte Schwellenwerte}}                                                                                                                                                                                     \\ \hline \hline
+			\multicolumn{4}{|c|}{\cellcolor{light-gray}\textbf{Konfigurierte Schwellenwerte}} \\ \hline \hline
 			\multicolumn{1}{|c|}{\textbf{\begin{tabular}[c]{@{}c@{}}threshold max \\ edit distance\end{tabular}}} & \multicolumn{2}{c|}{\textbf{treshold-seq-noise}} & \multicolumn{1}{c|}{\textbf{treshold-cluster-size}} \\ \hline \hline
 			\multicolumn{1}{|l|}{} & \multicolumn{1}{c|}{small-clusters} & \multicolumn{1}{c|}{large-clusters} & \multicolumn{1}{l|}{} \\ \hline
 			\multicolumn{1}{|c|}{9} & \multicolumn{1}{c|}{2} & \multicolumn{1}{c|}{4} & \multicolumn{1}{c|}{300} \\ \hline
@@ -27,9 +27,61 @@ Für die Analyse mit NodeRAD wurde eine Heterozygotiewahrscheinlichkeit von jewe
 	\end{center}
 \end{table}	
 
-Für jedes der drei Individuen $A$, $B$ und $C$ wurden durch NodeRAD die wahrscheinlichsten Loci ermittelt und mit den Sequenzen der tatsächlich simulierten Loci aus den Zusatzinformationen von ddRAGE verglichen. Der Vergleich erfolgte durch das Tool BLAST (Basic Local Alignment Search Tool) \cite{altschul_1990}. Hierfür wurden sowohl die Loci der Simualtion als auch die Resultate des Workflows in das FASTA-Format geparsed. Um die Daten lokal gegeneinander zu vergleichen wurde anschließend für die Loci der Simulation eine BLAST-Datenbank erzeugt. Gegen diese Datenbank erfolgte dann die BLAST-Analyse mit den identifizierten Loci des Workflows. Aus den Ergebnissen der BLAST-Analyse wurden anschließend verschiedene Plots in der Programmiersprache R erzeugt, die Kap. \ref{sec:res} zu finden sind. Die Regeln und Scripte der Evaluation sind in NodeRAD integriert und können über die Konfigurationsdatei durch Angabe eines Pfades zu den durch ddRAGE simulierten Loci im yaml-Format aktiviert werden.
+Für jedes der drei Individuen $A$, $B$ und $C$ wurden durch NodeRAD die wahrscheinlichsten Loci ermittelt und mit den Sequenzen der tatsächlich simulierten Loci aus den Zusatzinformationen von ddRAGE verglichen. Der Vergleich erfolgte durch das Tool BLAST (Basic Local Alignment Search Tool) \cite{altschul_1990}. Hierfür wurden sowohl die Loci der Simualtion als auch die Resultate des Workflows in das FASTA-Format geparsed. Hierbei wurden für die simulierten Loci auch die jeweiligen Mutationen der Individuen auf die Loci-Sequenzen gemapped. \\
+
+
+Um die Daten lokal gegeneinander zu vergleichen wurde anschließend für die Loci der Simulation eine BLAST-Datenbank erzeugt. Gegen diese Datenbank erfolgte dann die BLAST-Analyse mit den identifizierten Loci des Workflows. Aus den Ergebnissen der BLAST-Analyse wurden anschließend verschiedene Plots in der Programmiersprache R erzeugt, die Kap. \ref{sec:res} zu finden sind. Die Regeln und Scripte der Evaluation sind in NodeRAD integriert und können über die Konfigurationsdatei durch Angabe eines Pfades zu den durch ddRAGE simulierten Loci im yaml-Format aktiviert werden.
 
 \section{Ergebnisse} \label{sec:res}
 
+Die simulierten RADSeq-Daten zeiten in der FastQ-Analyse eine gute Qualität der Basen (\autoref{fig:basequal}) und wiesen nach dem Trimming keine Adaptersequenzen mehr auf (\autoref{fig:adapt}).\\
 
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[height=10cm]{bilder/evaluation/fastq/per_base_quality.png}
+		\caption{FastQ-Analyse: Basenqualität der Readsequenzen von Individuum A.}
+		\label{fig:basequal}
+	\end{center}
+\end{figure}
+\vspace{-2cm}
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[height=10cm]{bilder/evaluation/fastq/adapter_content.png}
+		\caption{FastQ-Analyse: Adaptergehalt der Reads von Individuum A nach dem Trimming durch Cutadapt.}
+		\label{fig:adapt}
+	\end{center}
+\end{figure}
 
+Durch den BLAST-Algorithmus werden die Nukleotidsequenzen der durch NodeRAD identifizierten Loci gegen die tatsächlich simulierten Loci paarweise verglichen \cite{gaedeke_2007}. Das resultierende Sequenzalignment gibt die besten Übereinstimmungen an. Die Ähnlichkeit jedes Sequenzpaares wird über die den prozentualen Anteil identischer Nukleotide ausgedrückt (Identität). In \autoref{fig:a-ident} ist zu sehen, dass die meisten Loci aus der Analyse mit NodeRAD mit den tatsächlich simulierten Loci identisch sind. Bei denjenigen Loci, die eine geringere Sequenzähnlichkeit aufweisen, handelt es sich bis auf ..., um Loci, denen
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[height=16cm]{bilder/evaluation/perc_ident/A.plot_loci.pdf}
+		\caption{Individuum A: Sequenzähnlichkeit (Identität in $ \% $) der durch NodeRAD bestimmten Loci gegenüber den simulierten Loci.}
+		\label{fig:a-ident}
+	\end{center}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[height=16cm]{bilder/evaluation/hist_perc_ident/A.plot_hist.pdf}
+		\caption{Individuum A: Anzahl der durch NodeRAD bestimmten Loci hinsichtlich der Sequenzählichkeit (Identität in $ \% $) zu den simulierten Loci}
+	\end{center}
+\end{figure}
+
+Signifikanz der Sequenzähnlichkeit
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[height=16cm]{bilder/evaluation/evalues/A.plot_evalues.pdf}
+		\caption{Individuum A: E-Values aus dem Vergleich der durch NodeRAD bestimmten Loci mit den simulierten Loci}
+	\end{center}
+\end{figure}
+
+\begin{figure}[H]
+	\begin{center}
+		\includegraphics[height=16cm]{bilder/evaluation/bitscores/A.plot_bitscores.pdf}
+		\caption{Individuum A: Bitscores aus dem Vergleich der durch NodeRAD bestimmten Loci mit den simulierten Loci}
+	\end{center}
+\end{figure}
+
+\let\cleardoublepage\clearpage
