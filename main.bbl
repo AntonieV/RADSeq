@@ -457,4 +457,22 @@
   \btxpageslong{}\ 79--112.
 \newblock Birkh{\"a}user Basel, Basel, 2007.
 
+\bibitem{chowdhury_2017}
+{\sc Chowdhury, Biswanath} \btxandlong{}\ {\sc Gautam Garai}: {\em A review on
+  multiple sequence alignment from the perspective of genetic algorithm.}
+\newblock Genomics, 109:419--431, Oct 2017.
+
+\bibitem{bawono_2017}
+{\sc Bawono, Punto}, {\sc Maurits Dijkstra}, {\sc Walter Pirovano}, {\sc Anton
+  Feenstra}, {\sc Sanne Abeln}, \btxandlong{}\ {\sc Jaap Heringa}: {\em
+  Multiple sequence alignment.}
+\newblock Methods in molecular biology (Clifton, N.J.), 1525:167--189, 2017.
+
+\bibitem{chatzou_2015}
+{\sc Chatzou, Maria}, {\sc Cedrik Magis}, {\sc Jia-Ming Chang}, {\sc Carsten
+  Kemena}, {\sc Giovanni Bussotti}, {\sc Ionas Erb}, \btxandlong{}\ {\sc Cedric
+  Notredame}: {\em {Multiple sequence alignment modeling: methods and
+  applications}}.
+\newblock Briefings in Bioinformatics, 17(6):1009--1023, 11 2015.
+
 \end{thebibliography}

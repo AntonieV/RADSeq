@@ -1,6 +1,8 @@
 % kapitel4.tex
 \definecolor{light-gray}{gray}{0.93}
 \chapter{Laufzeitanalyse} \label{sec:}
+%======================= draft =======================\\
+
 \section{Graphkonstruktion und Bestimmung der Zusammenhangskomponenten} \label{sec:}
 \subsubsection{Laufzeit für das Hinzufügen der Knoten des Graphen} \label{subsec:}
 Die Laufzeit für das Hinzufügen eines Knotens beträgt nach der Dokumentation von graph-tool  $ O(|V|) $, da es sich hierbei um eine Einfügeoperation in die bereits bestehende Knotenmenge handelt und ein neuer Iterator über alle Knoten erzeugt und zurückgegeben wird ~\cite{docs_graph_tool}. Die Zuweisung der Knoteneigenschaften erfolgt in $ O(1) $. Über alle Reads, also über die resultierende Anzahl der Knoten $ |V| $ ergibt sich daraus eine Gesamtlaufzeit von $ O(|V|^2) $.\\

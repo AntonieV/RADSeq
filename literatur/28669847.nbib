@@ -1,0 +1,71 @@
+PMID- 28669847
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20180131
+LR  - 20180218
+IS  - 1089-8646 (Electronic)
+IS  - 0888-7543 (Linking)
+VI  - 109
+IP  - 5-6
+DP  - 2017 Oct
+TI  - A review on multiple sequence alignment from the perspective of genetic algorithm.
+PG  - 419-431
+LID - S0888-7543(17)30055-1 [pii]
+LID - 10.1016/j.ygeno.2017.06.007 [doi]
+AB  - Sequence alignment is an active research area in the field of bioinformatics. It is 
+      also a crucial task as it guides many other tasks like phylogenetic analysis, 
+      function, and/or structure prediction of biological macromolecules like DNA, RNA, 
+      and Protein. Proteins are the building blocks of every living organism. Although 
+      protein alignment problem has been studied for several decades, unfortunately, every 
+      available method produces alignment results differently for a single alignment 
+      problem. Multiple sequence alignment is characterized as a very high computational 
+      complex problem. Many stochastic methods, therefore, are considered for improving 
+      the accuracy of alignment. Among them, many researchers frequently use Genetic 
+      Algorithm. In this study, we have shown different types of the method applied in 
+      alignment and the recent trends in the multiobjective genetic algorithm for solving 
+      multiple sequence alignment. Many recent studies have demonstrated considerable 
+      progress in finding the alignment accuracy.
+CI  - Copyright © 2017 Elsevier Inc. All rights reserved.
+FAU - Chowdhury, Biswanath
+AU  - Chowdhury B
+AD  - Department of Biophysics, Molecular Biology and Bioinformatics, University of 
+      Calcutta, Kolkata, WB, 700009, India. Electronic address: bchowdhury2410@gmail.com.
+FAU - Garai, Gautam
+AU  - Garai G
+AD  - Computational Sciences Division, Saha Institute of Nuclear Physics, Kolkata, WB 
+      700064, India. Electronic address: gautam.garai@saha.ac.in.
+LA  - eng
+PT  - Journal Article
+PT  - Review
+DEP - 20170629
+PL  - United States
+TA  - Genomics
+JT  - Genomics
+JID - 8800135
+RN  - 0 (Proteins)
+SB  - IM
+MH  - Algorithms
+MH  - Computational Biology/*methods
+MH  - Markov Chains
+MH  - Phylogeny
+MH  - Proteins/*genetics
+MH  - Sequence Alignment/*methods
+MH  - Sequence Analysis, Protein
+OTO - NOTNLM
+OT  - *Genetic algorithm
+OT  - *Multiobjective function
+OT  - *Multiple sequence alignment
+EDAT- 2017/07/04 06:00
+MHDA- 2018/02/01 06:00
+CRDT- 2017/07/04 06:00
+PHST- 2017/04/26 00:00 [received]
+PHST- 2017/05/27 00:00 [revised]
+PHST- 2017/06/27 00:00 [accepted]
+PHST- 2017/07/04 06:00 [pubmed]
+PHST- 2018/02/01 06:00 [medline]
+PHST- 2017/07/04 06:00 [entrez]
+AID - S0888-7543(17)30055-1 [pii]
+AID - 10.1016/j.ygeno.2017.06.007 [doi]
+PST - ppublish
+SO  - Genomics. 2017 Oct;109(5-6):419-431. doi: 10.1016/j.ygeno.2017.06.007. Epub 2017 Jun 
+      29.

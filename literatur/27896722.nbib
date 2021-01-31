@@ -1,0 +1,78 @@
+PMID- 27896722
+OWN - NLM
+STAT- MEDLINE
+DCOM- 20180122
+LR  - 20180420
+IS  - 1940-6029 (Electronic)
+IS  - 1064-3745 (Linking)
+VI  - 1525
+DP  - 2017
+TI  - Multiple Sequence Alignment.
+PG  - 167-189
+AB  - The increasing importance of Next Generation Sequencing (NGS) techniques has 
+      highlighted the key role of multiple sequence alignment (MSA) in comparative 
+      structure and function analysis of biological sequences. MSA often leads to 
+      fundamental biological insight into sequence-structure-function relationships of 
+      nucleotide or protein sequence families. Significant advances have been achieved in 
+      this field, and many useful tools have been developed for constructing alignments, 
+      although many biological and methodological issues are still open. This chapter 
+      first provides some background information and considerations associated with MSA 
+      techniques, concentrating on the alignment of protein sequences. Then, a practical 
+      overview of currently available methods and a description of their specific 
+      advantages and limitations are given, to serve as a helpful guide or starting point 
+      for researchers who aim to construct a reliable MSA.
+FAU - Bawono, Punto
+AU  - Bawono P
+AD  - Centre for Integrative Bioinformatics, Vrije Universiteit, Amsterdam, The 
+      Netherlands.
+FAU - Dijkstra, Maurits
+AU  - Dijkstra M
+AD  - Centre for Integrative Bioinformatics, Vrije Universiteit, Amsterdam, The 
+      Netherlands.
+FAU - Pirovano, Walter
+AU  - Pirovano W
+AD  - Bioinformatics Department, BaseClear, Leiden, The Netherlands.
+FAU - Feenstra, Anton
+AU  - Feenstra A
+AD  - Centre for Integrative Bioinformatics, Vrije Universiteit, Amsterdam, The 
+      Netherlands.
+FAU - Abeln, Sanne
+AU  - Abeln S
+AD  - Centre for Integrative Bioinformatics, Vrije Universiteit, Amsterdam, The 
+      Netherlands.
+FAU - Heringa, Jaap
+AU  - Heringa J
+AD  - Centre for Integrative Bioinformatics, Vrije Universiteit, Amsterdam, The 
+      Netherlands. heringa@cs.vu.nl.
+LA  - eng
+PT  - Journal Article
+PL  - United States
+TA  - Methods Mol Biol
+JT  - Methods in molecular biology (Clifton, N.J.)
+JID - 9214969
+RN  - 0 (Proteins)
+SB  - IM
+MH  - Algorithms
+MH  - High-Throughput Nucleotide Sequencing/methods
+MH  - Phylogeny
+MH  - Proteins/*chemistry/genetics
+MH  - Sequence Alignment/*methods
+MH  - Sequence Analysis, Protein
+MH  - Software
+OTO - NOTNLM
+OT  - *Amino acid exchange matrix
+OT  - *Dynamic programming
+OT  - *Gap penalty
+OT  - *Multiple sequence alignment
+OT  - *Phylogenetic tree
+OT  - *Progressive alignment
+OT  - *Sequence profile
+EDAT- 2016/11/30 06:00
+MHDA- 2018/01/23 06:00
+CRDT- 2016/11/30 06:00
+PHST- 2016/11/30 06:00 [entrez]
+PHST- 2016/11/30 06:00 [pubmed]
+PHST- 2018/01/23 06:00 [medline]
+AID - 10.1007/978-1-4939-6622-6_8 [doi]
+PST - ppublish
+SO  - Methods Mol Biol. 2017;1525:167-189. doi: 10.1007/978-1-4939-6622-6_8.

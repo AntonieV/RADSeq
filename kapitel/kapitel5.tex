@@ -33,6 +33,7 @@ Für jedes der drei Individuen $A$, $B$ und $C$ wurden durch NodeRAD die wahrsch
 Um die Daten lokal gegeneinander zu vergleichen, wurde anschließend für die Loci der Simulation eine BLAST-Datenbank erzeugt. Gegen diese Datenbank erfolgte dann die BLAST-Analyse mit den identifizierten Loci des Workflows. Aus den Ergebnissen der BLAST-Analyse wurden anschließend verschiedene Plots in der Programmiersprache R erzeugt, die Kap. \ref{sec:res} zu finden sind. Die Regeln und Scripte der Evaluation sind in NodeRAD integriert und können über die Konfigurationsdatei durch Angabe eines Pfades zu den durch ddRAGE simulierten Loci im yaml-Format aktiviert werden.
 
 \section{Ergebnisse} \label{sec:res}
+\subsubsection{Erkennung der Allele} \label{subsubsec:res_alleles}
 
 Die simulierten RADSeq-Daten zeigten in der FastQ-Analyse eine gute Qualität der Basen (\autoref{fig:basequal}) und wiesen nach dem Trimming keine Adaptersequenzen mehr auf (\autoref{fig:adapt}).\\
 
@@ -97,6 +98,7 @@ Der Bitscore ist der normalisierte Wert des Rohwert-Scores \cite{gaedeke_2007}. 
 	\end{center}
 \end{figure}
 
+\subsubsection{Erkennung der Loci} \label{subsubsec:res_loci}
 Im Hinblick auf die Loci-Zuordnung durch NodeRAD wurden sämtliche homo- und heterozygoten Mutationen bei allen Individuen korrekt identifiziert. Bis auf einen falsch identifizierten Locus bei Individuum C und wenige fehlende Loci (siehe oben), wurden auch die meisten Allele der homozygoten Loci ohne Varianten gefunden. Hier zeigten sich allerdings auch einige Loci, bei denen NodeRAD einen heterozygoten Locus unter Beteiligung eines weiteren Allels definierte, obwohl der tatsächliche Locus homozygot ist. Bei diesen falsch-heterozygoten Loci wiesen die zusätzlich dem Locus zugeordneten Allele ein Mismatch von jeweils einer Base auf. Insgesamt waren bei allen Individuen solche falsch-heterozygoten Loci detektiert worden. Falsch-homozygote Loci fanden sich dagegen nicht (siehe Tabelle \ref{tbl:kontingenz}).
 
 \begin{table}[H]
@@ -128,7 +130,7 @@ Im Hinblick auf die Loci-Zuordnung durch NodeRAD wurden sämtliche homo- und het
 
 Von insgesamt 139 Loci-Zuordnungen über alle Individuen wurden also 124 korrekt homozygot und 5 korrekt heterozygot identifiziert. Es fanden sich keine falsch-homozygoten, allerdings traten 10 falsch-heterozygote Zuordnungen auf. Daraus ergibt sich eine Rate falsch-homozygoter Loci-Zuordnungen von $0 \, \%$. Die Rate falsch-heterozygoter Loci-Zuordnungen beträgt $ \approx 7.5\, \% $ und ergibt sich aus der Anzahl der durch NodeRAD als heterozygot gewerten Loci $het_{\, NodeRAD}$ bei tatsächlich homozygot simuliertem Locus \linebreak $hom_{\, ddRAGE}$ (siehe Formel \eqref{eqn:5-1}). Oder im Umkehrschluss erkennt NodeRAD $ 92.5\,\% $ der Loci korrekt homozygot. \\
 
-Im Sinne eines prädiktiven Wertes nach Formel \eqref{eqn:5-2} für die Heterozygotie, beträgt die Wahrscheinlichkeit, dass bei einem durch NodeRAD als heterozygot bestimmten Locus $het_{NodeRAD}$ tatsächlich auch eine Heterozygotie $het_{ddRAGE}$ vorliegt allerdings nur $ \approx 33.3\, \% $. Die Wahrscheinlichkeit, dass bei einem durch NodeRAD als homozygot gewerteten Locus auch ein homozygoter Locus in der Simulation vorliegt, beträgt $100\, \%$, da keine falsch-homozygoten Loci-Zuordnungen auftraten.\\
+Im Sinne eines prädiktiven Wertes nach Formel \eqref{eqn:5-2} für die Heterozygotie, beträgt die Wahrscheinlichkeit, dass bei einem durch NodeRAD als heterozygot bestimmten Locus $het_{NodeRAD}$ tatsächlich auch eine Heterozygotie $het_{ddRAGE}$ vorliegt allerdings nur $ \approx 33.\overline{3}\, \% $. Die Wahrscheinlichkeit, dass bei einem durch NodeRAD als homozygot gewerteten Locus auch ein homozygoter Locus in der Simulation vorliegt, beträgt $100\, \%$, da keine falsch-homozygoten Loci-Zuordnungen auftraten.\\
 
 \begin{equation} \label{eqn:5-1}
 \tag{5-1}
@@ -140,6 +142,6 @@ P(het_{\, NodeRAD} \; | \; hom_{\, ddRAGE}) = \frac{10}{124+10} \approx 0.0746
 P(het_{\, ddRAGE} \; | \; het_{\, NodeRAD}) = \frac{5}{10+5} = 0.3 \overline{3}
 \end{equation}
 
-Zusammenfassend zeigt sich also eine gute Erkennungsrate der Loci, insbesondere werden heterozygote Loci korrekt erkannt. Durch NodeRAD werden jedoch mehr Loci heterozygot gewerteten Loci als tatsächlich vorhanden sind. Das tatsächlich homozygot vorliegenden Allel eines solchen Locus wird allerdings durch NodeRAD korrekt erfasst wird. 
+Zusammenfassend zeigt sich also eine gute Erkennungsrate der Loci, insbesondere werden heterozygote Loci korrekt erkannt. Durch NodeRAD werden jedoch mehr Loci heterozygot gewerteten Loci als tatsächlich vorhanden sind. Das tatsächlich homozygot vorliegenden Allel eines solchen Locus wird allerdings durch NodeRAD korrekt erfasst. 
 
 \let\cleardoublepage\clearpage
