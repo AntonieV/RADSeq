@@ -1,64 +1,56 @@
 % kapitel4.tex
 \definecolor{light-gray}{gray}{0.93}
 \chapter{Laufzeitanalyse} \label{sec:}
-%======================= draft =======================\\
 
-\section{Graphkonstruktion und Bestimmung der Zusammenhangskomponenten} \label{sec:}
+\section{Laufzeit für die Graphkonstruktion und Bestimmung der Zusammenhangskomponenten} \label{sec:}
 \subsubsection{Laufzeit für das Hinzufügen der Knoten des Graphen} \label{subsec:}
-Die Laufzeit für das Hinzufügen eines Knotens beträgt nach der Dokumentation von graph-tool  $ O(|V|) $, da es sich hierbei um eine Einfügeoperation in die bereits bestehende Knotenmenge handelt und ein neuer Iterator über alle Knoten erzeugt und zurückgegeben wird ~\cite{docs_graph_tool}. Die Zuweisung der Knoteneigenschaften erfolgt in $ O(1) $. Über alle Reads, also über die resultierende Anzahl der Knoten $ |V| $ ergibt sich daraus eine Gesamtlaufzeit von $ O(|V|^2) $.\\
+Die Laufzeit für das Hinzufügen eines Knotens beträgt nach der Dokumentation von graph-tool  $ O(1) $ \cite{docs_graph_tool}. Die Zuweisung der Knoteneigenschaften erfolgt ebenfalls in $ O(1) $. Über alle Reads, also über die resultierende Anzahl der Knoten $ |V| $ ergibt sich daraus eine Gesamtlaufzeit von $ O(|V|) $.\\
 
 \subsubsection{Laufzeit für das Hinzufügen der Kanten des Graphen} \label{subsec:}
 
-Hinsichtlich der Laufzeit benötigt das Hinzufügen einer Kante nach Angaben der graph-tool Dokumentation ~\cite{docs_graph_tool} eine Laufzeit von $ O(1) $. Da aber die Query- und die Referenzreads den bereits zuvor angelegten Knoten zugeordnet werden müssen, erfordert dies eine Suche der betreffenden Knoten. Dabei durchsucht graph-tool mit seiner Funktion \lstinline|find_vertex()| allein die Knoten und prüft auf die gesuchte Read-ID aus den FASTQ-Daten. Die ein- und ausgehenden Kanten der Knoten werden nicht beachtet, so dass eine Tiefen- oder Breitensuche des Graphen nicht notwendig ist und die Suche in $ O(|V|) $ durchgeführt werden kann ~\cite{graph_tool_coplexity_find_vertex}. Die Zuweisung der Kanteneigenschaften erfolgt jeweils in $ O(1) $, da diese direkt bei der Erzeugung der Kante hinzugefügt werden und keine vorherige Suche der Kante erforderlich ist. Für die Berechnung der Likelihood wird die geschätzte Fehlerrate $ p_{query} $ jeder Base verwendet, so dass die Anzahl der Berechnungen für jede Kante der Länge der Readsequenz $ k $ entspricht. Die Laufzeit für das Hinzufügen einer Kante beträgt somit $ O(k) $. Für alle Kanten ergibt sich daraus eine Gesamtlaufzeit von $ O(|E|\, \cdotp (k + |V|)) $. Bei realen Datensätzen gilt in der Regel $ k << |V| $ und die Länge der Reads variiert nur in einem engen Bereich, so dass $ k $ als vernachlässigbar klein und als nahezu konstant betrachtet werden kann. Dann ergibt sich aus Formel \eqref{eqn:4-1} eine Laufzeit von $O(|E|\, \cdotp |V|) $. 
-\begin{equation} \label{eqn:4-1}
-\tag{4-1}
-O(|E|\, \cdotp (k + |V|)) = O(|E|\, \cdotp |V|)
-\end{equation}
+Das Hinzufügen einer Kante im Graphen benötigt laut graph-tool Dokumentation \cite{docs_graph_tool} eine Laufzeit von $ O(1) $. Da aber die Query- und die Referenzreads aus dem Alignment den zuvor angelegten Knoten zugeordnet werden müssen, erfordert dies eine Suche der betreffenden Knoten im Graphen. Dabei durchsucht graph-tool mit seiner Funktion \lstinline|find_vertex()| allein die Knoten und prüft auf die gesuchte Read-ID aus dem FASTQ-File. Die ein- und ausgehenden Kanten der Knoten werden nicht beachtet, so dass eine Tiefen- oder Breitensuche des Graphen nicht notwendig ist und die Suche in $ O(|V|) $ durchgeführt werden kann ~\cite{graph_tool_coplexity_find_vertex}. Die Zuweisung der Kanteneigenschaften erfolgt jeweils in $ O(1) $, da diese direkt bei der Erzeugung der Kante hinzugefügt werden und keine vorherige Suche der Kante erforderlich ist. Für alle Kanten ergibt sich daraus eine Gesamtlaufzeit von $ O(|E|\, \cdotp |V|) $. \\
 
-Sind bei kleinen Datensätzen nur wenige Reads vorhanden, so dass $ k \leq |V| $, dann ergibt sich unter zusätzlicher Berücksichtigung von $k$ im Worst Case mit $ k = |V| $ nach Formel \eqref{eqn:4-2} ebenfalls eine Laufzeit von $O(|E|\, \cdotp |V|) $.
-\begin{equation} \label{eqn:4-2}
-\tag{4-2}
-O(|E|\, \cdotp (k + |V|)) = O(|E|\, \cdotp (|V| + |V|)) = O(|E|\, \cdotp 2 \, \cdotp |V|) = O(|E|\, \cdotp |V|)
-\end{equation}
-
-Unter der Annahme, dass in seltenen Fällen die Readlänge, die meist nur wenige hundert Basenpaare zählt, tatsächlich die Anzahl der Reads übersteigt und somit $ k > |V| $ gilt, dann dominiert $k$ die Laufzeit. In diesem Fall wäre im Worst Case $k$ eine obere Schranke für $|V|$, so dass gilt:
-\begin{equation} \label{eqn:4-3}
-\tag{4-3}
-O(|E|\, \cdotp (k + |V|)) = O(|E|\, \cdotp (k + k)) = O(|E|\, \cdotp 2 \, \cdotp k) = O(|E|\, \cdotp k)
-\end{equation}
-
-Da die Länge der Reads durch die gewählten Restriktionsenzyme sowie durch das Sequenzierverfahren selbst beschränkt ist, müsste ein solcher Datensatz relativ klein sein, so dass die damit verbundene Laufzeiterhöhung nur geringfügige Auswirkungen hätte. \\
-
-Zusammenfassend soll daher für die folgenden Berechnungen vereinfachend der Mittelwert der Readlänge als konstant betrachtet werden, also $\overline{k}=const$, so dass für die Berechnung der Likelihoods zwischen den Reads eine Laufzeit von $O(\overline{k}) = O(1)$ veranschlagt wird. Für das Hinzufügen der Kanten des Graphen wird somit die Gesamtlaufzeit auf $ O(|E|\, \cdotp |V|) $ geschätzt.\\
 
 \subsubsection{Laufzeit zur Bestimmung der Zusammenhangskomponenten} \label{subsec:}
 
-Die Bestimmung und Indexierung der Zusammenhangskomponenten durch graph-tool kann in $ O(|V| + |E|) $ durchgeführt werden ~\cite{docs_graph_tool}. Zusammenhangskomponenten mit mehr als einem Knoten werden zunächst als gefilterte View des Gesamtgraphen erzeugt und anschließend als neuer eigenständiger Graph initialisiert. Da der Filtervorgang für alle Knoten jeder Zusammenhangskomponente durchgeführt werden muss, beträgt die Laufzeit $ O(|C| \, \cdotp |V|) $. 
+Die Bestimmung der Zusammenhangskomponenten $C = (C_{1}, \dots , C_{k})$ durch graph-tool kann in $ O(|V| + |E|) $ durchgeführt werden \cite{docs_graph_tool}, hierbei wird jedem Konten die Indexnummer seiner Zusammenhangskomponente zugewiesen. Aus Zusammenhangskomponenten mit mehr als einem Knoten sollen hiernach eigenständige Subgraphen erzeugt werden. Dazu wird in der Funktion \lstinline|get_components()| des Moduls \lstinline|graph_operations.py| zunächst eine nach den Knoten der Komponente gefilterte View des Gesamtgraphen erzeugt, welche anschließend als neuer eigenständiger Graph initialisiert wird. Da beim Filtervorgang jeder Zusammenhangskomponente jeweils alle Knoten des Graphen betrachtet werden müssen, beträgt die Laufzeit hierfür $ O(k \, \cdotp |V|) $, wobei $k$ die Anzahl der Zusammenhangskomponenten ist. \\
 
-Die Subgraphen der Zusammenhangskomponenten werden als Elemente einer Liste zusammengefasst. Durch Erstellen einer Liste von Subgraphen kann später eine einfache Iteration über die Komponenten in $ O(|C|) $ ausgeführt werden, ohne dass der Filtervorgang über alle Knoten jeder Komponente wiederholt werden muss. 
-Das anschließende Löschen des ursprünglichen Graphen erfolgt in konstanter Zeit.
+Die Subgraphen der Zusammenhangskomponenten werden als Elemente einer Liste zusammengefasst. Durch Erstellen einer Liste von Subgraphen kann später eine einfache Iteration über die Komponenten in $ O(k) $ ausgeführt werden, ohne dass der Filtervorgang über alle Knoten jeder Komponente wiederholt werden muss. \\
 
-Die Laufzeit für die Extraktion der Zusammenhangskomponenten wird also bestimmt durch Identifikation, Indexierung und Filterung der Komponenten mit $ O(|C| \, \cdotp |V|) + O(|V| + |E|) = O(|V| \, \cdotp (|C| + 1) +|E|)$. Bei realen Daten gibt es in der Regel deutlich mehr Knoten als Cluster bzw. Zusammenhangskomponenten, so dass gilt $ |C| < |V| $. Würde im Worst Case aber jede Zusammenhangskomponente aus nur einem Knoten bestehen, also $ |C| = |V| $, so kann die maximale Laufzeit auf $ O(|V| \, \cdotp (|C| + 1) +|E|) = O(|V| \, \cdotp (|V| + 1) + |E|) = O(|V|^2 + |E|) $ geschätzt werden kann.\\
+Die Gesamtlaufzeit für die Bestimmung der Zusammenhangskomponenten und die Generierung eigenständiger Subgraphen beträgt nach Formel \eqref{eqn:4-1} somit $ O(k \, \cdotp |V| + |E|) $. 
+\begin{equation} \label{eqn:4-1}
+\tag{4-1}
+\begin{aligned}
+ O(k \, \cdotp |V|) \, + \, O(|V| + |E|) &\ {} = O(|V| \, \cdotp (k + 1) +|E|)\\
+ &\ = O(k \, \cdotp |V| + |E|)
+ \end{aligned}
+\end{equation}
+
+Bei realen Daten gibt es in der Regel deutlich mehr Knoten als Cluster bzw. Zusammenhangskomponenten, so dass gilt $ k < |V| $. Würde im Worst Case aber jede Zusammenhangskomponente aus nur einem Knoten bestehen, also $ k = |V| $, so kann die maximale Laufzeit auf $ O(|V|^2 + |E|) $ geschätzt werden (siehe Formel \eqref{eqn:4-2}).\\
+\begin{equation} \label{eqn:4-2}
+\tag{4-2}
+\begin{aligned}
+O(k \, \cdotp |V| + |E|) &\ {} = O(|V| \, \cdotp |V| + |E|)\\
+&\ = O(|V|^2 + |E|) 
+\end{aligned}
+\end{equation}
 
 \subsubsection{Gesamtlaufzeit der Konstruktion des Graphen und der Zusammenhangskomponenten} \label{subsec:graph_compl}
-Wie an entsprechender Stelle bereits beschrieben, ist für die Erzeugung der Knoten eine Laufzeit von $ O(|V|^2) $ (Kap. \ref{subsec:nodes}) erforderlich, das Hinzufügen der Kanten kann in $ O(|E|\, \cdotp |V|) $ erfolgen. Somit wird für den vollständigen Aufbau des Graphen nach \eqref{eqn:4-4} eine Laufzeit von $ O(|V| \, \cdotp (|V|+|E|)) $ benötigt. \\
-\begin{equation} \label{eqn:4-4}
-\tag{4-4}
-O(|V|^2) + O(|E|\, \cdotp |V|) = O(|V| \, \cdotp (|V|+|E|))
-\end{equation}
-In Zusammenschau mit der für die Extraktion der Zusammenhangskomponenten erforderliche Laufzeit von $ O(|V|^2 + |E|) $ (Kap. \ref{subsec:comp}) ergibt sich daraus nach  \eqref{eqn:4-5} eine Laufzeit von $ O(|V| \, \cdotp (|V| + |E|)) $. 
-
-\begin{equation} \label{eqn:4-5}
-\tag{4-5}
+Aus den Laufzeiten für die Erzeugung der Knoten in $ O(|V|) $, das Hinzufügen der Kanten in $ O(|E|\, \cdotp |V|) $  sowie die Bestimmung und Extraktion der Zusammenhangskomponenten in $ O(|V|^2 + |E|) $ ergibt sich nach \eqref{eqn:4-3} eine Gesamtlaufzeit von $ O(|V| \, \cdotp (|V| + |E|)) $. \\
+\begin{equation} \label{eqn:4-3}
+\tag{4-3}
 \begin{aligned}
-&\ {} O(|V| \, \cdotp (|V|+|E|)) +O(|V|^2 + |E|) \\
-& \ = O(|V|^2 + |E| \, \cdotp |V| + |V|^2 + |E|)\\
-&\ = O(2 \, \cdotp |V|^2 + |E| \, \cdotp (|V| + 1)) \\
-&\ = O(|V|^2 + |E| \, \cdotp |V|)\\
+&\ {} O(|V|) + O(|E|\, \cdotp |V|) + O(|V|^2 + |E|) \\
+&\ = O(|V| + |V|\, \cdotp |E| + |V|^2 + |E|)\\
+&\ = O(|V|\, \cdotp (1 + |E|) + |V|^2 + |E|)\\
+&\ \in O(|V|\, \cdotp |E| + |V|^2 + |E|)\\
+&\ = O(|V|^2 + |E| \, \cdotp (1 + |V|))\\
+&\ \in O(|V|^2 + |E| \, \cdotp |V|)\\
 &\ = O(|V| \, \cdotp (|V| + |E|))\\
 \end{aligned}
 \end{equation}
 
+======================= draft =======================\\
 \section{Laufzeit zur Bestimmung der Allele-Fractions mit maximaler Likelihood}
 \subsubsection{Laufzeit zur Ermittlung der Allele-Fractions}
 Funktion \lstinline|get_candidate_alleles()| 
