@@ -253,6 +253,11 @@
   snp detection: dealing with the data deluge.}
 \newblock BMC genomics, 15 Suppl 4:S10, 2014.
 
+\bibitem{noderad}
+{\sc Vietor, Antonie}: {\em {{NodeRAD - RADSeq tool with Snakemake workflow
+  integration for analysis of RAD sequencing data}}}.
+\newblock source: \url{https://github.com/AntonieV/NodeRAD}.
+
 \bibitem{peterson_2012}
 {\sc Peterson, Brant~K.}, {\sc Jesse~N. Weber}, {\sc Emily~H. Kay}, {\sc
   Heidi~S. Fisher}, \btxandlong{}\ {\sc Hopi~E. Hoekstra}: {\em Double digest

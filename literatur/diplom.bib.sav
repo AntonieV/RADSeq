@@ -1641,7 +1641,6 @@
   year               = {2017},
   volume             = {1525},
   pages              = {167-189},
-  __markedentry      = {[tarja:]},
   abstract           = {The increasing importance of Next Generation Sequencing (NGS) techniques has highlighted the key role of multiple sequence alignment (MSA) in comparative structure and function analysis of biological sequences. MSA often leads to fundamental biological insight into sequence-structure-function relationships of nucleotide or protein sequence families. Significant advances have been achieved in this field, and many useful tools have been developed for constructing alignments, although many biological and methodological issues are still open. This chapter first provides some background information and considerations associated with MSA techniques, concentrating on the alignment of protein sequences. Then, a practical overview of currently available methods and a description of their specific advantages and limitations are given, to serve as a helpful guide or starting point for researchers who aim to construct a reliable MSA.},
   address            = {United States},
   article-doi        = {10.1007/978-1-4939-6622-6_8},
@@ -1673,11 +1672,18 @@
   pages         = {1009-1023},
   month         = {11},
   issn          = {1467-5463},
-  __markedentry = {[tarja:6]},
+  __markedentry = {[tarja:]},
   abstract      = {{This review provides an overview on the development of Multiple sequence alignment (MSA) methods and their main applications. It is focused on progress made over the past decade. The three first sections review recent algorithmic developments for protein, RNA/DNA and genomic alignments. The fourth section deals with benchmarks and explores the relationship between empirical and simulated data, along with the impact on method developments. The last part of the review gives an overview on available MSA local reliability estimators and their dependence on various algorithmic properties of available methods.}},
   doi           = {10.1093/bib/bbv099},
   eprint        = {https://academic.oup.com/bib/article-pdf/17/6/1009/8280322/bbv099.pdf},
   url           = {https://doi.org/10.1093/bib/bbv099},
+}
+
+@Misc{noderad,
+  author        = {Antonie Vietor},
+  title         = {{{NodeRAD - RADSeq tool with Snakemake workflow integration for analysis of RAD sequencing data}}},
+  note          = {source: \url{https://github.com/AntonieV/NodeRAD}},
+  __markedentry = {[tarja:6]},
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

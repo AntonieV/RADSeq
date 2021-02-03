@@ -8,7 +8,9 @@
 \chapter{Implementierung} \label{sec:alg}
 Für das in Python implementierte RAD-Sequencing-Tool, NodeRAD, wurde zur Workflowintegration das Workflow Management System Snakemake verwendet ~\cite{koester_2012_1, koester_2012_2}. Die einzelnen Analyseschritte werden dabei über Regeln abgebildet. Für jede Regel können neben dem zu verwendenden Script oder Shell-Kommando sowie den Pfadangaben für In- und Output auch zusätzliche Optionen festgelegt werden. Dazu gehören beispielsweise Angaben zu Parametern bzw. Argumenten für die verwendeten Tools, Pfadangaben für Log-Dateien oder die Anzahl der zu verwendenden Threads. \\
 
-Als Input benötigt der Workflow eine Datei im FASTQ-Format (siehe Kap. \ref{subsec:fastq}), welche die single-end Reads der verschiedenen Individuen mit ihren IDs, der Basensequenz und Angaben zur Basenqualität enthält. Des Weiteren ist eine Tabelle im tsv-Format erforderlich, in der die Zuordnung der Probennamen zu den Individuen und ihren Barcode-Sequenzen definiert ist. Nach dem Preprocessing, der Qualitätskontrolle der Reads und dem Sequenzalignment erfolgt die RAD-Seq-Analyse durch NodeRAD. Hierbei werden die Wahrscheinlichkeiten der Allele-Fractions und der möglichen Loci bestimmt. Die Loci mit der höchsten Wahrscheinlichkeit werden schließlich mit den Sequenzen ihrer Allele in einer Datei im Variant Call Format (VCF) ausgegeben.
+Als Input benötigt der Workflow eine Datei im FASTQ-Format (siehe Kap. \ref{subsec:fastq}), welche die single-end Reads der verschiedenen Individuen mit ihren IDs, der Basensequenz und Angaben zur Basenqualität enthält. Des Weiteren ist eine Tabelle im tsv-Format erforderlich, in der die Zuordnung der Probennamen zu den Individuen und ihren Barcode-Sequenzen definiert ist. Nach dem Preprocessing, der Qualitätskontrolle der Reads und dem Sequenzalignment erfolgt die RAD-Seq-Analyse durch NodeRAD. Hierbei werden die Wahrscheinlichkeiten der Allele-Fractions und der möglichen Loci bestimmt. Die Loci mit der höchsten Wahrscheinlichkeit werden schließlich mit den Sequenzen ihrer Allele in einer Datei im Variant Call Format (VCF) ausgegeben.\\
+
+Der Source Code von NodeRAD kann unter \href{https://github.com/AntonieV/NodeRAD}{https://github.com/AntonieV/NodeRAD} eingesehen werden.
 
 \section{Preprocessing} \label{sec:preproc}
 \begin{figure}[h]
@@ -160,7 +162,7 @@ In der Log-Datei wird die Anzahl der Knoten aller Zusammenhangskomponenten als H
 
 Zudem kann optional auch der gesamte Graph mit den Komponentenindizes als Knoteneigenschaften gespeichert werden. In der visuellen Darstellung werden dort seine Knoten entsprechend der zugehörigen Zusammenhangskomponente eingefärbt (siehe \autoref{fig:all_comp}).
 
-\section{Bestimmung der Allele-Fractions mit maximaler Likelihood} \label{sec:max_lh_allele}
+\section[Bestimmung der Allele-Fraction maximaler Likelihood]{Bestimmung der Allele-Fractions mit maximaler Likelihood} \label{sec:max_lh_allele}
 \subsection{Bestimmung der Kandidatenallele und ihrer möglichen Häufigkeitsverteilung} \label{subsec:cand_allele}
 \begin{figure}[h]
 	\begin{center}
