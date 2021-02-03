@@ -407,7 +407,7 @@ In Abhängigkeit von der Anzahl der Kandidatenallele und der Ploidie können die
 \begin{figure}[h]
 	\begin{center}
 		\begin{tikzpicture}[scale=0.64,transform shape]
-		\path (p9.south)+(0.0,-7.58) \ioitem{11}{\hyperref[schritt14atxt]{\color{green!40}.\color{black}1}4.\phantomsection\label{schritt14a} Indicator constrait};
+		\path (p9.south)+(0.0,-7.58) \ioitem{11}{\hyperref[schritt14atxt]{\color{green!40}.\color{black}1}4.\phantomsection\label{schritt14a} Indicator constraint};
 		\path (p11.south)+(0.0,-1.5) \blockitem{13}{\hyperref[schritt13txt]{\color{green!40}..}13.\phantomsection\label{schritt13} Loci \\combinations};
 		\path (p14.south)+(0.0,-1.5) \ioitem{15}{12. Maximum likelihood allele fractions};
 		\path (p15.south)+(0.0,-2.0) \ioitem{16}{15. Likelihood \\of an allele given another allele};
@@ -538,7 +538,7 @@ Das Ergebnis der Indikatorfunktion hängt allein von der absoluten Häufigkeiten
 \begin{figure}[h]
 	\begin{center}
 		\begin{tikzpicture}[scale=0.64,transform shape]
-		\path (p9.south)+(0.0,-7.58) \blockitem{11}{\hyperref[schritt14btxt]{\color{green!40}.\color{black}1}4.\phantomsection\label{schritt14b} Indicator constrait};
+		\path (p9.south)+(0.0,-7.58) \blockitem{11}{\hyperref[schritt14btxt]{\color{green!40}.\color{black}1}4.\phantomsection\label{schritt14b} Indicator constraint};
 		\path (p11.south)+(0.0,-1.5) \ioitem{13}{13. Loci \\combinations};
 		\path (p14.south)+(0.0,-1.5) \ioitem{15}{12. Maximum likelihood allele fractions};
 		\path (p15.south)+(0.0,-2.0) \blockitem{16}{\hyperref[schritt15txt]{\color{green!40}.\color{black}1}5.\phantomsection\label{schritt15} Likelihood \\of an allele given another allele};
@@ -555,7 +555,7 @@ Das Ergebnis der Indikatorfunktion hängt allein von der absoluten Häufigkeiten
 		\path [dashedline] (p11.east) -- node [left] {} (p16.west);
 		\path [dashedline] (p13.north) -- node [left] {} (p11.south); 
 		
-		\path (p11.north)+(0.0, 2.0) node (ur1)[ur] {\color{black}\lstinline|indicator_constrait()|};
+		\path (p11.north)+(0.0, 2.0) node (ur1)[ur] {\color{black}\lstinline|indicator_constraint()|};
 		\path (p11.north)+(-0.0, 3.5) node (ur2)[ur] {\color{black}\lstinline|calc_loci_likelihoods()|};
 		\path (p16.east)+(4.0, 0.0) node (ur3)[ur] {\color{black}\lstinline|get_heterozygosity()|};
 		\path (ur3.north)+(0.0, 1.5) node (ur4)[ur] {\color{black}\lstinline|get_cigar_tuples()|};
@@ -578,7 +578,7 @@ Das Ergebnis der Indikatorfunktion hängt allein von der absoluten Häufigkeiten
 
 In diesem Schritt sollen schließlich für die Allel-Fraction mit maximaler Likelihood (Kap. \ref{subsec:lh_allele}) die ermittelten Kandidatenloci (Kap. \ref{subsec:comb_loci}) unter Berücksichtigung der Heterozygotie analysiert werden und die wahrscheinlichste Kombination der Loci ermittelt werden.\\
 
-Für jede Loci-Kombination aus \lstinline|get_candidate_loci()| wird aus der Funktion \linebreak \lstinline|calc_loci_likelihoods()| heraus zunächst geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten Allelfraktion mit maximaler Likelihood zuordnen lassen. Dies geschieht mit Hilfe der Indikatorfunktion \hyperref[schritt14b]{\lstinline|indicator_constrait()|\phantomsection\label{schritt14btxt}} nach Formel \eqref{eqn:2-13}. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Likelihood der Loci-Kombination aus den Heterozygotiewahrscheinlichkeiten der darin enthaltenen Allele berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben. Wie bereits besprochen, ist durch die Änderungen an der Implementierung von \lstinline|get_candidate_loci()| dieser Schritt nicht mehr notwendig und wurde nur belassen, um das dahinterstehende Modell strukturierter zeigen zu können.\\
+Für jede Loci-Kombination aus \lstinline|get_candidate_loci()| wird aus der Funktion \linebreak \lstinline|calc_loci_likelihoods()| heraus zunächst geprüft, ob sich die Loci dieser Kombination der zuvor bestimmten Allelfraktion mit maximaler Likelihood zuordnen lassen. Dies geschieht mit Hilfe der Indikatorfunktion \hyperref[schritt14b]{\lstinline|indicator_constraint()|\phantomsection\label{schritt14btxt}} nach Formel \eqref{eqn:2-13}. Ist die Bedingung der Indikatorfunktion erfüllt, so wird die Likelihood der Loci-Kombination aus den Heterozygotiewahrscheinlichkeiten der darin enthaltenen Allele berechnet und zurückgegeben. Ist die Bedingung der Indikatorfunktion nicht erfüllt, so wird eine Likelihood von 0 zurückgegeben. Wie bereits besprochen, ist durch die Änderungen an der Implementierung von \lstinline|get_candidate_loci()| dieser Schritt nicht mehr notwendig und wurde nur belassen, um das dahinterstehende Modell strukturierter zeigen zu können.\\
 
 Für die Likelihoodberechnung müssen nun einer Loci-Kombination zunächst die passenden Allelsequenzen zugeordnet werden. Die einzelnen Allele innerhalb einer Loci-Kombina-tion werden durch Integerwerte repräsentiert, die dem Index des dazugehörigen Kandidatenalleles entsprechen (siehe Kap. \ref{subsec:cand_allele}). Zu jeder Loci-Kombination wird also eine Liste $ S_{\,loc,\, alleles} $ generiert, welche die Kandidatenallelsequenzen der einzelnen Loci als Sublisten beinhaltet.\\
 
