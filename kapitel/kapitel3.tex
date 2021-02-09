@@ -706,7 +706,7 @@ In den Log-Dateien werden zusätzlich einige Statistiken zur Berechnung der wahr
 	\end{center}
 \end{figure}
 
-Die Loci-Kombinationen mit maximaler Likelihood $Loc_{max}$ aller Zusammenhangskomponenten werden für jedes Individuum jeweils in eine Datei im \hyperref[schritt18]{Variant Call Format\phantomsection\label{schritt18txt}} (siehe Kap. \ref{subsec:vcformat}) geschrieben. Dabei werden zusätzlich die optionalen FORMAT- und Proben-Spalten zur Kennzeichnung des Genotyps verwendet. \\
+Die Loci-Kombinationen mit maximaler Likelihood $Loc_{max}$ aller Zusammenhangskomponenten werden für jedes Individuum jeweils in eine Datei im \hyperref[schritt18]{Variant Call Format\phantomsection\label{schritt18txt}} (siehe Kap. \ref{subsec:vcformat}) geschrieben. Dabei werden zusätzlich die optionalen FORMAT- und Proben-Spalten zur Kennzeichnung des Genotyps verwendet. Die Spalte CHROM wird für die Locibezeichnungen verwendet. Diese setzen sich zusammen aus dem Präfix ``LOC'' und einer laufenden Nummer, beginnend bei der Zahl Null, zur Indexierung. \\
 
 In die Spalten REF und ALT werden die Sequenzen der Allele aus $Loc_{max}$ lexikographisch sortiert eingetragen. Hierfür wird in der Funktion \lstinline|get_sorted_loci_alleles()| eine sortiere Liste der Allelsequenzen aus $Loc_{max}$ gebildet. Durch die Pythonfunktion \lstinline|set()| wird über dieser Liste die Menge der Allele extrahiert, so dass Duplikate herausgefiltert werden. Aus der so entstandenen Liste der Allelsequenzen $A_{res}$ wird der erste Eintrag in die Spalte REF eingetragen, die übrigen Einträge werden in die Spalte ALT geschrieben.\\
 

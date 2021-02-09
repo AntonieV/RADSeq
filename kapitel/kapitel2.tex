@@ -161,7 +161,7 @@ minimum height=3em, rounded corners, drop shadow]
 
 \subsection{Graph und Zusammenhangskomponenten} \label{subsec:sol_graph}
 
-Im Preprocessing erfolgt die Zuordnung der Reads zu den einzelnen Individuen und die Entfernung der Barcodes aus den Sequenzen (\hyperref[step1]{Schritt 1\phantomsection\label{step1txt}} des Workflows). Anschließend wird in \hyperref[step3]{Schritt 3\phantomsection\label{step3txt}} aus den Reads ein paarweises Sequenzalignment mit Hilfe des Tools Minimap2 ~\cite{li_2018} erzeugt. Hierbei werden alle Reads mit einander verglichen und bei ausreichender Ähnlichkeit ihrer Sequenzen einander zugeordnet. Zusätzlich werden durch Minimap2 die Edit-Distanzen zwischen den jeweils miteinander verglichenen Readsequenzen bestimmt. \\
+Im Preprocessing erfolgt die Zuordnung der Reads zu den einzelnen Individuen und die Entfernung der Barcodes aus den Sequenzen (\hyperref[step1]{Schritt 1\phantomsection\label{step1txt}} des Workflows). Anschließend wird in \hyperref[step3]{Schritt 3\phantomsection\label{step3txt}} aus den Reads ein paarweises Sequenzalignment mit Hilfe des Tools Minimap2 ~\cite{li_2018} erzeugt. Hierbei werden alle Reads miteinander verglichen und bei ausreichender Ähnlichkeit ihrer Sequenzen einander zugeordnet. Zusätzlich werden durch Minimap2 die Edit-Distanzen zwischen den jeweils miteinander verglichenen Readsequenzen bestimmt. \\
 
 Wie bereits einleitend erwähnt, wird das Problem als gerichteter Graph $G=(V, \, E)$ mit der Knotenmenge $V$ und der Kantenmenge $E$ betrachtet (\hyperref[step4]{Schritt 4\phantomsection\label{step4txt}} des Workflows). Die Knoten entsprechen dabei den einzelnen Reads. Auf Grundlage des von Minimap2 erzeugtem Sequenzalignment werden die Knoten der Reads durch Kanten verbunden. Die Kanten des Graphen repräsentieren somit den Vergleich der Sequenzen der beiden angrenzenden Reads. Die Anzahl der Kanten kann zusätzlich durch die von Minimap2 bestimmten Edit-Distanzen reguliert werden. Diese soll über einen konfigurierbaren Schwellenwert flexibel wählbar sein und ermöglicht ein zusätzliches Filtern der Kanten zugunsten von  Laufzeit und Effizienz. \\
 
@@ -169,15 +169,17 @@ Da aufgrund des Sequenzalignments nur Reads mit einander verbunden werden, deren
 
 \subsection{Approximation von PairHMM mittels Minimap2-Alignments} \label{subsec:phmm_minimap}
 
-Minimap2 führt einen paarweisen Readvergleich anhand der DNA-Sequenzen der Reads durch. Die Sequenz jedes Reads (Querysequenz) wird mit jeder Sequenz der übrigen Reads (Referenzsequenz) verglichen. Reads mit hoher Ähnlichkeit zueinander werden in das Alignment aufgenommen. Das Ergebnis ist ein Mapping derjenigen Reads, die eine hohe Wahrscheinlichkeit besitzen, durch Sequenzierfehler, Variationen oder Mutationen aus einem gemeinsamen Allel hervorgegangen zu sein. Somit basieren die Kanten des Graphen auf den Wahrscheinlichkeiten des Sequenzalignments. \\
+Um die wahrscheinlichsten Allele aus der Menge der Reads zu identifizieren und schließlich den wahrscheinlichsten Loci zuordnen zu können, muss ein paarweiser Vergleich der Readsequenzen hinsichtlich ihrer Ähnlichkeit zu einander erfolgen. Bei der Ermittlung der wahrscheinlichsten Allele werden hierfür alle Reads mit den infrage kommenden Allelen verglichen (siehe Kap. \ref{pHMM_alleles}). Bei der Ermittlung der wahrscheinlichsten Loci erfolgt ein paarweiser Vergleich der Allele untereinander (siehe Kap. \ref{pHMM_loci}). Die Kanten des Graphen repräsentieren somit den Vergleich zweier Sequenzen, ihre Gewichtung soll die Ähnlichkeit zwischen den Sequenzen beschreiben. Diese Ähnlichkeit kann durch die Likelihood ausgedrückt werden, dass die jeweils betrachtete Sequenz (Querysequenz) aus der Vergleichssequenz (Referenzsequenz) entstanden ist. Die Kanten des Graphen verlaufen von der Query- zur Referenzsequenz, wobei die Likelihood der Kantengewichtung entspricht.\\
 
-Das eigentliche zugrundeliegende Modell des Clusterings der Reads ist allerdings ein vollständiger gerichteter Graph dessen Kantengewichte durch den paarweisen Sequenzvergleich über ein pair Hidden Markov Model (pairHMM)~\cite{durbin_1998} errechnet werden. Das beobachtete Ergebnis der Referenzsequenz wird dabei durch Abfolgen von Mismatch-, Insertions und Deletions-Operationen der Querysequenz erklärt (Evaluationsproblem). Jede dieser Operationen stellt einen Zustand dar, der Übergang zwischen den Zuständen wird über Wahrscheinlichkeiten abgebildet. Die Zustände selbst sind allerdings nicht direkt beobachtbar. Die möglichen Kombinationen von Zustandsübergängen, die zum beobachteten Ergebnis der Referenzsequenz führen, können aber errechnet und als Matrix dargestellt werden. In der Matrix kann dann der wahrscheinlichste Pfad ermittelt werden. Als Ergebnis erhält man somit die Zustandssequenz mit maximaler Likelihood, um die Querysequenz in die Referezsequenz zu transformieren, dieser entspricht der Kantengewichtung des Graphen. Die Kantengewichte können schließlich anhand eines Schwellenwertes gefiltert werden, so dass nur Kanten mit ausreichender Likelihood zurückbleiben. Je nach gewähltem Schwellwert wird der Graph hierdurch in mehrere Zusammenhangskomponenten partitioniert und das Problem kann über die entstandenen Teilprobleme gelöst werden. \\
+Die Bestimmung der Likelihood für die Kantengewichtung lässt sich durch ein pair Hidden Markov Model (pairHMM) \cite{durbin_1998} realisieren. Das beobachtete Ergebnis der Referenzsequenz wird dabei durch Abfolgen von Mismatch-, Insertions und Deletions-Operationen der Querysequenz erklärt (Evaluationsproblem). Jede dieser Operationen stellt einen Zustand dar, der Übergang zwischen den Zuständen wird über Wahrscheinlichkeiten abgebildet. Die Wahrscheinlichkeit, dass eine Base aus einem bestimmten Zustand heraus tatsächlich emittiert wird, d.h. in der Readsequenz zu beobachten ist, wird über die Emissionswahrscheinlichkeiten abgebildet. Die Zustände selbst sind allerdings nicht direkt beobachtbar. Die möglichen Kombinationen von Zustandsübergängen, die zum beobachteten Ergebnis der Referenzsequenz führen, können aber errechnet und als Matrix dargestellt werden. In der Matrix können dann die Pfade ermittelt werden, deren Zustandssequenzen geeignet sind, die Querysequenz in die Referezsequenz zu transformieren. Aus den Zustandsübergangs- und Emissionswahrscheinichkeiten dieser Pfade kann dann die Gesamtlikelihood bestimmt werden, dass die Querysequenz aus der Referenzsequenz entstanden ist. Diese Likelihood entspräche beim pairHMM der Kantengewichtung des Graphen. \\
 
-Die Bestimmung der Kantenwahrscheinlichkeiten mittels pairHMM ist sehr rechenintensiv und wirkt sich entsprechend ungünstig auf die Laufzeit aus~\cite{durbin_1998, yoon_2009}. Stattdessen kann das durch Minimap2 generierte Sequenzalignmment bei diploiden Organismen als Approximation des pairHMM verwendet werden, polyploide Organismen benötigen stattdessen für die Locizuordnung ein multiples Sequenzalignment (siehe Kap. \ref{sec:ausblick}). Jedes durch Minimap2 generierte Alignment zweier Reads repräsentiert bereits den wahrscheinlichsten Pfad einer pairHMM-Matrix. Daher genügt es die Likelihood $ L_{i} $ über diesem Alignment hinsichtlich des Sequenzierfehlerrate bei der Auswahl der Allele (siehe Kap. \ref{subsec:sol_allele_lh}) bzw. hinsichtlich der Heterozygotiewahrscheinlichkeiten bei der Zuordnung der Loci (siehe Kap. \ref{subsec:sol_loci_lh}) zu berechnen. Diese Likelihoodberechnungen sollen zur besseren Veranschaulichung des Modells bereits an dieser Stelle besprochen werden, auch wenn dadurch einige Schritte des Workflows vorweg genommen werden.
+Die Bestimmung der Kantenwahrscheinlichkeiten mittels pairHMM ist sehr rechenintensiv und wirkt sich entsprechend ungünstig auf die Laufzeit aus~\cite{durbin_1998, yoon_2009}. Stattdessen kann das durch Minimap2 generierte Sequenzalignmment bei diploiden Organismen als Approximation des pairHMM verwendet werden. Minimap2 führt ebenfalls einen paarweisen Vergleich der Readsequenzen durch. Reads mit hoher Ähnlichkeit zueinander werden in das Alignment aufgenommen. Das Ergebnis ist ein Mapping derjenigen Reads, die eine hohe Wahrscheinlichkeit besitzen, durch Sequenzierfehler, Variationen oder Mutationen aus einem gemeinsamen Allel hervorgegangen zu sein. Dieses Mapping entspricht dem wahrscheinlichsten Pfad der pairHMM-Matrix. Da der Pfad mit maximaler Likelihood, ohnehin das Ergebnis des pairHMM dominiert, genügt es die Likelihood dieses Pfades als Kantengewichtung zu betrachten. Somit basieren die Kanten des Graphen auf den Wahrscheinlichkeiten des Sequenzalignments. \\
+
+Das durch Minimap2 generierte Sequenzalignment kann daher als Approximation des pairHMM betrachtet werden, so dass es genügt über diesem Alignment die Likelihood $ L_{i} $ hinsichtlich des Sequenzierfehlerrate bei der Auswahl der Allele (siehe Kap. \ref{subsec:sol_allele_lh}) bzw. hinsichtlich der Heterozygotiewahrscheinlichkeiten bei der Zuordnung der Loci (siehe Kap. \ref{subsec:sol_loci_lh}) zu berechnen. Diese Likelihoodberechnungen sollen zur besseren Veranschaulichung des Modells bereits an dieser Stelle besprochen werden, auch wenn dadurch einige Schritte des Workflows vorweg genommen werden.
 
 \subsubsection{Likelihoodberechnung der Allele bei einem gegebenen Read} \label{pHMM_alleles}
 
-Um in Kap. \ref{sol_al_read} die Wahrscheinlichkeit zu bestimmen, dass ein Read mit der Readsequenz $s_{r}$ und der Fehlerrate $\epsilon$ tatsächlich aus einem bestimmten Allel hervorgegangen ist (\hyperref[step9]{Schritt 9\phantomsection\label{step9txt}} des Workflows), muss die Sequenzierfehlerrate einbezogen werden. Die Zustandssequenz des approximierten pairHMM lässt sich dem CIGAR-String des Minimap2-Alignments entnehmen. Für jede Base der Querysequenz wird in Abhängigkeit von den Operationen des CIGAR-Strings die Sequenzierfehlerrate auf unterschiedliche Weise in die Likelihoodberechnung einbezogen. \\
+Um in Kap. \ref{sol_al_read} die Wahrscheinlichkeit zu bestimmen, dass ein Read mit der Readsequenz $s_{r}$ und der Fehlerrate $\epsilon$ tatsächlich aus einem bestimmten Allel hervorgegangen ist (\hyperref[step9]{Schritt 9\phantomsection\label{step9txt}} des Workflows), muss die Sequenzierfehlerrate einbezogen werden. Die wahrscheinlichste Zustandssequenz des approximierten pairHMM lässt sich dem CIGAR-String des Minimap2-Alignments entnehmen. Für jede Base der Querysequenz wird in Abhängigkeit von den Operationen des CIGAR-Strings die Sequenzierfehlerrate auf unterschiedliche Weise in die Likelihoodberechnung einbezogen. \\
 
 Bei einem Match sind beide Basen aus Query- und Referenzsequenz identisch. Daher ergibt sich die Wahrscheinlichkeit $L_{match}$, dass es sich bei der Querysequenz an Position $i$ tatsächlich um die korrekte Base handelt allein aus der Fehlerrate. Die geschätzte Fehlerrate $ p_{i} $ lässt sich anhand der Basenqualität des Reads nach \eqref{eqn:3-3} bestimmen (vgl. Kap. \ref{subsec:lh_allele}). Die resultierende Likelihood der Base wird um diese Fehlerrate reduziert:
 \vspace{-0.5cm}
@@ -214,14 +216,14 @@ Bei Substitutionen ergibt sich die Sequenzierfehlerrate ebenfalls aus der gesch�
         }}
 \end{center}
 
-Die Likelihood $ pairHMM_{\epsilon, q_{query}} \;(s_{ref}\;|\; s_{query}) $, dass der Queryread aus dem Referenzread allein durch Sequenzierfehler entstanden ist, errechnet sich schließlich aus dem Produkt der Likelihoods $ L_{i} \in \{L_{match}, L_{indel}, L_{sub}\} $ für jede Position $ i $ der Sequenz des Queryreads $ s_{query} $ im Vergleich zum Referenzread $ s_{ref} $.
+Die Likelihood $ pairHMM_{\epsilon, q_{query}} \;(s_{query}\;|\; s_{ref}) $, dass der Queryread aus dem Referenzread allein durch Sequenzierfehler entstanden ist, errechnet sich schließlich aus dem Produkt der Likelihoods $ L_{i} \in \{L_{match}, L_{indel}, L_{sub}\} $ für jede Position $ i $ der Sequenz des Queryreads $ s_{query} $ im Vergleich zum Referenzread $ s_{ref} $.
 \vspace{-0.5cm}
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
 		\parbox{\textwidth}{
 			\begin{equation} \label{eqn:2-4}
 			\tag{2-4}
-			pairHMM_{\epsilon, q_{query}} \;(s_{query}\;|\; s_{ref}) = \prod_{i=1}^{k}L_{i}
+			pairHMM_{\epsilon, q_{query}} \;(s_{query}\;|\; s_{ref}) \approx \prod_{i=1}^{k}L_{i}
 			\end{equation}
         }}
 \end{center}
@@ -262,17 +264,17 @@ Die Wahrscheinlichkeit $ pairHMM_{\eta}(a_{l_{j,query}} \, | \, a_{l_{j,ref}}) $
 		\parbox{\textwidth}{
 			\begin{equation} \label{eqn:2-7}
 			\tag{2-7}
-			pairHMM_{\eta}(a_{l_{j,query}} \, | \, a_{l_{j,ref}}) = \prod_{i=1}^{k}L_{i}
+			pairHMM_{\eta}(a_{l_{j,query}} \, | \, a_{l_{j,ref}}) \approx \prod_{i=1}^{k}L_{i}
 			\end{equation}
         }}
 \end{center}
 
 \subsection{Allele-Fractions mit maximaler Likelihood} \label{subsec:sol_allele_lh}
-\subsubsection{Bestimmung der Kandidatenallele und der Allele-Fractions} \label{subsec:sol_cand_allele}
+\subsubsection{Bestimmung der Kandidatenallele} \label{subsec:sol_cand_allele}
 
 Um später die Allele zu identifizieren, von denen die beobachteten Reads einer Zusammenhangskomponente am wahrscheinlichsten stammen, muss zunächst die Menge der Kandidatenallele $A=(a_{1}, \dots, a_{n}) \in \{A,\,C,\,G,\,T,\}^{k^n}$ bestimmt werden (\hyperref[step6]{Schritt 6\phantomsection\label{step6txt}} des Workflows). Bei größeren Clustern ist davon auszugehen, dass die Sequenzen solcher Kandidatenallele mehrfach in den Reads auftauchen. Um den Aufwand der Likelihoodberechnung bei größeren Cluster anpassen zu können, soll es möglich sein, selten auftretende Sequenzen herauszufiltern. Dies geschieht über Grenzwerte, welche die Mindestgröße der Cluster und die Mindesthäufigkeiten von Kandidatenallelsequenzen berücksichtigen sollen. \\
 
-Über der Menge der Kandidatenallele sollen nun mögliche Allelkombinationen erzeugt werden (\hyperref[step7]{Schritt 7\phantomsection\label{step7txt}}), die später den Loci zugeordnet werden. Die Länge dieser Kombinationen, also die erwartbare Anzahl von Allelen $n_{alleles}$, die auf einen oder mehrere Loci verteilt sind, ergibt sich dabei aus der Anzahl der Kandidatenallele $n_{cand}$ und der Ploidie $\phi$. Sie entspricht also entweder direkt der Ploidie, falls diese höher ist als die Anzahl der Kandidatenallele oder andernfalls gilt $n_{alleles} \geq n_{cand}$, so dass $n_{alleles}$ ein ganzzahliges Vielfaches der Ploidie ist. Dies ist in Formel \eqref{eqn:2-8} formal dargestellt, wobei gilt $d=n_{cand} \, mod \, \phi$.
+Über der Menge der Kandidatenallele sollen nun mögliche Allelkombinationen erzeugt werden (\hyperref[step7]{Schritt 7\phantomsection\label{step7txt}}), die später den Loci zugeordnet werden. Die Länge dieser Kombinationen, also die erwartbare Anzahl von Allelen $n_{alleles}$, die auf einen oder mehrere Loci verteilt sind, ergibt sich dabei aus der Anzahl der Kandidatenallele $n_{cand}$ und der Ploidie $\phi$. Sie entspricht entweder direkt der Ploidie, falls diese höher ist als die Anzahl der Kandidatenallele oder andernfalls gilt $n_{alleles} \geq n_{cand}$, so dass $n_{alleles}$ ein ganzzahliges Vielfaches der Ploidie ist. Dies ist in Formel \eqref{eqn:2-8} formal dargestellt, wobei gilt $d=n_{cand} \, mod \, \phi$.
 
 \begin{equation} \label{eqn:2-8}
 \tag{2-8}
@@ -286,15 +288,16 @@ n_{cand}, & \phi < n_{cand} \wedge d = 0
 \right.
 \end{equation}
 
-Die Zusammenhangskomponenten können auch mehrere Loci enthalten, so dass in ihnen die einzelnen Allele mehrfach in verschiedenen Loci oder homozygot innerhalb eines Locus vorkommen können. Hinsichtlich der Allelkombinationen müssen also Wiederholungen der Allele erlaubt sein. Nach dem Urnenmodell werden dabei $n_{alleles}$ Allele mit Zurücklegen aus insgesamt $ n_{cand} $ verschiedenen Allelen kombiniert, wobei die Reihenfolge keine Relevanz hat. Dies wird in Kap. \ref{sec:max_lh_allele} ausführlicher dargelegt. \\
-
+Die Zusammenhangskomponenten können auch mehrere Loci enthalten, so dass in ihnen die einzelnen Allele mehrfach in verschiedenen Loci oder homozygot innerhalb eines Locus vorkommen können. Hinsichtlich der Allelkombinationen müssen also Wiederholungen der Allele erlaubt sein. \\
+%Nach dem Urnenmodell werden dabei $n_{alleles}$ Allele mit Zurücklegen aus insgesamt $ n_{cand} $ verschiedenen Allelen kombiniert, wobei die Reihenfolge keine Relevanz hat. Dies wird in Kap. \ref{sec:max_lh_allele} ausführlicher dargelegt. \\
+%
 Für jede Allelkombination werden anschließend die relativen Häufigkeiten der darin enthaltenen Allele bestimmt (\hyperref[step8]{Schritt 8\phantomsection\label{step8txt}} des Workflows). Diese repräsentieren die Häufigkeitsverteilung der Allele der jeweiligen Kombination und werden im Folgenden als Allele-Fractions oder VAFs bezeichnet.\\
 
 \subsubsection{Bestimmung der Likelihood eines Alleles im Bezug auf einen Read} \label{sol_al_read}
 
 Für jeden Read wird nun in \hyperref[step9]{Schritt 9} des Workflows die Wahrscheinlichkeit bestimmt, dass er aus einem bestimmten Allel allein durch Sequenzierfehler hervorgegangen ist. Die genaue Berechnung der Likelihood wurde in Kap. \ref{pHMM_alleles} bereits vorgestellt. \\
 
-In Zusammenschau mit Formel \eqref{eqn:2-4} lässt sich beim paarweisen Vergleich eines Read mit der Sequenz $s_{r}$ und dem Kandidatenallel $a_{i} \in A $ die Likelihood $ Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) $ unter Berücksichtigung der Fehlerrate $\epsilon$ wie folgt errechnen:
+In Zusammenschau mit Formel \eqref{eqn:2-4} lässt sich beim paarweisen Vergleich eines Reads mit der Sequenz $s_{r}$ und dem Kandidatenallel $a_{i} \in A $ die Likelihood $ Pr(T=s_{r} \, | \, S=a_{i}, \epsilon) $ unter Berücksichtigung der Fehlerrate $\epsilon$ wie folgt errechnen:
 \vspace{-0.5cm}
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
@@ -341,7 +344,7 @@ Schließlich soll in \hyperref[step11]{Schritt 11\phantomsection\label{step11txt
 	}}
 \end{center}
 
-Die \hyperref[step9]{Schritte 9}, \hyperref[step10]{10} und \hyperref[step11]{11} des Workflows werden für alle Allele-Fractions jeder Zusammenhangskomponente durchgeführt. Für jedes Kandidatenallel jeder Allel-Fraction wird so die Wahrscheinlichkeit berechnet, dass die Reads der Zusammenhangskomponente aus den einzelnen Kandidatenallelen entstanden sind. Da nur die Fehlerrate $\epsilon$ einbezogen wurde, können alle dabei entstandenen Abweichungen ausschließlich auf Sequenzierfehlern beruhen. Um diejenige Allel-Fraction zu wählen, deren Verteilung der Kandidatenallelsequenzen am anhand der beobachteten Reads am wahrscheinlichsten ist, wird in \hyperref[step12]{Schritt 12\phantomsection\label{step12txt}} aus der Menge der errechneten Likelihoods aller Allele-Fractions das Maximum bestimmt.  
+Die \hyperref[step9]{Schritte 9}, \hyperref[step10]{10} und \hyperref[step11]{11} des Workflows werden für alle Allele-Fractions jeder Zusammenhangskomponente durchgeführt. Für jedes Kandidatenallel jeder Allel-Fraction wird so die Wahrscheinlichkeit berechnet, dass die Reads der Zusammenhangskomponente aus den einzelnen Kandidatenallelen entstanden sind. Da nur die Fehlerrate $\epsilon$ einbezogen wurde, können alle dabei entstandenen Abweichungen ausschließlich auf Sequenzierfehlern beruhen. Um diejenige Allel-Fraction zu wählen, deren Verteilung der Kandidatenallelsequenzen anhand der beobachteten Reads am wahrscheinlichsten ist, wird in \hyperref[step12]{Schritt 12\phantomsection\label{step12txt}} aus der Menge der errechneten Likelihoods aller Allele-Fractions das Maximum bestimmt.  
 
 \subsection{Locuszuordnung mit maximaler Likelihood} \label{subsec:sol_loci_lh}
 
@@ -349,9 +352,9 @@ In diesem Kapitel sollen die in der Allel-Fraction mit maximaler Likelihood $\Th
 
 \subsubsection{Bestimmung Likelihood aus dem Vergleich zweier Allele} \label{sol_lh_al_al}
 
-Um die Wahrscheinlichkeit zu bestimmen, inwieweit die einzelnen Allele aus $A_{max\_lh}$ hinsichtlich der Heterozygotiewahrscheinlichkeiten mit einander in Beziehung stehen, werden die Allele aus $A_{max\_lh}$ paarweise mit einander verglichen. Dies wurde bereits in Kap. \ref{pHMM_loci} ausführlich beschrieben. \\
+Um die Wahrscheinlichkeit zu bestimmen, inwieweit die einzelnen Allele aus $A_{max\_lh}$ hinsichtlich der Heterozygotiewahrscheinlichkeiten mit einander in Beziehung stehen, werden die Allele aus $A_{max\_lh}$ paarweise mit einander verglichen. Dies wurde bereits in Kap. \ref{pHMM_loci} beschrieben. \\
 
-In Zusammenschau mit Formel \eqref{eqn:2-7} ergibt sich für \hyperref[step15]{Schritt 15} die Likelihood $ Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) $, dass zwei Allele $a_{l_{j,1}}$ und $a_{l_{j,2}}$ vom gleichen Locus $l_{j}$ stammen:
+In Zusammenschau mit Formel \eqref{eqn:2-7} ergibt sich für \hyperref[step15]{Schritt 15} die Wahrscheinlichkeit $ Pr(T=a_{l_{j,2}} \, , \, S=a_{l_{j,1}}, \eta) $, dass zwei Allele $a_{l_{j,1}}$ und $a_{l_{j,2}}$ vom gleichen Locus $l_{j}$ stammen:
 \vspace{-0.5cm}
 \begin{center}
 	\fcolorbox{black}{light-gray}{		
@@ -359,7 +362,7 @@ In Zusammenschau mit Formel \eqref{eqn:2-7} ergibt sich für \hyperref[step15]{S
 			\begin{korollar*}[Likelihood des paarweisen Vergleichs zweier Allele]
 				\begin{equation} \label{eqn:2-12}
 				\tag{2-12}
-				Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}}, \eta) = pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}})
+				Pr(T=a_{l_{j,2}} \, , \, S=a_{l_{j,1}}, \eta) = pairHMM_{\eta}(a_{l_{j,1}}, a_{l_{j,2}})
 				\end{equation}
 		\end{korollar*}
 	}}
@@ -393,7 +396,7 @@ Für jede Loci-Kombination $L$, welche die ermittelte Allele-Fraction mit maxima
 			\begin{korollar*}[Likelihood einer Loci-Kombination]
 				\begin{equation} \label{eqn:2-14}
 				\tag{2-14}
-				Pr(\Theta,A \, | \, L=\{l_{j}\, |\, j=1,\dots,g\})=z_{l} \, \cdotp \prod_{j=1}^{g}Pr(T=a_{l_{j,2}} \, | \, S=a_{l_{j,1}})
+				Pr(\Theta,A \, | \, L=\{l_{j}\, |\, j=1,\dots,g\})=z_{l} \, \cdotp \prod_{j=1}^{g}Pr(T=a_{l_{j,2}} \, , \, S=a_{l_{j,1}})
 				\end{equation}
             \end{korollar*}
 }}
