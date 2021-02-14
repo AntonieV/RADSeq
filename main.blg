@@ -18,24 +18,24 @@ Warning--can't use both author and editor fields in tb_stat
 Warning--can't use both author and editor fields in bronst
 You've used 71 entries,
             2016 wiz_defined-function locations,
-            913 strings with 21610 characters,
-and the built_in function-call counts, 24378 in all, are:
-= -- 1725
+            914 strings with 21617 characters,
+and the built_in function-call counts, 24452 in all, are:
+= -- 1733
 > -- 1652
 < -- 8
 + -- 580
 - -- 509
-* -- 2860
-:= -- 3620
+* -- 2869
+:= -- 3628
 add.period$ -- 145
 call.type$ -- 71
 change.case$ -- 68
 chr.to.int$ -- 0
 cite$ -- 73
-duplicate$ -- 1160
-empty$ -- 2168
+duplicate$ -- 1161
+empty$ -- 2177
 format.name$ -- 509
-if$ -- 5380
+if$ -- 5398
 int.to.chr$ -- 0
 int.to.str$ -- 71
 missing$ -- 112
@@ -45,16 +45,16 @@ pop$ -- 191
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 0
-skip$ -- 506
+skip$ -- 505
 stack$ -- 0
-substring$ -- 1058
+substring$ -- 1079
 swap$ -- 641
 text.length$ -- 8
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 0
 warning$ -- 2
-while$ -- 133
+while$ -- 134
 width$ -- 73
 write$ -- 693
 (There was 1 error message)

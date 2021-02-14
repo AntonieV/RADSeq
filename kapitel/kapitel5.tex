@@ -22,7 +22,7 @@ Für die Analyse mit NodeRAD wurde eine Heterozygotiewahrscheinlichkeit von jewe
 			\multicolumn{1}{|l|}{\textbf{error-per-base}} & \multicolumn{1}{c|}{$ 2.8 \, \cdotp 10^{-6} $} & \multicolumn{1}{c|}{$ 5.1 \, \cdotp 10^{-6} $} & \multicolumn{1}{c|}{$L_{i} = \frac{1}{3} \; \cdotp \; p_{i}$} \\ \hline
 			\multicolumn{1}{|l|}{\textbf{heterozygosity}} & \multicolumn{1}{c|}{0.01} & \multicolumn{1}{c|}{0.01} & \multicolumn{1}{c|}{0.01} \\ \hline
 		\end{tabular}
-	\caption{Loci-Zuordnung durch NodeRAD im Vergleich zu den simulierten Loci bei den Individuen A, B und C.}
+	\caption{Schwellenwerte und Konstanten für den NodeRAD-Run mit dem ddRAGE-Testdatensatz.}
 	\label{tbl:config}
 	\end{center}
 \end{table}	
@@ -30,7 +30,7 @@ Für die Analyse mit NodeRAD wurde eine Heterozygotiewahrscheinlichkeit von jewe
 Für jedes der drei Individuen $A$, $B$ und $C$ wurden durch NodeRAD die wahrscheinlichsten Loci ermittelt und mit den Sequenzen der tatsächlich simulierten Loci aus den Zusatzinformationen von ddRAGE verglichen. Der Vergleich erfolgte durch das Tool BLAST (Basic Local Alignment Search Tool) \cite{altschul_1990}. Hierfür wurden sowohl die Loci der Simualtion als auch die Resultate des Workflows in das FASTA-Format geparsed. Für die simulierten Loci wurden dabei auch für jedes Individuum die jeweiligen Mutationen entsprechend dem Genotyp auf die Loci-Sequenzen gemapped. \\
 
 
-Um die Daten lokal gegeneinander zu vergleichen, wurde anschließend für die Loci der Simulation eine BLAST-Datenbank erzeugt. Gegen diese Datenbank erfolgte dann die BLAST-Analyse mit den identifizierten Loci des Workflows. Aus den Ergebnissen der BLAST-Analyse wurden anschließend verschiedene Plots in der Programmiersprache R erzeugt, die Kap. \ref{sec:res} zu finden sind. Die Regeln und Scripte der Evaluation sind in NodeRAD integriert und können über die Konfigurationsdatei durch Angabe eines Pfades zu den durch ddRAGE simulierten Loci im yaml-Format aktiviert werden.
+Um die Daten lokal gegeneinander zu vergleichen, wurde anschließend für die Loci der Simulation eine BLAST-Datenbank erzeugt. Gegen diese Datenbank erfolgte dann die BLAST-Analyse mit den identifizierten Loci des Workflows. Aus den Ergebnissen der BLAST-Analyse wurden anschließend verschiedene Plots in der Programmiersprache R erzeugt, die in Kap. \ref{sec:res} zu finden sind. Die Regeln und Scripte der Evaluation sind in NodeRAD über das Modul \lstinline|evaluation.smk| integriert und können über die Konfigurationsdatei durch Angabe eines Pfades zu den durch ddRAGE simulierten Loci im yaml-Format aktiviert werden.
 
 \section{Ergebnisse} \label{sec:res}
 \subsubsection{Erkennung der Allele} \label{subsubsec:res_alleles}
@@ -78,7 +78,7 @@ Beim BLAST-Algorithmus werden die Nukleotidsequenzen der durch NodeRAD identifiz
 
 Bei der BLAST-Analyse werden zudem beim Vergleich der Nukleotidsequenzen Werte für jedes Match bzw. Mismatch vergeben \cite{gaedeke_2007}. Die Summe dieser Werte stellt den Rohwert-Score des Sequenzaligments dar. Aus diesem Score lassen sich zwei statische Merkmale der BLAST-Analyse ableiten: der E-Value und der Bitscore. \\
 
-Der E-Value (expectation value) ist ein Signifikanzmaß und beschreibt die Anzahl zufälliger Treffer mit mindestens dem betrachteten Score, die bei gegebener Größer der Referenzdatenbank zu erwarten wären \cite{gaedeke_2007}. Je kleiner der E-Value ist, desto geringer ist die Wahrscheinlichkeit, dass ein Hit nur zufällig gefunden wurde. Bei allen Individuen weisen die Hits eine hohe Signifikanz auf (siehe \autoref{fig:a-eval}). Lediglich bei einem Hit findet sich eine wesentlich geringere Signifikanz. Diese Abweichung betrifft bei allen Individuen den selben Locus der ddRAGE-simulierten Daten. Das korrespondierende durch NodeRAD bestimmte Allel ist deutlich verkürzt, so dass dieser Ausreißer am ehesten auf ein fehlerhaftes Adaptertrimming zurückzuführen ist.\\
+Der E-Value (expectation value) ist ein Signifikanzmaß und beschreibt die Anzahl zufälliger Treffer mit mindestens dem betrachteten Score, die bei gegebener Größe der Referenzdatenbank zu erwarten wären \cite{gaedeke_2007}. Je kleiner der E-Value ist, desto geringer ist die Wahrscheinlichkeit, dass ein Hit nur zufällig gefunden wurde. Bei allen Individuen weisen die Hits eine hohe Signifikanz auf (siehe \autoref{fig:a-eval}). Lediglich bei einem Hit findet sich eine wesentlich geringere Signifikanz. Diese Abweichung betrifft bei allen Individuen den selben Locus der ddRAGE-simulierten Daten. Das korrespondierende durch NodeRAD bestimmte Allel ist deutlich verkürzt, so dass dieser Ausreißer am ehesten auf ein fehlerhaftes Adaptertrimming zurückzuführen ist.\\
 
 \begin{figure}[H]
 	\begin{center}
