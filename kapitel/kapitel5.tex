@@ -27,7 +27,7 @@ Für die Analyse mit NodeRAD wurde eine Heterozygotiewahrscheinlichkeit von jewe
 	\end{center}
 \end{table}	
 
-Für jedes der drei Individuen $A$, $B$ und $C$ wurden durch NodeRAD die wahrscheinlichsten Loci ermittelt und mit den Sequenzen der tatsächlich simulierten Loci aus den Zusatzinformationen von ddRAGE verglichen. Der Vergleich erfolgte durch das Tool BLAST (Basic Local Alignment Search Tool) \cite{altschul_1990}. Hierfür wurden sowohl die Loci der Simualtion als auch die Resultate des Workflows in das FASTA-Format geparsed. Für die simulierten Loci wurden dabei auch für jedes Individuum die jeweiligen Mutationen entsprechend dem Genotyp auf die Loci-Sequenzen gemapped. \\
+Für jedes der drei Individuen $A$, $B$ und $C$ wurden durch NodeRAD die wahrscheinlichsten Loci ermittelt und mit den Sequenzen der tatsächlich simulierten Loci aus den Zusatzinformationen von ddRAGE verglichen. Der Vergleich erfolgte durch das Tool BLAST (Basic Local Alignment Search Tool) \cite{altschul_1990}. Hierfür wurden sowohl die Loci der Simulation als auch die Resultate des Workflows in das FASTA-Format geparsed. Für die simulierten Loci wurden dabei auch für jedes Individuum die jeweiligen Mutationen entsprechend dem Genotyp auf die Loci-Sequenzen gemapped. \\
 
 
 Um die Daten lokal gegeneinander zu vergleichen, wurde anschließend für die Loci der Simulation eine BLAST-Datenbank erzeugt. Gegen diese Datenbank erfolgte dann die BLAST-Analyse mit den identifizierten Loci des Workflows. Aus den Ergebnissen der BLAST-Analyse wurden anschließend verschiedene Plots in der Programmiersprache R erzeugt, die in Kap. \ref{sec:res} zu finden sind. Die Regeln und Scripte der Evaluation sind in NodeRAD über das Modul \lstinline|evaluation.smk| integriert und können über die Konfigurationsdatei durch Angabe eines Pfades zu den durch ddRAGE simulierten Loci im yaml-Format aktiviert werden.
@@ -88,7 +88,7 @@ Der E-Value (expectation value) ist ein Signifikanzmaß und beschreibt die Anzah
 	\end{center}
 \end{figure}
 
-Der Bitscore ist der normalisierte Wert des Rohwert-Scores \cite{gaedeke_2007}. Durch die Normalisierung können die einzelnen Alignments mit einander hinsichtlich ihres Scores verglichen werden. Je höher Wert des Bitscores liegt, desto besser ist die Sequenzübereinstimmung. Auch hier weisen bis auf den bereits erwähnten Ausreißer mit verkürzter Sequenz sämtliche durch NodeRAD identifizierten Allele hohe Werte auf (siehe \autoref{fig:a-bitscore}).
+Der Bitscore ist der normalisierte Wert des Rohwert-Scores \cite{gaedeke_2007}. Durch die Normalisierung können die einzelnen Alignments mit einander hinsichtlich ihres Scores verglichen werden. Je höher der Wert des Bitscores liegt, desto besser ist die Sequenzübereinstimmung. Auch hier weisen bis auf den bereits erwähnten Ausreißer mit verkürzter Sequenz sämtliche durch NodeRAD identifizierten Allele hohe Werte auf (siehe \autoref{fig:a-bitscore}).
 
 \begin{figure}[H]
 	\begin{center}
@@ -99,7 +99,7 @@ Der Bitscore ist der normalisierte Wert des Rohwert-Scores \cite{gaedeke_2007}. 
 \end{figure}
 
 \subsubsection{Erkennung der Loci} \label{subsubsec:res_loci}
-Im Hinblick auf die Loci-Zuordnung durch NodeRAD wurden sämtliche homo- und heterozygoten Mutationen bei allen Individuen korrekt identifiziert. Bis auf einen falsch identifizierten Locus bei Individuum C und wenige fehlende Loci (siehe oben), wurden auch die meisten Allele der homozygoten Loci ohne Varianten gefunden. Hier zeigten sich allerdings auch einige Loci, bei denen NodeRAD einen heterozygoten Locus unter Beteiligung eines weiteren Allels definierte, obwohl der tatsächliche Locus homozygot ist. Bei diesen falsch-heterozygoten Loci wiesen die zusätzlich dem Locus zugeordneten Allele ein Mismatch von jeweils einer Base auf. Insgesamt waren bei allen Individuen solche falsch-heterozygoten Loci detektiert worden. Falsch-homozygote Loci fanden sich dagegen nicht (siehe Tabelle \ref{tbl:kontingenz}).
+Im Hinblick auf die Loci-Zuordnung durch NodeRAD wurden sämtliche homo- und heterozygoten Mutationen bei allen Individuen korrekt identifiziert. Bis auf einen falsch identifizierten Locus bei Individuum C und wenige fehlende Loci (siehe oben), wurden auch die meisten Allele der homozygoten Loci ohne Varianten gefunden. Hier zeigten sich allerdings auch einige Loci, bei denen NodeRAD einen heterozygoten Locus unter Beteiligung eines weiteren Allels definierte, obwohl der tatsächliche Locus homozygot ist. Bei diesen falsch-heterozygoten Loci wiesen die zusätzlich dem Locus zugeordneten Allele ein Mismatch von jeweils einer Base auf. Insgesamt wurden bei allen Individuen solche falsch-heterozygoten Loci detektiert. Falsch-homozygote Loci fanden sich dagegen nicht (siehe Tabelle \ref{tbl:kontingenz}).
 
 \begin{table}[H]
 	\begin{center}

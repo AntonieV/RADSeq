@@ -10,7 +10,6 @@ A level-1 auxiliary file: kapitel/kapitel5.aux
 A level-1 auxiliary file: kapitel/kapitel6.aux
 A level-1 auxiliary file: kapitel/anhang.aux
 The style file: gerunsrt.bst
-A level-1 auxiliary file: kapitel/erklaerung.aux
 Database file #1: literatur/diplom.bib
 Too many commas in name 1 of "Voß, W, Sauerbier, T" for entry tb_stat
 while executing---line 1056 of file gerunsrt.bst
@@ -18,7 +17,7 @@ Warning--can't use both author and editor fields in tb_stat
 Warning--can't use both author and editor fields in bronst
 You've used 71 entries,
             2016 wiz_defined-function locations,
-            914 strings with 21617 characters,
+            913 strings with 21595 characters,
 and the built_in function-call counts, 24452 in all, are:
 = -- 1733
 > -- 1652

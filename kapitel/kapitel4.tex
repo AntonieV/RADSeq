@@ -2,7 +2,7 @@
 \definecolor{light-gray}{gray}{0.93}
 \chapter{Laufzeitanalyse} \label{sec:}
 
-\section{Laufzeit für die Graphkonstruktion und Bestimmung der Zusammenhangskomponenten} \label{sec:}
+\section[Laufzeit für Graph und Zusammenhangskomponenten]{Laufzeit für die Graphkonstruktion und Bestimmung der Zusammenhangskomponenten} \label{sec:}
 \subsubsection{Laufzeit für das Hinzufügen der Knoten des Graphen} \label{subsec:}
 Die Laufzeit für das Hinzufügen eines Knotens (siehe Kap. \ref{subsec:nodes}) im Graphen $G=(V, \, E)$ beträgt nach der Dokumentation von graph-tool  $ O(1) $ \cite{docs_graph_tool}. Die Zuweisung der Knoteneigenschaften erfolgt ebenfalls in $ O(1) $. Über alle Reads, also über die resultierende Anzahl der Knoten $ |V| $ ergibt sich daraus eine Gesamtlaufzeit von $ O(|V|) $.\\
 
@@ -186,7 +186,7 @@ O(n \, \cdotp e^n) + O(e^n &\ {} - n \,\cdotp |V_{C_{i}}|) \,  \cdotp O(n \,\cdo
 \end{aligned}
 \end{equation}
 
-Bei der anschließenden Maximumssuche addiert sich zur Laufzeit noch eine Iteration über alle Allele-Fractions. Die Laufzeit ändert sich hierdurch nicht, da bereits $e^n\, \cdotp n\, \cdotp |V_{C_{i}}|$ dominiert (siehe Formel \eqref{eqn:4-16}). Somit erfordert die Bestimmung der Allele-Fraction mit maximaler Likelihood insgesamt eine Laufzeit von $ O( e^n\, \cdotp n\, \cdotp |V_{C_{i}}| + l\, \cdotp n^2\, \cdotp |V_{C_{i}}|^3) $.
+Bei der anschließenden Maximumsuche addiert sich zur Laufzeit noch eine Iteration über alle Allele-Fractions. Die Laufzeit ändert sich hierdurch nicht, da bereits $e^n\, \cdotp n\, \cdotp |V_{C_{i}}|$ dominiert (siehe Formel \eqref{eqn:4-16}). Somit erfordert die Bestimmung der Allele-Fraction mit maximaler Likelihood insgesamt eine Laufzeit von $ O( e^n\, \cdotp n\, \cdotp |V_{C_{i}}| + l\, \cdotp n^2\, \cdotp |V_{C_{i}}|^3) $.
 \begin{equation} \label{eqn:4-16}
 \tag{4-16}
 \begin{aligned}
@@ -286,7 +286,7 @@ Für die $\binom{n}{2}$ Berechnungen mit Ermittlung der CIGAR-Tupel und Likeliho
 \end{aligned}
 \end{equation}
 
-Für die übrigen $n! - \binom{n}{2}$ Berechnungen kann der Eintrag dem Dictionary entnommen werden, so dass sich nach \eqref{eqn:4-23} eine Laufzeit von $O(n^3  \, \cdotp n!)$ ergibt.
+Für die übrigen $n! - \binom{n}{2}$ Berechnungen kann der Eintrag dem Dictionary entnommen werden, so dass sich nach \eqref{eqn:4-23} eine Laufzeit von $O(n  \, \cdotp n!)$ ergibt.
 \begin{equation} \label{eqn:4-23}
 \tag{4-23}
 \begin{aligned}
@@ -298,7 +298,7 @@ Für die übrigen $n! - \binom{n}{2}$ Berechnungen kann der Eintrag dem Dictiona
 \end{aligned}
 \end{equation}
 
-Die Gesamtlaufzeit für die Loci-Zuordnung ergibt sich aus der Summe der Laufzeiten beider Berechnungsvarianten sowie der Bestimmung der Loci-Kombinationen und der Maximumsbestimmung über alle $n!$ Loci-Kombinationen mit $O( l\, \cdotp n^5  \, \cdotp |V_{C_{i}}|^3 + n^3  \, \cdotp n!)$. 
+Die Gesamtlaufzeit für die Loci-Zuordnung ergibt sich aus der Summe der Laufzeiten beider Berechnungsvarianten sowie der Bestimmung der Loci-Kombinationen und der Maximumsbestimmung über alle $n!$ Loci-Kombinationen mit $O( l\, \cdotp n^3  \, \cdotp |V_{C_{i}}|^3 + n  \, \cdotp n!)$. 
 \begin{equation} \label{eqn:4-24}
 \tag{4-24}
 \begin{aligned}
@@ -307,7 +307,7 @@ Die Gesamtlaufzeit für die Loci-Zuordnung ergibt sich aus der Summe der Laufzei
 \end{aligned}
 \end{equation}
 
-Auch hier soll abschließend der Worst Case betrachtet werden, bei dem die Anzahl der Kandidatenallele genau der Anzahl der Reads in der Zusammenhangskomponente entspricht, also $ n = |V_{C_{i}}| $. Dann ergibt sich für die Berechnung der wahrscheinlichsten Loci-Zuordnung nach \eqref{eqn:4-25} eine maximale Laufzeit von $ O( l \, \cdotp |V_{C_{i}}|^8 + |V_{C_{i}}|^3  \, \cdotp |V_{C_{i}}|!) $.
+Auch hier soll abschließend der Worst Case betrachtet werden, bei dem die Anzahl der Kandidatenallele genau der Anzahl der Reads in der Zusammenhangskomponente entspricht, also $ n = |V_{C_{i}}| $. Dann ergibt sich für die Berechnung der wahrscheinlichsten Loci-Zuordnung nach \eqref{eqn:4-25} eine maximale Laufzeit von $ O( l \, \cdotp |V_{C_{i}}|^6 + |V_{C_{i}}| \, \cdotp |V_{C_{i}}|!) $.
 \begin{equation} \label{eqn:4-25}
 \tag{4-25}
 \begin{aligned}
@@ -316,11 +316,11 @@ Auch hier soll abschließend der Worst Case betrachtet werden, bei dem die Anzah
 \end{aligned}
 \end{equation}
 
-Die Anzahl der Permutationen dominiert durch $ O(|V_{C_{i}}|!) $ die Laufzeit noch stärker als bei der Ermittlung der Allelkombinationen in Kap. \ref{subsubsec:complex-max-al-lh}. Dies ist für große Cluster bzw. für Cluster mit vielen Kandidatenallelen sehr problematisch. Die Anpassung der Schwellenwerte für \lstinline|treshold-cluster-size| und  \lstinline|threshold-seq-noise| können dies zwar in einem gewissen Rahmen für den Prototypen kompensieren. Bei der späteren Implementierung in Rust sollte hier die Anspassung der Schwellenwerte weiter optimiert werden (vgl. Kap. \ref{sec:ausblick}).
+Die Anzahl der Permutationen dominiert durch $ O(|V_{C_{i}}|!) $ die Laufzeit noch stärker als bei der Ermittlung der Allelkombinationen in Kap. \ref{subsubsec:complex-max-al-lh}. Dies ist für große Cluster bzw. für Cluster mit vielen Kandidatenallelen sehr problematisch. Die Anpassung der Schwellenwerte für \lstinline|treshold-cluster-size| und  \lstinline|threshold-seq-noise| können dies zwar in einem gewissen Rahmen für den Prototypen kompensieren. Bei der späteren Implementierung in Rust sollte hier die Anpassung der Schwellenwerte weiter optimiert werden (vgl. Kap. \ref{sec:ausblick}).
 
 \section[Gesamtlaufzeit des Algorithmus]{Abschließende Laufzeitanalyse des gesamten Algorithmus}
 
-Für jeden Konstruktions- und Berechnungsschritt wurden die Laufzeiten bereits an entsprechender Stelle angesprochen. Zusammenfassend ergab sich dabei für die einmalige Konstruktion des Graphen und die Extraktion seiner Zusammenhangskomponenten $ C $ eine Laufzeit von $O(|V| \, \cdotp (|V| + |E|)) $ (Kap. \ref{subsec:graph_compl}). Für jede Zusammenhangskomponente erfolgte die Berechnung der wahrscheinlichsten Allelkombination in $ O( e^n\, \cdotp n\, \cdotp |V_{C_{i}}| + l\, \cdotp n^2\, \cdotp |V_{C_{i}}|^3) $ (Kap. \ref{subsubsec:complex-max-al-lh}) und die Berechnung der wahrscheinlichsten Loci-Zuordnung in $O( l\, \cdotp n^5  \, \cdotp |V_{C_{i}}|^3 + n^3  \, \cdotp n!)$ (Kap. \ref{subsubsec:compl_loci_lh}). Die durchschnittliche Readlänge umfasst meist nur wenige hundert Basen, sie kann insbesondere bei großen Datensätzen als konstant betrachtet werden. Dadurch lässt sich die Gesamtlaufzeit von NodeRAD wie folgt zusammenfassen:
+Für jeden Konstruktions- und Berechnungsschritt wurden die Laufzeiten bereits an entsprechender Stelle angesprochen. Zusammenfassend ergab sich dabei für die einmalige Konstruktion des Graphen und die Extraktion seiner Zusammenhangskomponenten $ C $ eine Laufzeit von $O(|V| \, \cdotp (|V| + |E|)) $ (Kap. \ref{subsec:graph_compl}). Für jede Zusammenhangskomponente erfolgte die Berechnung der wahrscheinlichsten Allelkombination in $ O( e^n\, \cdotp n\, \cdotp |V_{C_{i}}| + l\, \cdotp n^2\, \cdotp |V_{C_{i}}|^3) $ (Kap. \ref{subsubsec:complex-max-al-lh}) und die Berechnung der wahrscheinlichsten Loci-Zuordnung in $O( l\, \cdotp n^3  \, \cdotp |V_{C_{i}}|^3 + n  \, \cdotp n!)$ (Kap. \ref{subsubsec:compl_loci_lh}). Die durchschnittliche Readlänge umfasst meist nur wenige hundert Basen, sie kann insbesondere bei großen Datensätzen als konstant betrachtet werden. Dadurch lässt sich die Gesamtlaufzeit von NodeRAD wie folgt zusammenfassen:
 \begin{equation} \label{eqn:4-26}
 \tag{4-26}
 \begin{aligned}

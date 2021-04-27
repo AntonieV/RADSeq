@@ -3,6 +3,8 @@
 \begin{document}
 \selectlanguage{german}
 \include{kapitel/titelseite}
+\pagenumbering{gobble} 
+\include{kapitel/widmung}
 \blankpage
 \pagenumbering{roman}
 \tableofcontents
@@ -34,10 +36,10 @@
 \bibliography{literatur/diplom}
 \addcontentsline{toc}{chapter}{\bibname}
 % Erklaerung
-\thispagestyle{myheadings}
-\markboth{}{ERKLÄRUNG}
-\addcontentsline{toc}{chapter}{Eidestattliche Versicherung}
-\include{kapitel/erklaerung}
+%\thispagestyle{myheadings}
+%\markboth{}{ERKLÄRUNG}
+%\addcontentsline{toc}{chapter}{Eidestattliche Versicherung}
+%\include{kapitel/erklaerung}
 \cleardoublepage
 \end{document}
 
